@@ -8,15 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString* const PJAMXBeaconHostsDidChangeNotification;
+NSString* const PJAMXBeaconHostsDidChangeNotification;
 
 @interface PJAMXBeaconListener : NSObject
 
+// Array of PJAMXBeaconHosts
+@property(nonatomic,readonly,copy)                      NSArray* hosts;
+@property(nonatomic,readonly,assign,getter=isListening) BOOL     listening;
+
 // Singleton access method
 +(PJAMXBeaconListener*) sharedListener;
-
-// Determine if we are listening or not
-- (BOOL)isListening;
 
 // Start listening
 -(BOOL) startListening:(NSError**) pError;
@@ -27,7 +28,9 @@ extern NSString* const PJAMXBeaconHostsDidChangeNotification;
 // Ping the multicast group with "AMX\r"
 -(void) ping;
 
-// Return an array of PJAMXBeaconHosts, sorted by ip address
-- (NSArray*)hosts;
+// KVO-compliant accessors
+- (NSUInteger)countOfHosts;
+- (id)objectInHostsAtIndex:(NSUInteger)index;
+- (NSArray*)hostsAtIndexes:(NSIndexSet *)indexes;
 
 @end

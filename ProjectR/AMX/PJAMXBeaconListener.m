@@ -23,7 +23,7 @@ NSString* const PJAMXBeaconHostsDidChangeNotification = @"PJAMXBeaconHostsDidCha
 {
     dispatch_queue_t   _queue;
 	GCDAsyncUdpSocket* _socket;
-    BOOL               _isListening;
+    BOOL               _listening;
     NSMutableArray*    _beaconHosts;
 }
 
@@ -31,25 +31,38 @@ NSString* const PJAMXBeaconHostsDidChangeNotification = @"PJAMXBeaconHostsDidCha
 
 @implementation PJAMXBeaconListener
 
+-(NSArray*) hosts
+{
+    __block NSArray* ret = nil;
+
+    dispatch_sync(_queue, ^{
+        ret = [NSArray arrayWithArray:_beaconHosts];
+    });
+
+    return ret;
+}
+
+-(BOOL) isListening
+{
+	__block BOOL ret;
+
+	dispatch_sync(_queue, ^{
+		ret = _listening;
+	});
+
+	return ret;
+}
+
 +(PJAMXBeaconListener*) sharedListener
 {
     static PJAMXBeaconListener* g_sharedAMXBeaconListener = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
+    static dispatch_once_t onceTokenListener;
+    dispatch_once(&onceTokenListener, ^{
         g_sharedAMXBeaconListener = [[PJAMXBeaconListener alloc] init];
     });
     
     return g_sharedAMXBeaconListener;
 }
-
-//-(void) dealloc
-//{
-//    if (_queue != NULL)
-//    {
-//        dispatch_release(_queue);
-//        _queue = NULL;
-//    }
-//}
 
 -(id) init
 {
@@ -67,17 +80,6 @@ NSString* const PJAMXBeaconHostsDidChangeNotification = @"PJAMXBeaconHostsDidCha
     return self;
 }
 
--(BOOL) isListening
-{
-	__block BOOL ret;
-	
-	dispatch_sync(_queue, ^{
-		ret = _isListening;
-	});
-	
-	return ret;
-}
-
 -(BOOL) startListening:(NSError**) pError
 {
     __block BOOL     ret = NO;
@@ -86,7 +88,7 @@ NSString* const PJAMXBeaconHostsDidChangeNotification = @"PJAMXBeaconHostsDidCha
     dispatch_sync(_queue, ^{
         @autoreleasepool
         {
-            if (!self.isListening)
+            if (!_listening)
             {
                 // Bind the UDP socket to the port
                 NSError* error = nil;
@@ -100,7 +102,7 @@ NSString* const PJAMXBeaconHostsDidChangeNotification = @"PJAMXBeaconHostsDidCha
                         {
                             NSLog(@"Listen socket set up successfully, socket = %@", _socket);
                             // Set the flag saying we are now listening
-                            _isListening = YES;
+                            _listening = YES;
                         }
                         else
                         {
@@ -122,7 +124,7 @@ NSString* const PJAMXBeaconHostsDidChangeNotification = @"PJAMXBeaconHostsDidCha
                 err = error;
             }
             // Set the return value to the same as _isListening
-            ret = _isListening;
+            ret = _listening;
         }
     });
 
@@ -139,7 +141,7 @@ NSString* const PJAMXBeaconHostsDidChangeNotification = @"PJAMXBeaconHostsDidCha
     dispatch_sync(_queue, ^{
         @autoreleasepool
         {
-            if (_isListening)
+            if (_listening)
             {
                 // Leave the multicast group
                 NSError* error = nil;
@@ -151,7 +153,7 @@ NSString* const PJAMXBeaconHostsDidChangeNotification = @"PJAMXBeaconHostsDidCha
                 // We just need to close the UDP socket
                 [_socket close];
                 // Clear the flag which says we are listening
-                _isListening = NO;
+                _listening = NO;
                 NSLog(@"AMX Beacon Listening stopped.");
             }
         }
@@ -172,13 +174,31 @@ NSString* const PJAMXBeaconHostsDidChangeNotification = @"PJAMXBeaconHostsDidCha
     });
 }
 
+- (NSUInteger)countOfHosts {
+    __block NSUInteger ret = 0;
 
--(NSArray*) hosts
-{
+    dispatch_sync(_queue, ^{
+        ret = [_beaconHosts count];
+    });
+
+    return ret;
+}
+
+- (id)objectInHostsAtIndex:(NSUInteger)index {
+    __block id ret = nil;
+
+    dispatch_sync(_queue, ^{
+        ret = [_beaconHosts objectAtIndex:index];
+    });
+
+    return ret;
+}
+
+- (NSArray*)hostsAtIndexes:(NSIndexSet *)indexes {
     __block NSArray* ret = nil;
 
     dispatch_sync(_queue, ^{
-        ret = [NSArray arrayWithArray:_beaconHosts];
+        ret = [_beaconHosts objectsAtIndexes:indexes];
     });
 
     return ret;
@@ -217,44 +237,28 @@ NSString* const PJAMXBeaconHostsDidChangeNotification = @"PJAMXBeaconHostsDidCha
     NSLog(@"udpSocket:%@ didReceiveData:\"%@\" fromAddress:%@ withFilterContext:%@", sock, dataStr, address, filterContext);
     // Create a PJAMXBeaconHost from this data string
     PJAMXBeaconHost* beaconHost = [PJAMXBeaconHost beaconHostFromBeaconReply:dataStr];
-    // Init a flag saying whether or not we need to send out a notification
-    BOOL bSendNotification = NO;
     // Get the host from the address
     NSString* host = nil;
-    uint16_t  port = 0;
-    BOOL bConvertRet = [GCDAsyncUdpSocket getHost:&host port:&port fromAddress:address];
+    BOOL bConvertRet = [GCDAsyncUdpSocket getHost:&host port:NULL fromAddress:address];
     if (bConvertRet)
     {
         // We were able to convert the address so set these into the host object
         beaconHost.ipAddressFromSocket = host;
-        beaconHost.portFromSocket      = port;
     }
     // Are we already tracking this beacon?
     // We have overridden isEqual on PJAMXBeaconHost so that we
     // only check things that should not change (things that are
     // properties of the hardware like UUID).
     BOOL sendNotification = NO;
-    if ([_beaconHosts containsObject:beaconHost]) {
-        // Get the existing host from the array
-        NSUInteger hostIndex = [_beaconHosts indexOfObject:beaconHost];
+    // Get the index of the existing host from the array
+    NSUInteger hostIndex = [_beaconHosts indexOfObject:beaconHost];
+    if (hostIndex != NSNotFound) {
         PJAMXBeaconHost* existingHost = [_beaconHosts objectAtIndex:hostIndex];
-
-        // We assume the IP address could change, so update the configURL
-        // and IP address of the existing host. We only send a notification
-        // if any of these values changed.
-        if ([existingHost.configURL length] > 0 && [beaconHost.configURL length] > 0 &&
-            ![existingHost.configURL isEqualToString:beaconHost.configURL]) {
-            existingHost.configURL = beaconHost.configURL;
-            sendNotification = YES;
-        }
-        if ([existingHost.ipAddressFromSocket length] > 0 && [beaconHost.ipAddressFromSocket length] > 0 &&
-            ![existingHost.ipAddressFromSocket isEqualToString:beaconHost.ipAddressFromSocket]) {
+        // Update the existing host with the reply string
+        [existingHost updateFromBeaconReply:dataStr];
+        // Update the IP address
+        if (![existingHost.ipAddressFromSocket isEqualToString:beaconHost.ipAddressFromSocket]) {
             existingHost.ipAddressFromSocket = beaconHost.ipAddressFromSocket;
-            sendNotification = YES;
-        }
-        if (existingHost.portFromSocket > 0 && beaconHost.portFromSocket > 0 &&
-            existingHost.portFromSocket != beaconHost.portFromSocket) {
-            existingHost.portFromSocket = beaconHost.portFromSocket;
             sendNotification = YES;
         }
         // Update the date of last reception
@@ -268,7 +272,7 @@ NSString* const PJAMXBeaconHostsDidChangeNotification = @"PJAMXBeaconHostsDidCha
         sendNotification = YES;
     }
     // Are we supposed to send out a notification?
-    if (bSendNotification)
+    if (sendNotification)
     {
         // Re-sort the array
         [_beaconHosts sortUsingComparator:^(id obj1, id obj2) {

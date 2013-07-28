@@ -24,6 +24,7 @@
 		FD2C35E1178A305A0080B1B7 /* PJMasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD2C35E0178A305A0080B1B7 /* PJMasterViewController.m */; };
 		FD2C35E4178A305A0080B1B7 /* PJDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD2C35E3178A305A0080B1B7 /* PJDetailViewController.m */; };
 		FD2C360A178A41E20080B1B7 /* PJProjector.m in Sources */ = {isa = PBXBuildFile; fileRef = FD2C3609178A41E20080B1B7 /* PJProjector.m */; };
+		FDDA57DC1793BA58007B49D0 /* PJProjectorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +55,8 @@
 		FD2C35E3178A305A0080B1B7 /* PJDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PJDetailViewController.m; sourceTree = "<group>"; };
 		FD2C3608178A41E20080B1B7 /* PJProjector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJProjector.h; path = Model/PJProjector.h; sourceTree = "<group>"; };
 		FD2C3609178A41E20080B1B7 /* PJProjector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PJProjector.m; path = Model/PJProjector.m; sourceTree = "<group>"; };
+		FDDA57DA1793BA58007B49D0 /* PJProjectorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJProjectorManager.h; path = Model/PJProjectorManager.h; sourceTree = "<group>"; };
+		FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PJProjectorManager.m; path = Model/PJProjectorManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +151,8 @@
 			children = (
 				FD2C3608178A41E20080B1B7 /* PJProjector.h */,
 				FD2C3609178A41E20080B1B7 /* PJProjector.m */,
+				FDDA57DA1793BA58007B49D0 /* PJProjectorManager.h */,
+				FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -260,6 +265,7 @@
 				FD2C360A178A41E20080B1B7 /* PJProjector.m in Sources */,
 				FD275AAF1792388100DA9786 /* PJAMXBeaconListener.m in Sources */,
 				FD275AB4179238C300DA9786 /* PJAMXBeaconHost.m in Sources */,
+				FDDA57DC1793BA58007B49D0 /* PJProjectorManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

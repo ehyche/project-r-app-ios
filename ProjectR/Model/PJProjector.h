@@ -12,10 +12,23 @@
 extern NSString* const PJProjectorRequestDidBeginNotification;
 extern NSString* const PJProjectorRequestDidEndNotification;
 extern NSString* const PJProjectorDidChangeNotification;
+extern NSString* const PJProjectorConnectionStateDidChangeNotification;
 
 extern NSString* const PJProjectorErrorKey;
 
 @class PJInput;
+@class PJAMXBeaconHost;
+
+enum {
+    PJConnectionStateDiscovered,       // Initial state - No PJLink network connections attempted yet
+    PJConnectionStateConnecting,       // First PJLink network connection attempt is in progress
+    PJConnectionStatePasswordError,    // First PJLink network connection attempt resulted in password failure
+    PJConnectionStateConnectionError,  // First PJLink network connection attempt resulted in network error other than password
+    PJConnectionStateConnected,        // First and subsequent PJLink network connection attempts succeeded
+    NumPJConnectionStates
+};
+
+typedef NSUInteger PJConnectionState;
 
 @interface PJProjector : NSObject
 
@@ -41,8 +54,23 @@ extern NSString* const PJProjectorErrorKey;
 @property(nonatomic,assign,readonly,getter = isClass2Compatible) BOOL class2Compatible;
 
 // Host IP address and port
-@property(nonatomic,copy)   NSString* host;
-@property(nonatomic,assign) NSInteger port;
+@property(nonatomic,copy,readonly)   NSString* host;
+@property(nonatomic,assign,readonly) NSInteger port;
+
+// Optional password
+@property(nonatomic,copy) NSString* password;
+
+// Connection state
+@property(nonatomic,assign,readonly) PJConnectionState connectionState;
+
+// AMX beacon host
+@property(nonatomic,strong,readonly) PJAMXBeaconHost* beaconHost;
+
+// Init with just an IP address and optional port
+- (id)initWithHost:(NSString*)host;
+- (id)initWithHost:(NSString*)host port:(NSInteger)port;
+// Init with a PJAMXBeaconHost object
+- (id)initWithBeaconHost:(PJAMXBeaconHost*)beaconHost;
 
 // Refresh the specified queries
 - (void)refreshQueries:(NSArray*)queries;

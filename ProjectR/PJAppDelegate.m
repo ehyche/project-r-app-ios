@@ -7,6 +7,7 @@
 //
 
 #import "PJAppDelegate.h"
+#import "PJAMXBeaconListener.h"
 
 @implementation PJAppDelegate
 
@@ -18,6 +19,11 @@
         UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
         splitViewController.delegate = (id)navigationController.topViewController;
     }
+
+    // Start the AMX beacon listener
+    NSError* startError = nil;
+    [[PJAMXBeaconListener sharedListener] startListening:&startError];
+
     return YES;
 }
 							

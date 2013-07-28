@@ -21,6 +21,14 @@ NSString* const kAMXDataClose     = @">";
 
 @interface PJAMXBeaconHost()
 
+@property(nonatomic,readwrite,retain) NSString*     uuid;
+@property(nonatomic,readwrite,retain) NSString*     sdkClass;
+@property(nonatomic,readwrite,retain) NSString*     make;
+@property(nonatomic,readwrite,retain) NSString*     model;
+@property(nonatomic,readwrite,retain) NSString*     revision;
+@property(nonatomic,readwrite,retain) NSString*     configName;
+@property(nonatomic,readwrite,retain) NSString*     configURLString;
+@property(nonatomic,readwrite,retain) NSString*     hostFromConfigURL;
 @property(nonatomic,readwrite,retain) NSDictionary* data;
 
 @end
@@ -32,12 +40,21 @@ NSString* const kAMXDataClose     = @">";
 }
 
 + (PJAMXBeaconHost*)beaconHostFromBeaconReply:(NSString*)reply {
-    PJAMXBeaconHost* ret = nil;
+    return [[PJAMXBeaconHost alloc] initWithBeaconReply:reply];
+}
 
+- (id)initWithBeaconReply:(NSString*)reply {
+    self = [super init];
+    if (self) {
+        [self updateFromBeaconReply:reply];
+    }
+
+    return self;
+}
+
+- (void)updateFromBeaconReply:(NSString*)reply {
     // Make sure the first four characters are AMXB
     if ([reply hasPrefix:kAMXBeaconHeader]) {
-        // Create the PJAMXBeaconHost object
-        ret = [[PJAMXBeaconHost alloc] init];
         // Create a scanner
         NSScanner* scanner = [NSScanner scannerWithString:reply];
         // Skip the AMXB
@@ -75,38 +92,31 @@ NSString* const kAMXDataClose     = @">";
         }
         // Populate the known keys into the convenience properties
         NSString* uuid = [tmp objectForKey:kAMXKeyUUID];
-        if ([uuid length] > 0) {
-            ret.uuid = uuid;
-        }
+        self.uuid = uuid;
         NSString* sdkClass = [tmp objectForKey:kAMXKeySDKClass];
-        if ([sdkClass length] > 0) {
-            ret.sdkClass = sdkClass;
-        }
+        self.sdkClass = sdkClass;
         NSString* make = [tmp objectForKey:kAMXKeyMake];
-        if ([make length] > 0) {
-            ret.make = make;
-        }
+        self.make = make;
         NSString* model = [tmp objectForKey:kAMXKeyModel];
-        if ([model length] > 0) {
-            ret.model = model;
-        }
+        self.model = model;
         NSString* revision = [tmp objectForKey:kAMXKeyRevision];
-        if ([revision length] > 0) {
-            ret.revision = revision;
-        }
+        self.revision = revision;
         NSString* configName = [tmp objectForKey:kAMXKeyConfigName];
-        if ([configName length] > 0) {
-            ret.configName = configName;
+        self.configName = configName;
+        NSString* configURLString = [tmp objectForKey:kAMXKeyConfigURL];
+        self.configURLString = configURLString;
+        NSString* hostFromConfigURL = nil;
+        if ([configURLString length] > 0) {
+            // We have a Config-URL property, which may be of the form:
+            // <Config-URL=http://192.168.1.70>
+            // If so, then it may have an IP address in it.
+            NSURL* configURL = [NSURL URLWithString:configURLString];
+            hostFromConfigURL = [configURL host];
         }
-        NSString* configURL = [tmp objectForKey:kAMXKeyConfigURL];
-        if ([configURL length] > 0) {
-            ret.configURL = configURL;
-        }
+        self.hostFromConfigURL = hostFromConfigURL;
         // Put all of the parsed properties into an externally-accessible dictionary
-        ret.data = [NSDictionary dictionaryWithDictionary:tmp];
+        self.data = [NSDictionary dictionaryWithDictionary:tmp];
     }
-
-    return ret;
 }
 
 // Override isEqual so we can determine if we already have this host

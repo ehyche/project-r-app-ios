@@ -8,16 +8,19 @@
 
 #import "PJProjector.h"
 #import "PJInputInfo.h"
+#import "PJAMXBeaconHost.h"
 #import <PJLinkCocoa/PJResponseInfo.h>
 #import <PJLinkCocoa/AFPJLinkClient.h>
+#import <PJLinkCocoa/PJURLProtocolRunLoop.h>
 
-NSString* const PJProjectorRequestDidBeginNotification = @"PJProjectorRequestDidBeginNotification";
-NSString* const PJProjectorRequestDidEndNotification   = @"PJProjectorRequestDidEndNotification";
-NSString* const PJProjectorDidChangeNotification       = @"PJProjectorDidChangeNotification";
-NSString* const PJProjectorErrorKey                    = @"PJProjectorErrorKey";
-NSInteger const kDefaultPJLinkPort                     = 4352;
-NSString* const kPJLinkCommandPowerOn                  = @"POWR 1\r";
-NSString* const kPJLinkCommandPowerOff                 = @"POWR 0\r";
+NSString* const PJProjectorRequestDidBeginNotification          = @"PJProjectorRequestDidBeginNotification";
+NSString* const PJProjectorRequestDidEndNotification            = @"PJProjectorRequestDidEndNotification";
+NSString* const PJProjectorDidChangeNotification                = @"PJProjectorDidChangeNotification";
+NSString* const PJProjectorConnectionStateDidChangeNotification = @"PJProjectorConnectionStateDidChangeNotification";
+NSString* const PJProjectorErrorKey                             = @"PJProjectorErrorKey";
+NSInteger const kDefaultPJLinkPort                              = 4352;
+NSString* const kPJLinkCommandPowerOn                           = @"POWR 1\r";
+NSString* const kPJLinkCommandPowerOff                          = @"POWR 0\r";
 
 static NSArray* gInputTypeNames = nil;
 
@@ -45,6 +48,8 @@ static NSArray* gInputTypeNames = nil;
 @property(nonatomic,assign) BOOL       modelChanged;
 // Network client
 @property(nonatomic,strong) AFPJLinkClient* pjlinkClient;
+// Connection state
+@property(nonatomic,assign,readwrite) PJConnectionState connectionState;
 
 + (NSString*)inputNameForInputType:(PJInputType)type;
 
@@ -61,47 +66,61 @@ static NSArray* gInputTypeNames = nil;
 - (id)init {
     self = [super init];
     if (self) {
-        // Set initial status
-        PJLampStatus* lampStatus = [[PJLampStatus alloc] init];
-        _lampStatus  = @[lampStatus];
-        // Set up the default inputs
-        PJInput* inputRGB1     = [[PJInput alloc] init];
-        inputRGB1.inputType    = PJInputTypeRGB;
-        inputRGB1.inputNumber  = 1;
-        PJInput* inputRGB2     = [[PJInput alloc] init];
-        inputRGB1.inputType    = PJInputTypeRGB;
-        inputRGB1.inputNumber  = 2;
-        PJInput* inputRGB3     = [[PJInput alloc] init];
-        inputRGB1.inputType    = PJInputTypeRGB;
-        inputRGB1.inputNumber  = 3;
-        PJInput* inputVideo1   = [[PJInput alloc] init];
-        inputRGB1.inputType    = PJInputTypeVideo;
-        inputRGB1.inputNumber  = 1;
-        PJInput* inputVideo2   = [[PJInput alloc] init];
-        inputRGB1.inputType    = PJInputTypeVideo;
-        inputRGB1.inputNumber  = 2;
-        PJInput* inputDigital1 = [[PJInput alloc] init];
-        inputRGB1.inputType    = PJInputTypeDigital;
-        inputRGB1.inputNumber  = 1;
-        PJInput* inputStorage1 = [[PJInput alloc] init];
-        inputRGB1.inputType    = PJInputTypeStorage;
-        inputRGB1.inputNumber  = 1;
-        PJInput* inputNetwork1 = [[PJInput alloc] init];
-        inputRGB1.inputType    = PJInputTypeNetwork;
-        inputRGB1.inputNumber  = 1;
-        _inputs = @[inputRGB1, inputRGB2, inputRGB3, inputVideo1, inputVideo2, inputDigital1, inputStorage1, inputNetwork1];
-        // Set up all the default names
-        _projectorName    = @"Projector Name";
-        _manufacturerName = @"Manufacturer Name";
-        _productName      = @"Product Name";
-        _otherInformation = @"Other Information";
+        // Set initial values
+        _powerStatus            = PJPowerStatusStandby;
+        _audioMuted             = NO;
+        _videoMuted             = NO;
+        _fanErrorStatus         = PJErrorStatusNoError;
+        _lampErrorStatus        = PJErrorStatusNoError;
+        _temperatureErrorStatus = PJErrorStatusNoError;
+        _coverOpenErrorStatus   = PJErrorStatusNoError;
+        _filterErrorStatus      = PJErrorStatusNoError;
+        _otherErrorStatus       = PJErrorStatusNoError;
+        _lampStatus             = @[];
+        _inputs                 = @[];
+        _projectorName          = @"";
+        _manufacturerName       = @"";
+        _productName            = @"";
+        _otherInformation       = @"";
+        _class2Compatible       = NO;
         // Set defaults for IP address and port
-        _host = @"127.0.0.1";
-        _port = kDefaultPJLinkPort;
+        _host                   = @"127.0.0.1";
+        _port                   = kDefaultPJLinkPort;
+        // The default connection state is discovered
+        _connectionState        = PJConnectionStateDiscovered;
     }
 
     return self;
 }
+
+- (id)initWithHost:(NSString*)host {
+    return [self initWithHost:host port:kDefaultPJLinkPort];
+}
+
+- (id)initWithHost:(NSString*)host port:(NSInteger)port {
+    // Note that this is intentionally [self init] and not [super init]
+    self = [self init];
+    if (self) {
+        // Save the host and port
+        _host = host;
+        _port = port;
+        // Create the AFPJLinkClient
+        [self rebuildPJLinkClient];
+    }
+
+    return self;
+}
+
+- (id)initWithBeaconHost:(PJAMXBeaconHost*)beaconHost {
+    self = [self initWithHost:beaconHost.ipAddressFromSocket];
+    if (self) {
+        // Save the AMX beacon host
+        _beaconHost = beaconHost;
+    }
+
+    return self;
+}
+
 
 - (void)setPowerStatus:(PJPowerStatus)powerStatus {
     if (_powerStatus != powerStatus) {
@@ -260,17 +279,25 @@ static NSArray* gInputTypeNames = nil;
     }
 }
 
-- (void)setHost:(NSString *)host {
-    if (![_host isEqualToString:host]) {
-        _host = [host copy];
-        [self rebuildPJLinkClient];
+- (void)setPassword:(NSString *)password {
+    if (![_password isEqualToString:password]) {
+        _password = [password copy];
+        // Create an NSURLCredential with this password.
+        // PJLink does not require (or use) a username, so we just
+        // supply a dummy username.
+        NSURLCredential* credential = [NSURLCredential credentialWithUser:@"user"
+                                                                 password:_password
+                                                              persistence:NSURLCredentialPersistenceForSession];
+        // Set this credential as the default credential for our AFPJLinkClient
+        [self.pjlinkClient setDefaultCredential:credential];
     }
 }
 
-- (void)setPort:(NSInteger)port {
-    if (_port != port) {
-        _port = port;
-        [self rebuildPJLinkClient];
+- (void)setConnectionState:(PJConnectionState)connectionState {
+    if (_connectionState != connectionState) {
+        _connectionState = connectionState;
+        // Post a connection state did change notification
+        [self postConnectionStateDidChangeNotification];
     }
 }
 
@@ -542,17 +569,23 @@ static NSArray* gInputTypeNames = nil;
     if ([requestBody length] > 0 && self.pjlinkClient != nil) {
         // Send the request did begin notification
         [[NSNotificationCenter defaultCenter] postNotificationName:PJProjectorRequestDidBeginNotification object:self];
+        // Update the connection state if necessary.
+        [self updateConnectionStatePreRequest];
         // Send the request
         [self.pjlinkClient makeRequestWithBody:requestBody
                                        success:^(AFPJLinkRequestOperation* operation, NSString* responseBody, NSArray* parsedResponses) {
                                            // Send the request-did-end notification
                                            [self postRequestDidEndNotificationWithError:nil];
+                                           // Update the connection state
+                                           [self updateConnectionStatePostRequestWithError:nil];
                                            // Process the responses
                                            [self handleResponses:parsedResponses];
                                        }
                                        failure:^(AFPJLinkRequestOperation* operation, NSError* error) {
                                            // Send the request-did-end notification
                                            [self postRequestDidEndNotificationWithError:error];
+                                           // Update the connection state
+                                           [self updateConnectionStatePostRequestWithError:error];
                                        }];
     }
 }
@@ -579,6 +612,48 @@ static NSArray* gInputTypeNames = nil;
     }
 
     return ret;
+}
+
+- (void)postConnectionStateDidChangeNotification {
+    dispatch_block_t block = ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:PJProjectorConnectionStateDidChangeNotification object:self];
+	};
+    // Ensure that we post the notification on the main thread
+    if ([NSThread isMainThread]) {
+        block();
+    } else {
+        dispatch_async(dispatch_get_main_queue(), block);
+    }
+}
+
+- (void)updateConnectionStatePreRequest {
+    // If this is the first time we have made a request,
+    // then we should be in the discovered state. If so,
+    // then we should transition to the connecting state.
+    if (self.connectionState == PJConnectionStateDiscovered) {
+        self.connectionState = PJConnectionStateConnecting;
+    }
+}
+
+- (void)updateConnectionStatePostRequestWithError:(NSError*)error {
+    if (error != nil) {
+        // We had an error. If it is a password error, then we
+        // set ourselves into the password error connection state.
+        // This tells observers that we need to provide a password.
+        // Otherwise, we go to the connection error connection state.
+        if ([error.domain isEqualToString:PJLinkErrorDomain]) {
+            if (error.code == PJLinkErrorNoPasswordProvided) {
+                self.connectionState = PJConnectionStatePasswordError;
+            } else {
+                self.connectionState = PJConnectionStateConnectionError;
+            }
+        } else {
+            self.connectionState = PJConnectionStateConnectionError;
+        }
+    } else {
+        // No error, so we go to the connected state
+        self.connectionState = PJConnectionStateConnected;
+    }
 }
 
 @end
