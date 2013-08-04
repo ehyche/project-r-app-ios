@@ -8,6 +8,7 @@
 
 #import "PJAppDelegate.h"
 #import "PJAMXBeaconListener.h"
+#import <PJLinkCocoa/PJURLProtocolRunLoop.h>
 
 @implementation PJAppDelegate
 
@@ -20,9 +21,11 @@
         splitViewController.delegate = (id)navigationController.topViewController;
     }
 
-    // Start the AMX beacon listener
-    NSError* startError = nil;
-    [[PJAMXBeaconListener sharedListener] startListening:&startError];
+    // Register the protocol class
+    [NSURLProtocol registerClass:[PJURLProtocolRunLoop class]];
+//    // Start the AMX beacon listener
+//    NSError* startError = nil;
+//    [[PJAMXBeaconListener sharedListener] startListening:&startError];
 
     return YES;
 }

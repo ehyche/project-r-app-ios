@@ -24,6 +24,10 @@
 		FD2C35E1178A305A0080B1B7 /* PJMasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD2C35E0178A305A0080B1B7 /* PJMasterViewController.m */; };
 		FD2C35E4178A305A0080B1B7 /* PJDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD2C35E3178A305A0080B1B7 /* PJDetailViewController.m */; };
 		FD2C360A178A41E20080B1B7 /* PJProjector.m in Sources */ = {isa = PBXBuildFile; fileRef = FD2C3609178A41E20080B1B7 /* PJProjector.m */; };
+		FD41B20017ADE52E00502703 /* PJDiscoveredTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD41B1FF17ADE52E00502703 /* PJDiscoveredTableViewController.m */; };
+		FD41B20517AE136C00502703 /* PJInterfaceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = FD41B20417AE136C00502703 /* PJInterfaceInfo.m */; };
+		FD5D2C1217AEEAD700420D9A /* PJManualAddViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD5D2C1117AEEAD700420D9A /* PJManualAddViewController.m */; };
+		FDB9161317AC9B850098755A /* PJLinkSubnetScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */; };
 		FDDA57DC1793BA58007B49D0 /* PJProjectorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +59,14 @@
 		FD2C35E3178A305A0080B1B7 /* PJDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PJDetailViewController.m; sourceTree = "<group>"; };
 		FD2C3608178A41E20080B1B7 /* PJProjector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJProjector.h; path = Model/PJProjector.h; sourceTree = "<group>"; };
 		FD2C3609178A41E20080B1B7 /* PJProjector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PJProjector.m; path = Model/PJProjector.m; sourceTree = "<group>"; };
+		FD41B1FE17ADE52E00502703 /* PJDiscoveredTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJDiscoveredTableViewController.h; sourceTree = "<group>"; };
+		FD41B1FF17ADE52E00502703 /* PJDiscoveredTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJDiscoveredTableViewController.m; sourceTree = "<group>"; };
+		FD41B20317AE136C00502703 /* PJInterfaceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJInterfaceInfo.h; sourceTree = "<group>"; };
+		FD41B20417AE136C00502703 /* PJInterfaceInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJInterfaceInfo.m; sourceTree = "<group>"; };
+		FD5D2C1017AEEAD700420D9A /* PJManualAddViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJManualAddViewController.h; sourceTree = "<group>"; };
+		FD5D2C1117AEEAD700420D9A /* PJManualAddViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJManualAddViewController.m; sourceTree = "<group>"; };
+		FDB9161117AC9B850098755A /* PJLinkSubnetScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJLinkSubnetScanner.h; path = SubnetScanner/PJLinkSubnetScanner.h; sourceTree = "<group>"; };
+		FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PJLinkSubnetScanner.m; path = SubnetScanner/PJLinkSubnetScanner.m; sourceTree = "<group>"; };
 		FDDA57DA1793BA58007B49D0 /* PJProjectorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJProjectorManager.h; path = Model/PJProjectorManager.h; sourceTree = "<group>"; };
 		FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PJProjectorManager.m; path = Model/PJProjectorManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -117,6 +129,7 @@
 		FD2C35C7178A305A0080B1B7 /* ProjectR */ = {
 			isa = PBXGroup;
 			children = (
+				FD5AA27517A8B100004B5269 /* Subnet Scanner */,
 				FD275AB11792389800DA9786 /* AMX */,
 				FD2C35D0178A305A0080B1B7 /* PJAppDelegate.h */,
 				FD2C35D1178A305A0080B1B7 /* PJAppDelegate.m */,
@@ -128,6 +141,10 @@
 				FD2C35E3178A305A0080B1B7 /* PJDetailViewController.m */,
 				FD2C35C8178A305A0080B1B7 /* Supporting Files */,
 				FD2C360B178A41EA0080B1B7 /* Model */,
+				FD41B1FE17ADE52E00502703 /* PJDiscoveredTableViewController.h */,
+				FD41B1FF17ADE52E00502703 /* PJDiscoveredTableViewController.m */,
+				FD5D2C1017AEEAD700420D9A /* PJManualAddViewController.h */,
+				FD5D2C1117AEEAD700420D9A /* PJManualAddViewController.m */,
 			);
 			path = ProjectR;
 			sourceTree = "<group>";
@@ -155,6 +172,17 @@
 				FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		FD5AA27517A8B100004B5269 /* Subnet Scanner */ = {
+			isa = PBXGroup;
+			children = (
+				FDB9161117AC9B850098755A /* PJLinkSubnetScanner.h */,
+				FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */,
+				FD41B20317AE136C00502703 /* PJInterfaceInfo.h */,
+				FD41B20417AE136C00502703 /* PJInterfaceInfo.m */,
+			);
+			name = "Subnet Scanner";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -266,6 +294,10 @@
 				FD275AAF1792388100DA9786 /* PJAMXBeaconListener.m in Sources */,
 				FD275AB4179238C300DA9786 /* PJAMXBeaconHost.m in Sources */,
 				FDDA57DC1793BA58007B49D0 /* PJProjectorManager.m in Sources */,
+				FDB9161317AC9B850098755A /* PJLinkSubnetScanner.m in Sources */,
+				FD41B20017ADE52E00502703 /* PJDiscoveredTableViewController.m in Sources */,
+				FD41B20517AE136C00502703 /* PJInterfaceInfo.m in Sources */,
+				FD5D2C1217AEEAD700420D9A /* PJManualAddViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,6 +397,7 @@
 				GCC_PREFIX_HEADER = "ProjectR/ProjectR-Prefix.pch";
 				INFOPLIST_FILE = "ProjectR/ProjectR-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -377,6 +410,7 @@
 				GCC_PREFIX_HEADER = "ProjectR/ProjectR-Prefix.pch";
 				INFOPLIST_FILE = "ProjectR/ProjectR-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

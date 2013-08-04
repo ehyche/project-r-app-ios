@@ -13,12 +13,13 @@
 #import <PJLinkCocoa/AFPJLinkClient.h>
 #import <PJLinkCocoa/PJURLProtocolRunLoop.h>
 
+#define kDefaultPJLinkPort 4352
+
 NSString* const PJProjectorRequestDidBeginNotification          = @"PJProjectorRequestDidBeginNotification";
 NSString* const PJProjectorRequestDidEndNotification            = @"PJProjectorRequestDidEndNotification";
 NSString* const PJProjectorDidChangeNotification                = @"PJProjectorDidChangeNotification";
 NSString* const PJProjectorConnectionStateDidChangeNotification = @"PJProjectorConnectionStateDidChangeNotification";
 NSString* const PJProjectorErrorKey                             = @"PJProjectorErrorKey";
-NSInteger const kDefaultPJLinkPort                              = 4352;
 NSString* const kPJLinkCommandPowerOn                           = @"POWR 1\r";
 NSString* const kPJLinkCommandPowerOff                          = @"POWR 0\r";
 

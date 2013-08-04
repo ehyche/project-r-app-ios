@@ -11,8 +11,10 @@
 #import "PJProjectorManager.h"
 #import "PJProjector.h"
 #import "PJAMXBeaconHost.h"
+#import "PJAMXBeaconListener.h"
+#import "PJLinkSubnetScanner.h"
 
-@interface PJMasterViewController()
+@interface PJMasterViewController() <UIActionSheetDelegate>
 
 @end
 
@@ -36,14 +38,21 @@
 {
     [super viewDidLoad];
 
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    self.navigationItem.rightBarButtonItem = addButton;
     self.detailViewController = (PJDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:@"showDetail"]) {
+        //        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+        //        NSDate *object = _objects[indexPath.row];
+        //        [[segue destinationViewController] setDetailItem:object];
+    }
 }
 
 #pragma mark - UITableViewDataSource methods
@@ -85,6 +94,8 @@
     return cell;
 }
 
+#pragma mark - UITableViewDelegate methods
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 //    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
@@ -93,16 +104,21 @@
 //    }
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([[segue identifier] isEqualToString:@"showDetail"]) {
-//        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-//        NSDate *object = _objects[indexPath.row];
-//        [[segue destinationViewController] setDetailItem:object];
+#pragma mark - UIActionSheetDelegate methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex != actionSheet.cancelButtonIndex) {
+        if (buttonIndex == actionSheet.firstOtherButtonIndex) {
+            // Scan for projectors
+            [self performSegueWithIdentifier:@"scanSegue" sender:self];
+        } else {
+            // Add a projector manually
+            [self performSegueWithIdentifier:@"manualAddSegue" sender:self];
+        }
     }
 }
 
-#pragma mark - KVO methods
+#pragma mark - PJMasterViewController private methods
 
 -(void)subscribeToNotifications {
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -119,6 +135,18 @@
 
 - (void)projectorsDidChange:(NSNotification*)notification {
     [self.tableView reloadData];
+}
+
+- (IBAction)refreshButtonTapped:(id)sender {
+}
+
+- (IBAction)addButtonTapped:(id)sender {
+    UIActionSheet* actionSheet = [[UIActionSheet alloc] initWithTitle:@"Add Projectors"
+                                                             delegate:self
+                                                    cancelButtonTitle:@"Cancel"
+                                               destructiveButtonTitle:nil
+                                                    otherButtonTitles:@"Scan For Projectors", @"Add Manually", nil];
+    [actionSheet showFromBarButtonItem:sender animated:YES];
 }
 
 @end
