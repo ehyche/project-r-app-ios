@@ -20,13 +20,13 @@
 		FD2C35D6178A305A0080B1B7 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FD2C35D5178A305A0080B1B7 /* Default@2x.png */; };
 		FD2C35D8178A305A0080B1B7 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FD2C35D7178A305A0080B1B7 /* Default-568h@2x.png */; };
 		FD2C35DB178A305A0080B1B7 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FD2C35D9178A305A0080B1B7 /* MainStoryboard_iPhone.storyboard */; };
-		FD2C35DE178A305A0080B1B7 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FD2C35DC178A305A0080B1B7 /* MainStoryboard_iPad.storyboard */; };
 		FD2C35E1178A305A0080B1B7 /* PJMasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD2C35E0178A305A0080B1B7 /* PJMasterViewController.m */; };
 		FD2C35E4178A305A0080B1B7 /* PJDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD2C35E3178A305A0080B1B7 /* PJDetailViewController.m */; };
 		FD2C360A178A41E20080B1B7 /* PJProjector.m in Sources */ = {isa = PBXBuildFile; fileRef = FD2C3609178A41E20080B1B7 /* PJProjector.m */; };
 		FD41B20017ADE52E00502703 /* PJDiscoveredTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD41B1FF17ADE52E00502703 /* PJDiscoveredTableViewController.m */; };
 		FD41B20517AE136C00502703 /* PJInterfaceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = FD41B20417AE136C00502703 /* PJInterfaceInfo.m */; };
 		FD5D2C1217AEEAD700420D9A /* PJManualAddViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD5D2C1117AEEAD700420D9A /* PJManualAddViewController.m */; };
+		FD6019A817B34102002F4D4E /* PJProjectorDetailTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD6019A717B34102002F4D4E /* PJProjectorDetailTableViewController.m */; };
 		FDB9161317AC9B850098755A /* PJLinkSubnetScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */; };
 		FDDA57DC1793BA58007B49D0 /* PJProjectorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */; };
 /* End PBXBuildFile section */
@@ -52,7 +52,6 @@
 		FD2C35D5178A305A0080B1B7 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		FD2C35D7178A305A0080B1B7 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		FD2C35DA178A305A0080B1B7 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
-		FD2C35DD178A305A0080B1B7 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
 		FD2C35DF178A305A0080B1B7 /* PJMasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PJMasterViewController.h; sourceTree = "<group>"; };
 		FD2C35E0178A305A0080B1B7 /* PJMasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PJMasterViewController.m; sourceTree = "<group>"; };
 		FD2C35E2178A305A0080B1B7 /* PJDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PJDetailViewController.h; sourceTree = "<group>"; };
@@ -65,6 +64,9 @@
 		FD41B20417AE136C00502703 /* PJInterfaceInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJInterfaceInfo.m; sourceTree = "<group>"; };
 		FD5D2C1017AEEAD700420D9A /* PJManualAddViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJManualAddViewController.h; sourceTree = "<group>"; };
 		FD5D2C1117AEEAD700420D9A /* PJManualAddViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJManualAddViewController.m; sourceTree = "<group>"; };
+		FD6019A617B34102002F4D4E /* PJProjectorDetailTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJProjectorDetailTableViewController.h; sourceTree = "<group>"; };
+		FD6019A717B34102002F4D4E /* PJProjectorDetailTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJProjectorDetailTableViewController.m; sourceTree = "<group>"; };
+		FD9ED18F17AF0CDE0077AF48 /* PJLinkAddProjectorDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PJLinkAddProjectorDelegate.h; sourceTree = "<group>"; };
 		FDB9161117AC9B850098755A /* PJLinkSubnetScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJLinkSubnetScanner.h; path = SubnetScanner/PJLinkSubnetScanner.h; sourceTree = "<group>"; };
 		FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PJLinkSubnetScanner.m; path = SubnetScanner/PJLinkSubnetScanner.m; sourceTree = "<group>"; };
 		FDDA57DA1793BA58007B49D0 /* PJProjectorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJProjectorManager.h; path = Model/PJProjectorManager.h; sourceTree = "<group>"; };
@@ -134,7 +136,6 @@
 				FD2C35D0178A305A0080B1B7 /* PJAppDelegate.h */,
 				FD2C35D1178A305A0080B1B7 /* PJAppDelegate.m */,
 				FD2C35D9178A305A0080B1B7 /* MainStoryboard_iPhone.storyboard */,
-				FD2C35DC178A305A0080B1B7 /* MainStoryboard_iPad.storyboard */,
 				FD2C35DF178A305A0080B1B7 /* PJMasterViewController.h */,
 				FD2C35E0178A305A0080B1B7 /* PJMasterViewController.m */,
 				FD2C35E2178A305A0080B1B7 /* PJDetailViewController.h */,
@@ -145,6 +146,9 @@
 				FD41B1FF17ADE52E00502703 /* PJDiscoveredTableViewController.m */,
 				FD5D2C1017AEEAD700420D9A /* PJManualAddViewController.h */,
 				FD5D2C1117AEEAD700420D9A /* PJManualAddViewController.m */,
+				FD9ED18F17AF0CDE0077AF48 /* PJLinkAddProjectorDelegate.h */,
+				FD6019A617B34102002F4D4E /* PJProjectorDetailTableViewController.h */,
+				FD6019A717B34102002F4D4E /* PJProjectorDetailTableViewController.m */,
 			);
 			path = ProjectR;
 			sourceTree = "<group>";
@@ -244,7 +248,6 @@
 				FD2C35D6178A305A0080B1B7 /* Default@2x.png in Resources */,
 				FD2C35D8178A305A0080B1B7 /* Default-568h@2x.png in Resources */,
 				FD2C35DB178A305A0080B1B7 /* MainStoryboard_iPhone.storyboard in Resources */,
-				FD2C35DE178A305A0080B1B7 /* MainStoryboard_iPad.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,6 +301,7 @@
 				FD41B20017ADE52E00502703 /* PJDiscoveredTableViewController.m in Sources */,
 				FD41B20517AE136C00502703 /* PJInterfaceInfo.m in Sources */,
 				FD5D2C1217AEEAD700420D9A /* PJManualAddViewController.m in Sources */,
+				FD6019A817B34102002F4D4E /* PJProjectorDetailTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,14 +322,6 @@
 				FD2C35DA178A305A0080B1B7 /* en */,
 			);
 			name = MainStoryboard_iPhone.storyboard;
-			sourceTree = "<group>";
-		};
-		FD2C35DC178A305A0080B1B7 /* MainStoryboard_iPad.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FD2C35DD178A305A0080B1B7 /* en */,
-			);
-			name = MainStoryboard_iPad.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

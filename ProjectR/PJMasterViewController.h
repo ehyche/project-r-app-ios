@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class PJDetailViewController;
+@class PJProjectorDetailTableViewController;
 
 @interface PJMasterViewController : UITableViewController
 
-@property (strong, nonatomic) PJDetailViewController *detailViewController;
+@property(nonatomic,strong) PJProjectorDetailTableViewController* projectorDetailTableViewController;
 
 @end

@@ -11,6 +11,7 @@
 #import "PJProjector.h"
 #import <PJLinkCocoa/AFPJLinkClient.h>
 #import <PJLinkCocoa/PJURLProtocolRunLoop.h>
+#import "PJLinkAddProjectorDelegate.h"
 
 @interface PJManualAddViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *firstIP4TextField;
@@ -75,6 +76,10 @@
 - (IBAction)addButtonTapped:(id)sender {
     // Dismiss the keyboard
     [self dismissKeyboard];
+    // If we have a detected projector, then call back to the delegate with it
+    if (self.detectedProjector != nil) {
+        [self.delegate pjlinkProjectorsWereAdded:@[self.detectedProjector]];
+    }
 }
 
 - (IBAction)cancelButtonTapped:(id)sender {

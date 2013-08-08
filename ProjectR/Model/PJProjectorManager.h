@@ -10,11 +10,18 @@
 
 NSString* const PJProjectorManagerProjectorsDidChangeNotification;
 
+@class PJProjector;
+
 @interface PJProjectorManager : NSObject
+
+@property(nonatomic,copy) NSArray* projectors;
 
 + (PJProjectorManager*)sharedManager;
 
-- (NSArray*)projectors;
+- (void)addProjectors:(NSArray*)projectors;
+- (void)removeProjectors:(NSArray*)projectors;
+
+- (PJProjector*)projectorForHost:(NSString*)host;
 
 - (NSUInteger)countOfProjectors;
 - (id)objectInProjectorsAtIndex:(NSUInteger)index;

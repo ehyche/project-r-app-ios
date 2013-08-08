@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol PJLinkAddProjectorDelegate;
+
 @interface PJManualAddViewController : UIViewController
+
+@property(nonatomic,weak) id<PJLinkAddProjectorDelegate> delegate;
 
 @end

@@ -66,6 +66,10 @@ typedef NSUInteger PJConnectionState;
 // AMX beacon host
 @property(nonatomic,strong,readonly) PJAMXBeaconHost* beaconHost;
 
+// Refresh timer
+@property(nonatomic,assign)                         NSTimeInterval refreshTimerInterval;
+@property(nonatomic,assign,getter=isRefreshTimerOn) BOOL           refreshTimerOn;
+
 // Init with just an IP address and optional port
 - (id)initWithHost:(NSString*)host;
 - (id)initWithHost:(NSString*)host port:(NSInteger)port;

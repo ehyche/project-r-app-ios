@@ -15,13 +15,14 @@
 
 #define kDefaultPJLinkPort 4352
 
-NSString* const PJProjectorRequestDidBeginNotification          = @"PJProjectorRequestDidBeginNotification";
-NSString* const PJProjectorRequestDidEndNotification            = @"PJProjectorRequestDidEndNotification";
-NSString* const PJProjectorDidChangeNotification                = @"PJProjectorDidChangeNotification";
-NSString* const PJProjectorConnectionStateDidChangeNotification = @"PJProjectorConnectionStateDidChangeNotification";
-NSString* const PJProjectorErrorKey                             = @"PJProjectorErrorKey";
-NSString* const kPJLinkCommandPowerOn                           = @"POWR 1\r";
-NSString* const kPJLinkCommandPowerOff                          = @"POWR 0\r";
+NSString*      const PJProjectorRequestDidBeginNotification          = @"PJProjectorRequestDidBeginNotification";
+NSString*      const PJProjectorRequestDidEndNotification            = @"PJProjectorRequestDidEndNotification";
+NSString*      const PJProjectorDidChangeNotification                = @"PJProjectorDidChangeNotification";
+NSString*      const PJProjectorConnectionStateDidChangeNotification = @"PJProjectorConnectionStateDidChangeNotification";
+NSString*      const PJProjectorErrorKey                             = @"PJProjectorErrorKey";
+NSString*      const kPJLinkCommandPowerOn                           = @"POWR 1\r";
+NSString*      const kPJLinkCommandPowerOff                          = @"POWR 0\r";
+NSTimeInterval const kDefaultRefreshTimerInterval                    = 60.0;
 
 static NSArray* gInputTypeNames = nil;
 
@@ -51,6 +52,8 @@ static NSArray* gInputTypeNames = nil;
 @property(nonatomic,strong) AFPJLinkClient* pjlinkClient;
 // Connection state
 @property(nonatomic,assign,readwrite) PJConnectionState connectionState;
+// Refresh timer
+@property(nonatomic,strong) NSTimer* refreshTimer;
 
 + (NSString*)inputNameForInputType:(PJInputType)type;
 
@@ -89,6 +92,8 @@ static NSArray* gInputTypeNames = nil;
         _port                   = kDefaultPJLinkPort;
         // The default connection state is discovered
         _connectionState        = PJConnectionStateDiscovered;
+        // Default refresh timer interval
+        _refreshTimerInterval   = kDefaultRefreshTimerInterval;
     }
 
     return self;
@@ -299,6 +304,39 @@ static NSArray* gInputTypeNames = nil;
         _connectionState = connectionState;
         // Post a connection state did change notification
         [self postConnectionStateDidChangeNotification];
+    }
+}
+
+- (void)setRefreshTimerInterval:(NSTimeInterval)refreshTimerInterval {
+    if (_refreshTimerInterval != refreshTimerInterval) {
+        // Save the new refresh timer interval
+        _refreshTimerInterval = refreshTimerInterval;
+        // If we are currently refreshing, then we need to tear down the timer and re-build
+        if (_refreshTimerOn) {
+            // Invalidate the old timer
+            [self.refreshTimer invalidate];
+            // Create a new one
+            self.refreshTimer = [NSTimer scheduledTimerWithTimeInterval:_refreshTimerInterval
+                                                                 target:self
+                                                               selector:@selector(refreshTimerFired:)
+                                                               userInfo:nil
+                                                                repeats:YES];
+        }
+    }
+}
+
+- (void)setRefreshTimerOn:(BOOL)refreshTimerOn {
+    if (_refreshTimerOn && !refreshTimerOn) {
+        // Invalidate and destroy the refresh timer
+        [self.refreshTimer invalidate];
+        self.refreshTimer = nil;
+    } else if (!_refreshTimerOn && refreshTimerOn) {
+        // Create a repeating refresh timer
+        self.refreshTimer = [NSTimer scheduledTimerWithTimeInterval:self.refreshTimerInterval
+                                                             target:self
+                                                           selector:@selector(refreshTimerFired:)
+                                                           userInfo:nil
+                                                            repeats:YES];
     }
 }
 
@@ -628,10 +666,9 @@ static NSArray* gInputTypeNames = nil;
 }
 
 - (void)updateConnectionStatePreRequest {
-    // If this is the first time we have made a request,
-    // then we should be in the discovered state. If so,
-    // then we should transition to the connecting state.
-    if (self.connectionState == PJConnectionStateDiscovered) {
+    // If we are already connected, then we will assume we stay connected.
+    // If we are not already connected, then we will change state to connecting.
+    if (self.connectionState != PJConnectionStateConnected) {
         self.connectionState = PJConnectionStateConnecting;
     }
 }
@@ -655,6 +692,10 @@ static NSArray* gInputTypeNames = nil;
         // No error, so we go to the connected state
         self.connectionState = PJConnectionStateConnected;
     }
+}
+
+- (void)refreshTimerFired:(NSTimer*)timer {
+    [self refreshAllQueries];
 }
 
 @end

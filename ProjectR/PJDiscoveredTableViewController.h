@@ -8,17 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class PJDiscoveredTableViewController;
-
-@protocol PJDiscoveredTableViewControllerDelegate <NSObject>
-
-@required
-- (void)discoveryControllerDidDiscoverProjectors:(NSArray*)projectors; // NSArray of PJProjector's
-
-@end
+@protocol PJLinkAddProjectorDelegate;
 
 @interface PJDiscoveredTableViewController : UITableViewController
 
-@property(nonatomic,weak) id<PJDiscoveredTableViewControllerDelegate> delegate;
+@property(nonatomic,weak) id<PJLinkAddProjectorDelegate> delegate;
 
 @end

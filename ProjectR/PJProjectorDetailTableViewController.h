@@ -1,8 +1,8 @@
 //
-//  PJDetailViewController.h
+//  PJProjectorDetailTableViewController.h
 //  ProjectR
 //
-//  Created by Eric Hyche on 7/7/13.
+//  Created by Eric Hyche on 8/7/13.
 //  Copyright (c) 2013 Eric Hyche. All rights reserved.
 //
 
@@ -10,7 +10,7 @@
 
 @class PJProjector;
 
-@interface PJDetailViewController : UIViewController <UISplitViewControllerDelegate>
+@interface PJProjectorDetailTableViewController : UITableViewController
 
 @property(nonatomic,strong) PJProjector* projector;
 

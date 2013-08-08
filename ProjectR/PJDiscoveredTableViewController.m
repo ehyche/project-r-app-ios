@@ -11,6 +11,7 @@
 #import "PJAMXBeaconListener.h"
 #import "PJLinkSubnetScanner.h"
 #import "PJProjector.h"
+#import "PJLinkAddProjectorDelegate.h"
 
 @interface PJDiscoveredTableViewController ()
 
@@ -146,7 +147,7 @@
     }
     if ([selectedProjectors count] > 0) {
         // Call back to the delegate with the selected projectors
-        [self.delegate discoveryControllerDidDiscoverProjectors:selectedProjectors];
+        [self.delegate pjlinkProjectorsWereAdded:selectedProjectors];
     }
     [self.navigationController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }

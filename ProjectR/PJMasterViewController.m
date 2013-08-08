@@ -7,14 +7,15 @@
 //
 
 #import "PJMasterViewController.h"
-#import "PJDetailViewController.h"
 #import "PJProjectorManager.h"
 #import "PJProjector.h"
 #import "PJAMXBeaconHost.h"
 #import "PJAMXBeaconListener.h"
 #import "PJLinkSubnetScanner.h"
+#import "PJLinkAddProjectorDelegate.h"
+#import "PJProjectorDetailTableViewController.h"
 
-@interface PJMasterViewController() <UIActionSheetDelegate>
+@interface PJMasterViewController() <UIActionSheetDelegate, PJLinkAddProjectorDelegate>
 
 @end
 
@@ -38,7 +39,7 @@
 {
     [super viewDidLoad];
 
-    self.detailViewController = (PJDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+    self.projectorDetailTableViewController = (PJProjectorDetailTableViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
 }
 
 - (void)didReceiveMemoryWarning
@@ -49,9 +50,11 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
-        //        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        //        NSDate *object = _objects[indexPath.row];
-        //        [[segue destinationViewController] setDetailItem:object];
+        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+        // Get the projector for this cell
+        PJProjectorManager* mgr = [PJProjectorManager sharedManager];
+        PJProjector* projector = [mgr objectInProjectorsAtIndex:indexPath.row];
+        [[segue destinationViewController] setProjector:projector];
     }
 }
 
@@ -60,6 +63,10 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
+}
+
+- (NSString*)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return @"Managed Projectors";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -80,16 +87,31 @@
     PJProjectorManager* mgr = [PJProjectorManager sharedManager];
     PJProjector* projector = [mgr objectInProjectorsAtIndex:indexPath.row];
 
+    // Construct the cell title
+    NSString* title = [NSString stringWithFormat:@"%@ (%@)", projector.projectorName, projector.host];
     // Put the IP address in the textLabel
-    cell.textLabel.text = projector.host;
-    // Put the projector name or make/model in the detail text
-    NSString* subTitle = projector.projectorName;
-    if ([subTitle length] == 0) {
-        if ([projector.beaconHost.make length] > 0 && [projector.beaconHost.model length] > 0) {
-            subTitle = [NSString stringWithFormat:@"%@ %@", projector.beaconHost.make, projector.beaconHost.model];
-        }
+    cell.textLabel.text = title;
+    // Get a string representation of the power status
+    NSString* powerStatusStr = nil;
+    switch (projector.powerStatus) {
+        case PJPowerStatusCooling:
+            powerStatusStr = @"Cooling Down";
+            break;
+        case PJPowerStatusLampOn:
+            powerStatusStr = @"Lamp On";
+            break;
+        case PJPowerStatusStandby:
+            powerStatusStr = @"Standby";
+            break;
+        case PJPowerStatusWarmUp:
+            powerStatusStr = @"Warming Up";
+            break;
+        default:
+            break;
     }
-    cell.detailTextLabel.text = subTitle;
+    // Construct the subtitle
+    NSString* subtitle = [NSString stringWithFormat:@"%@,%@", powerStatusStr, projector.activeInputName];
+    cell.detailTextLabel.text = subtitle;
 
     return cell;
 }
@@ -98,10 +120,12 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-//        NSDate *object = _objects[indexPath.row];
-//        self.detailViewController.detailItem = object;
-//    }
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        // Get the projector for this cell
+        PJProjectorManager* mgr = [PJProjectorManager sharedManager];
+        PJProjector* projector = [mgr objectInProjectorsAtIndex:indexPath.row];
+        self.projectorDetailTableViewController.projector = projector;
+    }
 }
 
 #pragma mark - UIActionSheetDelegate methods
@@ -116,6 +140,13 @@
             [self performSegueWithIdentifier:@"manualAddSegue" sender:self];
         }
     }
+}
+
+#pragma mark - PJLinkAddProjectorDelegate methods
+
+- (void)pjlinkProjectorsWereAdded:(NSArray*)projectors {
+    // Add these projectors to the PJProjectorManager
+    [[PJProjectorManager sharedManager] addProjectors:projectors];
 }
 
 #pragma mark - PJMasterViewController private methods
