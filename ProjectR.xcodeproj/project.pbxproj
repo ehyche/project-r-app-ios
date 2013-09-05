@@ -28,6 +28,7 @@
 		FD5D2C1217AEEAD700420D9A /* PJManualAddViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD5D2C1117AEEAD700420D9A /* PJManualAddViewController.m */; };
 		FD6019A817B34102002F4D4E /* PJProjectorDetailTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD6019A717B34102002F4D4E /* PJProjectorDetailTableViewController.m */; };
 		FDB9161317AC9B850098755A /* PJLinkSubnetScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */; };
+		FDBCD5F917B4912900C1E03E /* PJInputSelectTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDBCD5F817B4912900C1E03E /* PJInputSelectTableViewController.m */; };
 		FDDA57DC1793BA58007B49D0 /* PJProjectorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */; };
 /* End PBXBuildFile section */
 
@@ -69,6 +70,8 @@
 		FD9ED18F17AF0CDE0077AF48 /* PJLinkAddProjectorDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PJLinkAddProjectorDelegate.h; sourceTree = "<group>"; };
 		FDB9161117AC9B850098755A /* PJLinkSubnetScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJLinkSubnetScanner.h; path = SubnetScanner/PJLinkSubnetScanner.h; sourceTree = "<group>"; };
 		FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PJLinkSubnetScanner.m; path = SubnetScanner/PJLinkSubnetScanner.m; sourceTree = "<group>"; };
+		FDBCD5F717B4912900C1E03E /* PJInputSelectTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJInputSelectTableViewController.h; sourceTree = "<group>"; };
+		FDBCD5F817B4912900C1E03E /* PJInputSelectTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJInputSelectTableViewController.m; sourceTree = "<group>"; };
 		FDDA57DA1793BA58007B49D0 /* PJProjectorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJProjectorManager.h; path = Model/PJProjectorManager.h; sourceTree = "<group>"; };
 		FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PJProjectorManager.m; path = Model/PJProjectorManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -149,6 +152,8 @@
 				FD9ED18F17AF0CDE0077AF48 /* PJLinkAddProjectorDelegate.h */,
 				FD6019A617B34102002F4D4E /* PJProjectorDetailTableViewController.h */,
 				FD6019A717B34102002F4D4E /* PJProjectorDetailTableViewController.m */,
+				FDBCD5F717B4912900C1E03E /* PJInputSelectTableViewController.h */,
+				FDBCD5F817B4912900C1E03E /* PJInputSelectTableViewController.m */,
 			);
 			path = ProjectR;
 			sourceTree = "<group>";
@@ -302,6 +307,7 @@
 				FD41B20517AE136C00502703 /* PJInterfaceInfo.m in Sources */,
 				FD5D2C1217AEEAD700420D9A /* PJManualAddViewController.m in Sources */,
 				FD6019A817B34102002F4D4E /* PJProjectorDetailTableViewController.m in Sources */,
+				FDBCD5F917B4912900C1E03E /* PJInputSelectTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

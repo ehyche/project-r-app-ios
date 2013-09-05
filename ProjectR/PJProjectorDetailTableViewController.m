@@ -9,6 +9,7 @@
 #import "PJProjectorDetailTableViewController.h"
 #import "PJProjector.h"
 #import "PJLampStatus.h"
+#import "PJInputSelectTableViewController.h"
 
 @interface PJProjectorDetailTableViewController ()
 
@@ -50,6 +51,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self dataDidChange];
 
 }
 
@@ -69,6 +71,12 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([[segue identifier] isEqualToString:@"inputSelectSegue"]) {
+        [[segue destinationViewController] setProjector:self.projector];
+    }
 }
 
 #pragma mark - UITableViewDataSource methods
@@ -168,6 +176,7 @@
         // chevron from the cell.
         if (self.projector.beaconHost != nil) {
             self.amxBeaconLabel.text = @"Yes";
+            self.amxBeaconCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         } else {
             self.amxBeaconLabel.text = @"None";
             self.amxBeaconCell.accessoryType = UITableViewCellAccessoryNone;

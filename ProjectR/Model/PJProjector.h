@@ -17,6 +17,7 @@ extern NSString* const PJProjectorConnectionStateDidChangeNotification;
 extern NSString* const PJProjectorErrorKey;
 
 @class PJInput;
+@class PJInputInfo;
 @class PJAMXBeaconHost;
 
 enum {
@@ -36,6 +37,7 @@ typedef NSUInteger PJConnectionState;
 @property(nonatomic,assign,readonly) PJInputType activeInputType;
 @property(nonatomic,assign,readonly) NSUInteger activeInputNumber;
 @property(nonatomic,copy,readonly) NSString* activeInputName;
+@property(nonatomic,assign,readonly) NSUInteger activeInputIndex;
 @property(nonatomic,assign,readonly,getter = isAudioMuted) BOOL audioMuted;
 @property(nonatomic,assign,readonly,getter = isVideoMuted) BOOL videoMuted;
 @property(nonatomic,assign,readonly) PJErrorStatus fanErrorStatus;
@@ -119,5 +121,8 @@ typedef NSUInteger PJConnectionState;
 - (BOOL)requestInputChangeToInput:(PJInput*)input;
 - (BOOL)requestInputChangeToInputIndex:(NSUInteger)inputIndex;
 - (BOOL)requestInputChangeToInputType:(PJInputType)type number:(NSUInteger)number;
+
+// Get the friendly name for a projector input
++ (NSString*)displayNameForInput:(PJInputInfo*)input;
 
 @end

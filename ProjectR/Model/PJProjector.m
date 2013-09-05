@@ -30,6 +30,7 @@ static NSArray* gInputTypeNames = nil;
 
 // Readwrite versions of public readonly properties
 @property(nonatomic,assign,readwrite) PJPowerStatus powerStatus;
+@property(nonatomic,assign,readwrite) NSUInteger activeInputIndex;
 @property(nonatomic,assign,readwrite,getter = isAudioMuted) BOOL audioMuted;
 @property(nonatomic,assign,readwrite,getter = isVideoMuted) BOOL videoMuted;
 @property(nonatomic,assign,readwrite) PJErrorStatus fanErrorStatus;
@@ -46,8 +47,7 @@ static NSArray* gInputTypeNames = nil;
 @property(nonatomic,copy,readwrite) NSString* otherInformation;
 @property(nonatomic,assign,readwrite,getter = isClass2Compatible) BOOL class2Compatible;
 // Internal-only properties
-@property(nonatomic,assign) NSUInteger activeInputIndex;
-@property(nonatomic,assign) BOOL       modelChanged;
+@property(nonatomic,assign) BOOL modelChanged;
 // Network client
 @property(nonatomic,strong) AFPJLinkClient* pjlinkClient;
 // Connection state
@@ -63,7 +63,8 @@ static NSArray* gInputTypeNames = nil;
 
 +(void) initialize {
     if (self == [PJProjector class]) {
-        gInputTypeNames = @[@"RGB", @"Video", @"Digital", @"Storage", @"Network"];
+        // Inputs start at 1
+        gInputTypeNames = @[@"", @"RGB", @"Video", @"Digital", @"Storage", @"Network"];
     }
 }
 
@@ -162,8 +163,7 @@ static NSArray* gInputTypeNames = nil;
 
     if (self.activeInputIndex < [self.inputs count]) {
         PJInputInfo* inputInfo = [self.inputs objectAtIndex:self.activeInputIndex];
-        NSString* inputName = [PJProjector inputNameForInputType:inputInfo.inputType];
-        ret = [NSString stringWithFormat:@"%@ %u", inputName, inputInfo.inputNumber];
+        ret = [PJProjector displayNameForInput:inputInfo];
     }
 
     return ret;
@@ -244,28 +244,28 @@ static NSArray* gInputTypeNames = nil;
 }
 
 - (void)setProjectorName:(NSString *)projectorName {
-    if ([_projectorName isEqualToString:projectorName]) {
+    if (![_projectorName isEqualToString:projectorName]) {
         _projectorName = [projectorName copy];
         self.modelChanged = YES;
     }
 }
 
 - (void)setManufacturerName:(NSString *)manufacturerName {
-    if ([_manufacturerName isEqualToString:manufacturerName]) {
+    if (![_manufacturerName isEqualToString:manufacturerName]) {
         _manufacturerName = [manufacturerName copy];
         self.modelChanged = YES;
     }
 }
 
 - (void)setProductName:(NSString *)productName {
-    if ([_productName isEqualToString:productName]) {
+    if (![_productName isEqualToString:productName]) {
         _productName = [productName copy];
         self.modelChanged = YES;
     }
 }
 
 - (void)setOtherInformation:(NSString *)otherInformation {
-    if ([_otherInformation isEqualToString:otherInformation]) {
+    if (![_otherInformation isEqualToString:otherInformation]) {
         _otherInformation = [otherInformation copy];
         self.modelChanged = YES;
     }
@@ -468,7 +468,7 @@ static NSArray* gInputTypeNames = nil;
             // We will be making a request
             ret = YES;
             // Construct the command and issue the request
-            NSString* commandBody = [NSString stringWithFormat:@"INPT %u%u\r", input.inputType, input.inputNumber];
+            NSString* commandBody = [NSString stringWithFormat:@"INPT %u%u\rINPT ?\r", input.inputType, input.inputNumber];
             [self handleResponsesForCommandRequestBody:commandBody];
         }
     }
@@ -502,6 +502,11 @@ static NSArray* gInputTypeNames = nil;
     }
 
     return ret;
+}
+
++ (NSString*)displayNameForInput:(PJInputInfo*)inputInfo {
+    NSString* inputName = [PJProjector inputNameForInputType:inputInfo.inputType];
+    return [NSString stringWithFormat:@"%@ %u", inputName, inputInfo.inputNumber];
 }
 
 #pragma mark - PJProjector private methods

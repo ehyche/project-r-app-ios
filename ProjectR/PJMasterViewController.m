@@ -14,6 +14,8 @@
 #import "PJLinkSubnetScanner.h"
 #import "PJLinkAddProjectorDelegate.h"
 #import "PJProjectorDetailTableViewController.h"
+#import "PJDiscoveredTableViewController.h"
+#import "PJManualAddViewController.h"
 
 @interface PJMasterViewController() <UIActionSheetDelegate, PJLinkAddProjectorDelegate>
 
@@ -49,12 +51,25 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    UIViewController* destinationViewController = [segue destinationViewController];
+    NSLog(@"Segue %@ destinationViewController = %@ childViewControllers=%@", [segue identifier],
+          destinationViewController, destinationViewController.childViewControllers);
+    UIViewController* navChildViewController = nil;
+    if ([destinationViewController.childViewControllers count] > 0) {
+        navChildViewController = [destinationViewController.childViewControllers objectAtIndex:0];
+    }
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
         // Get the projector for this cell
         PJProjectorManager* mgr = [PJProjectorManager sharedManager];
         PJProjector* projector = [mgr objectInProjectorsAtIndex:indexPath.row];
         [[segue destinationViewController] setProjector:projector];
+    } else if ([[segue identifier] isEqualToString:@"scanSegue"]) {
+        PJDiscoveredTableViewController* discoveredTableViewController = (PJDiscoveredTableViewController*) navChildViewController;
+        discoveredTableViewController.delegate = self;
+    } else if ([[segue identifier] isEqualToString:@"manualAddSegue"]) {
+        PJManualAddViewController* manualAddViewController = (PJManualAddViewController*) navChildViewController;
+        manualAddViewController.delegate = self;
     }
 }
 

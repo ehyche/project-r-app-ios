@@ -23,12 +23,12 @@
         <scene sceneID="18">
             <objects>
                 <tableViewController storyboardIdentifier="" title="Master" id="12" customClass="PJMasterViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" allowsSelection="NO" rowHeight="50" sectionHeaderHeight="10" sectionFooterHeight="10" id="13">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="50" sectionHeaderHeight="10" sectionFooterHeight="10" id="13">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="uTd-dW-QcW" detailTextLabel="ekJ-Rs-448" rowHeight="50" style="IBUITableViewCellStyleSubtitle" id="tbr-py-Z3K">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ProjectorMasterCell" textLabel="uTd-dW-QcW" detailTextLabel="ekJ-Rs-448" rowHeight="50" style="IBUITableViewCellStyleSubtitle" id="tbr-py-Z3K">
                                 <rect key="frame" x="0.0" y="46" width="320" height="52"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -49,7 +49,7 @@
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <connections>
-                                    <segue destination="O6V-Zv-nco" kind="push" id="8SI-kk-8M6"/>
+                                    <segue destination="O6V-Zv-nco" kind="push" identifier="showDetail" id="HOm-aZ-1hi"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -159,38 +159,13 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pN4-lT-Pys">
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="Detect">
-                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <state key="highlighted">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="detectButtonTapped:" destination="njf-e4-Lon" eventType="touchUpInside" id="Nh8-dd-pNJ"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Projector Detected. Tap Add button to add projector." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="aMr-DU-BAW">
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="54" id="QBp-YV-vkb"/>
-                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="74" type="user" id="n05-wV-3AG"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="KGf-FK-y6w" firstAttribute="leading" secondItem="anb-1l-Wtl" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="3dv-k8-wZn"/>
-                            <constraint firstItem="pN4-lT-Pys" firstAttribute="top" secondItem="anb-1l-Wtl" secondAttribute="top" constant="165" id="6fm-FR-FIS"/>
                             <constraint firstItem="Vik-fe-ake" firstAttribute="leading" secondItem="anb-1l-Wtl" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="9ff-bY-Fko"/>
-                            <constraint firstItem="aMr-DU-BAW" firstAttribute="top" secondItem="pN4-lT-Pys" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="Epz-hF-RUA"/>
                             <constraint firstItem="d3k-TW-dJg" firstAttribute="leading" secondItem="anb-1l-Wtl" secondAttribute="leading" constant="109" id="GLc-ND-1Oj"/>
                             <constraint firstItem="8k1-1a-SqT" firstAttribute="leading" secondItem="anb-1l-Wtl" secondAttribute="leading" constant="58" id="IME-Ga-fYd"/>
-                            <constraint firstItem="pN4-lT-Pys" firstAttribute="centerX" secondItem="aMr-DU-BAW" secondAttribute="centerX" type="default" id="IZj-27-OGa"/>
                             <constraint firstAttribute="trailing" secondItem="oIW-Q7-8JB" secondAttribute="trailing" constant="109" id="JJ8-xx-uOi"/>
                             <constraint firstItem="3zq-Ki-yrE" firstAttribute="leading" secondItem="anb-1l-Wtl" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="Ogj-6x-4mX"/>
                             <constraint firstItem="oIW-Q7-8JB" firstAttribute="baseline" secondItem="d3k-TW-dJg" secondAttribute="baseline" type="default" id="R0q-vs-2Cp"/>
@@ -205,9 +180,7 @@
                             <constraint firstAttribute="trailing" secondItem="KGf-FK-y6w" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="drr-sW-eKt"/>
                             <constraint firstItem="8k1-1a-SqT" firstAttribute="top" secondItem="anb-1l-Wtl" secondAttribute="top" constant="52" id="elb-6v-THo"/>
                             <constraint firstItem="uqk-dL-uK8" firstAttribute="leading" secondItem="anb-1l-Wtl" secondAttribute="leading" constant="71" id="mhH-mE-vsJ"/>
-                            <constraint firstItem="aMr-DU-BAW" firstAttribute="leading" secondItem="anb-1l-Wtl" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="nKD-su-Bgu"/>
                             <constraint firstItem="cDX-jd-1Sf" firstAttribute="baseline" secondItem="Kec-BN-yDo" secondAttribute="baseline" type="default" id="q9g-Qe-giz"/>
-                            <constraint firstAttribute="trailing" secondItem="aMr-DU-BAW" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="qMa-yN-5Ts"/>
                             <constraint firstAttribute="trailing" secondItem="cDX-jd-1Sf" secondAttribute="trailing" constant="147" id="qpF-C2-cFJ"/>
                             <constraint firstItem="Vik-fe-ake" firstAttribute="top" secondItem="KGf-FK-y6w" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="ubD-Q1-e8v"/>
                             <constraint firstItem="d3k-TW-dJg" firstAttribute="baseline" secondItem="Kec-BN-yDo" secondAttribute="baseline" type="default" id="vku-c4-eQs"/>
@@ -220,18 +193,18 @@
                                 <action selector="cancelButtonTapped:" destination="njf-e4-Lon" id="wtX-zO-XFf"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Add" style="done" id="Bwj-Mr-Xmk">
+                        <barButtonItem key="rightBarButtonItem" title="Detect" style="done" id="Bwj-Mr-Xmk">
                             <connections>
                                 <action selector="addButtonTapped:" destination="njf-e4-Lon" id="CXU-8n-EyE"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="detectionLabel" destination="aMr-DU-BAW" id="cge-xp-LqV"/>
                         <outlet property="detectionWaitingView" destination="bj4-he-zwc" id="X0V-S8-uYi"/>
                         <outlet property="firstIP4TextField" destination="3zq-Ki-yrE" id="3w6-mq-3Db"/>
                         <outlet property="fourthIP4TextField" destination="oIW-Q7-8JB" id="MJw-T7-Z1U"/>
                         <outlet property="portTextField" destination="Vik-fe-ake" id="X7X-NJ-cLZ"/>
+                        <outlet property="rightBarButtonItem" destination="Bwj-Mr-Xmk" id="6zg-6o-tCn"/>
                         <outlet property="secondIP4TextField" destination="uqk-dL-uK8" id="gTD-dp-p7w"/>
                         <outlet property="thirdIP4TextField" destination="Kec-BN-yDo" id="OAj-7Q-Q7n"/>
                     </connections>
@@ -258,6 +231,43 @@
                 </view>
             </objects>
             <point key="canvasLocation" x="1487" y="109"/>
+        </scene>
+        <!--Input Select Table View Controller - Select Input-->
+        <scene sceneID="FcU-Tr-opx">
+            <objects>
+                <tableViewController id="fZq-ba-b6H" customClass="PJInputSelectTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="9AB-A7-lWB">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="inputCellIdentifier" textLabel="xAP-me-urg" style="IBUITableViewCellStyleDefault" id="o2P-QM-UdF">
+                                <rect key="frame" x="0.0" y="46" width="320" height="46"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="10" y="1" width="300" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xAP-me-urg">
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="fZq-ba-b6H" id="8j9-ix-dDX"/>
+                            <outlet property="delegate" destination="fZq-ba-b6H" id="wDJ-lO-6y8"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Select Input" id="XCN-gK-dAf"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6UI-D1-SqA" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1428" y="802"/>
         </scene>
         <!--Discovered Table View Controller - Projector Scan-->
         <scene sceneID="pWb-Ew-set">
@@ -450,6 +460,9 @@
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
+                                        <connections>
+                                            <segue destination="fZq-ba-b6H" kind="push" identifier="inputSelectSegue" id="lyx-ZW-K9z"/>
+                                        </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="6aF-vV-p3J" detailTextLabel="bwy-dj-sVV" style="IBUITableViewCellStyleValue1" id="lFs-d0-Zfc">
                                         <rect key="frame" x="0.0" y="135" width="320" height="44"/>
@@ -830,17 +843,19 @@
                 <relationship kind="outlet" name="progressView" candidateClass="UIProgressView"/>
             </relationships>
         </class>
+        <class className="PJInputSelectTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/PJInputSelectTableViewController.h"/>
+        </class>
         <class className="PJManualAddViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/PJManualAddViewController.h"/>
             <relationships>
                 <relationship kind="action" name="addButtonTapped:"/>
                 <relationship kind="action" name="cancelButtonTapped:"/>
-                <relationship kind="action" name="detectButtonTapped:"/>
-                <relationship kind="outlet" name="detectionLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="detectionWaitingView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="firstIP4TextField" candidateClass="UITextField"/>
                 <relationship kind="outlet" name="fourthIP4TextField" candidateClass="UITextField"/>
                 <relationship kind="outlet" name="portTextField" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="rightBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="secondIP4TextField" candidateClass="UITextField"/>
                 <relationship kind="outlet" name="thirdIP4TextField" candidateClass="UITextField"/>
             </relationships>

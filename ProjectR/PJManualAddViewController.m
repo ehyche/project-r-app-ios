@@ -13,18 +13,20 @@
 #import <PJLinkCocoa/PJURLProtocolRunLoop.h>
 #import "PJLinkAddProjectorDelegate.h"
 
-@interface PJManualAddViewController ()
-@property (weak, nonatomic) IBOutlet UITextField *firstIP4TextField;
-@property (weak, nonatomic) IBOutlet UITextField *secondIP4TextField;
-@property (weak, nonatomic) IBOutlet UITextField *thirdIP4TextField;
-@property (weak, nonatomic) IBOutlet UITextField *fourthIP4TextField;
-@property (weak, nonatomic) IBOutlet UITextField *portTextField;
-@property (weak, nonatomic) IBOutlet UILabel *detectionLabel;
-@property (strong,nonatomic) PJProjector* detectedProjector;
-@property (strong,nonatomic) AFPJLinkClient* pjlinkClient;
-@property (assign,nonatomic) BOOL detectedIPAddress;
+CGFloat const kPJManualAddViewControllerDetectionTimeout = 5.0;
 
-@property (weak, nonatomic) IBOutlet UIView *detectionWaitingView;
+@interface PJManualAddViewController ()
+
+@property (weak, nonatomic) IBOutlet UITextField*     firstIP4TextField;
+@property (weak, nonatomic) IBOutlet UITextField*     secondIP4TextField;
+@property (weak, nonatomic) IBOutlet UITextField*     thirdIP4TextField;
+@property (weak, nonatomic) IBOutlet UITextField*     fourthIP4TextField;
+@property (weak, nonatomic) IBOutlet UITextField*     portTextField;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem* rightBarButtonItem;
+@property (strong,nonatomic) PJProjector*             detectedProjector;
+@property (strong,nonatomic) AFPJLinkClient*          pjlinkClient;
+@property (assign,nonatomic) BOOL                     detectedIPAddress;
+@property (weak, nonatomic) IBOutlet UIView*          detectionWaitingView;
 @end
 
 @implementation PJManualAddViewController
@@ -54,8 +56,6 @@
         self.fourthIP4TextField.text = @"0";
         self.detectedIPAddress = YES;
     }
-    // Set the label
-    self.detectionLabel.text = @"Enter IP address and port.\nThen tap Detect to detect projector at this address.";
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -76,61 +76,13 @@
 - (IBAction)addButtonTapped:(id)sender {
     // Dismiss the keyboard
     [self dismissKeyboard];
-    // If we have a detected projector, then call back to the delegate with it
-    if (self.detectedProjector != nil) {
-        [self.delegate pjlinkProjectorsWereAdded:@[self.detectedProjector]];
-    }
+    // Detect the projector
+    [self detectProjector];
 }
 
 - (IBAction)cancelButtonTapped:(id)sender {
     [self dismissKeyboard];
     [self.navigationController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (IBAction)detectButtonTapped:(id)sender {
-    // Dismiss the keyboard
-    [self dismissKeyboard];
-    // Validate the IP4 fields
-    NSInteger firstFieldInteger  = [self.firstIP4TextField.text integerValue];
-    NSInteger secondFieldInteger = [self.secondIP4TextField.text integerValue];
-    NSInteger thirdFieldInteger  = [self.thirdIP4TextField.text integerValue];
-    NSInteger fourthFieldInteger = [self.fourthIP4TextField.text integerValue];
-    if (firstFieldInteger <= 255 && secondFieldInteger <= 255 &&
-        thirdFieldInteger <= 255 && fourthFieldInteger <= 255) {
-        // Validate the port
-        NSInteger portFieldInteger   = [self.portTextField.text integerValue];
-        if (portFieldInteger > 1024 && portFieldInteger <= 32767) {
-            // Construct the address from the four fields
-            NSString* hostAddress = [NSString stringWithFormat:@"%d.%d.%d.%d", firstFieldInteger, secondFieldInteger, thirdFieldInteger, fourthFieldInteger];
-            // Detect the projector
-            [self detectProjectorWithHost:hostAddress
-                                     port:portFieldInteger
-                                  success:^(PJProjector* projector) {
-                                      // We detected the projector successfully, so save it.
-                                      self.detectedProjector = projector;
-                                      // Update the label text
-                                      self.detectionLabel.text = @"Projector successfully detected.\nTap Add to begin managing the projector.";
-                                  }
-                                  failure:^(NSError* error) {
-                                      // Update the label text
-                                      self.detectionLabel.text = @"Projector was not detected. Please re-enter address and port and re-try detection.";
-                                  }];
-        } else {
-            UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Port Error"
-                                                                message:@"Port must be between 1025 and 32767 inclusive. Please re-enter."
-                                                               delegate:nil
-                                                      cancelButtonTitle:@"Dismiss"
-                                                      otherButtonTitles:nil];
-            [alertView show];
-        }
-    } else {
-        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"IP Address Error"
-                                                            message:@"All IP4 address components must be between 0 and 255 inclusive. Please re-enter."
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"Dismiss"
-                                                  otherButtonTitles:nil];
-        [alertView show];
-    }
 }
 
 - (void)detectProjectorWithHost:(NSString*)host
@@ -144,6 +96,7 @@
     [self showLoadingView];
     // Try a PJLink client call just to obtain the projector name
     [self.pjlinkClient makeRequestWithBody:@"NAME ?\r"
+                                   timeout:kPJManualAddViewControllerDetectionTimeout
                                    success:^(AFPJLinkRequestOperation* operation, NSString* responseBody, NSArray* parsedResponses) {
                                        // Hide the loading view
                                        [self hideLoadingView];
@@ -200,6 +153,83 @@
     }
     if ([self.portTextField isFirstResponder]) {
         [self.portTextField resignFirstResponder];
+    }
+}
+
+- (void)detectProjector {
+    // Validate the IP4 fields
+    NSInteger firstFieldInteger  = [self.firstIP4TextField.text integerValue];
+    NSInteger secondFieldInteger = [self.secondIP4TextField.text integerValue];
+    NSInteger thirdFieldInteger  = [self.thirdIP4TextField.text integerValue];
+    NSInteger fourthFieldInteger = [self.fourthIP4TextField.text integerValue];
+    if (firstFieldInteger  >= 0 && firstFieldInteger  <= 255 &&
+        secondFieldInteger >= 0 && secondFieldInteger <= 255 &&
+        thirdFieldInteger  >= 0 && thirdFieldInteger  <= 255 &&
+        fourthFieldInteger >= 0 && fourthFieldInteger <= 255) {
+        // Validate the port
+        NSInteger portFieldInteger   = [self.portTextField.text integerValue];
+        if (portFieldInteger > 1024 && portFieldInteger <= 32767) {
+            // Construct the address from the four fields
+            NSString* hostAddress = [NSString stringWithFormat:@"%d.%d.%d.%d", firstFieldInteger, secondFieldInteger, thirdFieldInteger, fourthFieldInteger];
+            // Detect the projector
+            [self detectProjectorWithHost:hostAddress
+                                     port:portFieldInteger
+                                  success:^(PJProjector* projector) {
+                                      // We detected the projector successfully, so save it.
+                                      self.detectedProjector = projector;
+                                      // Go ahead and refresh the projector
+                                      [projector refreshAllQueries];
+                                      // Construct the message
+                                      NSString* message = [NSString stringWithFormat:@"Projector detected at %@:%d. Tap Add to add the projector.",
+                                                           hostAddress, portFieldInteger];
+                                      // Pop up the alert view saying we detected the projector
+                                      UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Projector Detected"
+                                                                                          message:message
+                                                                                         delegate:self
+                                                                                cancelButtonTitle:@"Cancel"
+                                                                                otherButtonTitles:@"Add", nil];
+                                      [alertView show];
+                                  }
+                                  failure:^(NSError* error) {
+                                      // Construct the message
+                                      NSString* message = [NSString stringWithFormat:@"No projector detected at %@:%d. Re-enter the IP address and port.",
+                                                           hostAddress, portFieldInteger];
+                                      // Pop up the alert view saying we detected the projector
+                                      UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"No Projector Detected"
+                                                                                          message:message
+                                                                                         delegate:nil
+                                                                                cancelButtonTitle:@"Dismiss"
+                                                                                otherButtonTitles:nil];
+                                      [alertView show];
+                                  }];
+        } else {
+            UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Port Error"
+                                                                message:@"Port must be between 1025 and 32767 inclusive. Please re-enter."
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"Dismiss"
+                                                      otherButtonTitles:nil];
+            [alertView show];
+        }
+    } else {
+        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"IP Address Error"
+                                                            message:@"All IP4 address components must be between 0 and 255 inclusive. Please re-enter."
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"Dismiss"
+                                                  otherButtonTitles:nil];
+        [alertView show];
+    }
+}
+
+#pragma mark - UIAlertViewDelegate methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex != alertView.cancelButtonIndex) {
+        // If we have a detected projector, then call back to the delegate with it
+        if (self.detectedProjector != nil) {
+            [self.delegate pjlinkProjectorsWereAdded:@[self.detectedProjector]];
+        }
+        // Dismiss ourself
+        [self.navigationController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
     }
 }
 
