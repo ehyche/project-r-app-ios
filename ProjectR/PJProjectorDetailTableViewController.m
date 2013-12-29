@@ -14,8 +14,11 @@
 @interface PJProjectorDetailTableViewController ()
 
 @property (weak, nonatomic) IBOutlet UILabel *powerStatusLabel;
+@property (weak, nonatomic) IBOutlet UISwitch *powerStatusSwitch;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *powerStatusActivityIndicatorView;
 @property (weak, nonatomic) IBOutlet UILabel *inputLabel;
-@property (weak, nonatomic) IBOutlet UILabel *muteLabel;
+@property (weak, nonatomic) IBOutlet UISwitch *audioMuteSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *videoMuteSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *lampStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *fanErrorLabel;
 @property (weak, nonatomic) IBOutlet UILabel *temperatureErrorLabel;
@@ -85,13 +88,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
+    // De-select the row
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark - PJProjectorDetailTableViewController private methods
@@ -121,6 +119,8 @@
     if (self.projector != nil) {
         // Set the power status
         NSString* powerStatusText = nil;
+        BOOL switchEnabled = NO;
+        BOOL switchOn      = NO;
         switch (self.projector.powerStatus) {
             case PJPowerStatusWarmUp:
                 powerStatusText = @"Warming Up";
@@ -130,20 +130,31 @@
                 break;
             case PJPowerStatusLampOn:
                 powerStatusText = @"Lamp On";
+                switchEnabled = YES;
+                switchOn      = YES;
                 break;
             case PJPowerStatusStandby:
                 powerStatusText = @"Standby";
+                switchEnabled = YES;
                 break;
             default:
                 break;
         }
         self.powerStatusLabel.text = powerStatusText;
+        self.powerStatusSwitch.enabled = switchEnabled;
+        self.powerStatusSwitch.on = switchOn;
+        // Determine if we should be animating
+        BOOL animating = !switchEnabled;
+        if (animating && !self.powerStatusActivityIndicatorView.isAnimating) {
+            [self.powerStatusActivityIndicatorView startAnimating];
+        } else if (!animating && self.powerStatusActivityIndicatorView.isAnimating) {
+            [self.powerStatusActivityIndicatorView stopAnimating];
+        }
         // Handle the input label
         self.inputLabel.text = self.projector.activeInputName;
-        // Handle the mute label
-        NSString* audioText = (self.projector.isAudioMuted ? @"Audio On" : @"Audio Off");
-        NSString* videoText = (self.projector.isVideoMuted ? @"Video On" : @"Video Off");
-        self.muteLabel.text = [NSString stringWithFormat:@"%@,%@", audioText, videoText];
+        // Handle the mute switches
+        self.audioMuteSwitch.on = self.projector.isAudioMuted;
+        self.videoMuteSwitch.on = self.projector.isVideoMuted;
         // If there is only one lamp (which is the usual case), then we
         // put the number of hours in the detail text and disable the
         // accessory chevron.
@@ -184,6 +195,18 @@
     }
 }
 
+- (IBAction)powerSwitchDidChange:(id)sender {
+    [self.projector requestPowerStateChange:self.powerStatusSwitch.isOn];
+}
+
+- (IBAction)audioMuteSwitchDidChange:(id)sender {
+    [self.projector requestMuteStateChange:self.audioMuteSwitch.isOn forTypes:PJMuteTypeAudio];
+}
+
+- (IBAction)videoMuteSwitchDidChange:(id)sender {
+    [self.projector requestMuteStateChange:self.videoMuteSwitch.isOn forTypes:PJMuteTypeVideo];
+}
+
 + (NSString*)textForErrorStatus:(PJErrorStatus)status {
     NSString* ret = @"No Error";
     if (status == PJErrorStatusError) {
@@ -193,5 +216,6 @@
     }
     return ret;
 }
+
 
 @end

@@ -20,9 +20,10 @@ NSString*      const PJProjectorRequestDidEndNotification            = @"PJProje
 NSString*      const PJProjectorDidChangeNotification                = @"PJProjectorDidChangeNotification";
 NSString*      const PJProjectorConnectionStateDidChangeNotification = @"PJProjectorConnectionStateDidChangeNotification";
 NSString*      const PJProjectorErrorKey                             = @"PJProjectorErrorKey";
-NSString*      const kPJLinkCommandPowerOn                           = @"POWR 1\r";
-NSString*      const kPJLinkCommandPowerOff                          = @"POWR 0\r";
+NSString*      const kPJLinkCommandPowerOn                           = @"POWR 1\rPOWR ?\r";
+NSString*      const kPJLinkCommandPowerOff                          = @"POWR 0\rPOWR ?\r";
 NSTimeInterval const kDefaultRefreshTimerInterval                    = 60.0;
+NSTimeInterval const kPowerTransitionRefreshTimerInterval            =  5.0;
 
 static NSArray* gInputTypeNames = nil;
 
@@ -54,6 +55,8 @@ static NSArray* gInputTypeNames = nil;
 @property(nonatomic,assign,readwrite) PJConnectionState connectionState;
 // Refresh timer
 @property(nonatomic,strong) NSTimer* refreshTimer;
+// Power transition timer
+@property(nonatomic,strong) NSTimer* powerTransitionRefreshTimer;
 
 + (NSString*)inputNameForInputType:(PJInputType)type;
 
@@ -133,6 +136,7 @@ static NSArray* gInputTypeNames = nil;
     if (_powerStatus != powerStatus) {
         _powerStatus = powerStatus;
         self.modelChanged = YES;
+        [self updatePowerTransitionRefreshTimerStatus];
     }
 }
 
@@ -436,9 +440,9 @@ static NSArray* gInputTypeNames = nil;
 
     // Determine if we actually need to change anything
     if (type == PJMuteTypeAudio) {
-        ret = self.isAudioMuted != muteOn;
+        ret = (self.isAudioMuted != muteOn);
     } else if (type == PJMuteTypeVideo) {
-        ret = self.isVideoMuted != muteOn;
+        ret = (self.isVideoMuted != muteOn);
     } else if (type == PJMuteTypeAudioAndVideo) {
         ret = (self.isAudioMuted != muteOn || self.isVideoMuted != muteOn);
     }
@@ -652,7 +656,7 @@ static NSArray* gInputTypeNames = nil;
         case PJMuteTypeAudioAndVideo: muteTypeStr = @"3"; break;
     }
     if (muteTypeStr != nil) {
-        ret = [NSString stringWithFormat:@"AVMT %@%u\r", muteTypeStr, (muteOn ? 1 : 0)];
+        ret = [NSString stringWithFormat:@"AVMT %@%u\rAVMT ?\r", muteTypeStr, (muteOn ? 1 : 0)];
     }
 
     return ret;
@@ -701,6 +705,27 @@ static NSArray* gInputTypeNames = nil;
 
 - (void)refreshTimerFired:(NSTimer*)timer {
     [self refreshAllQueries];
+}
+
+- (void)powerTransitionRefreshTimerFired:(NSTimer*)timer {
+    [self refreshPowerStatus];
+}
+
+- (void)updatePowerTransitionRefreshTimerStatus {
+    if (self.powerStatus == PJPowerStatusStandby ||
+        self.powerStatus == PJPowerStatusLampOn) {
+        // We need to stop the timer
+        [self.powerTransitionRefreshTimer invalidate];
+        self.powerTransitionRefreshTimer = nil;
+    } else if (self.powerStatus == PJPowerStatusCooling ||
+               self.powerStatus == PJPowerStatusWarmUp) {
+        [self.powerTransitionRefreshTimer invalidate];
+        self.powerTransitionRefreshTimer = [NSTimer scheduledTimerWithTimeInterval:kPowerTransitionRefreshTimerInterval
+                                                                            target:self
+                                                                          selector:@selector(powerTransitionRefreshTimerFired:)
+                                                                          userInfo:nil
+                                                                           repeats:YES];
+    }
 }
 
 @end
