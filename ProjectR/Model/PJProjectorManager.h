@@ -8,21 +8,25 @@
 
 #import <Foundation/Foundation.h>
 
-NSString* const PJProjectorManagerProjectorsDidChangeNotification;
+extern NSString* const PJProjectorManagerProjectorsDidChangeNotification;
 
 @class PJProjector;
 
 @interface PJProjectorManager : NSObject
 
-@property(nonatomic,copy) NSArray* projectors;
+@property(nonatomic,readonly,copy) NSArray* projectors;
 
 + (PJProjectorManager*)sharedManager;
 
+// Add an array of PJProjector's
 - (void)addProjectors:(NSArray*)projectors;
+// Remove an array of PJProjector's
 - (void)removeProjectors:(NSArray*)projectors;
 
+// Look up a projector by its host name
 - (PJProjector*)projectorForHost:(NSString*)host;
 
+// KVO-compliant accessors for the .projectors property
 - (NSUInteger)countOfProjectors;
 - (id)objectInProjectorsAtIndex:(NSUInteger)index;
 - (NSArray*)projectorsAtIndexes:(NSIndexSet *)indexes;

@@ -71,7 +71,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
 
     PJInputInfo* inputInfo = [self.projector.inputs objectAtIndex:indexPath.row];
-    cell.textLabel.text = [PJProjector displayNameForInput:inputInfo];
+    cell.textLabel.text = [inputInfo description];
 
     // Determine what accessory view we want
     if (indexPath.row == self.projector.activeInputIndex) {

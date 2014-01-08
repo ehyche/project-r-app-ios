@@ -84,9 +84,9 @@
     PJProjector* projector = [self.discoveredProjectors objectAtIndex:indexPath.row];
     cell.textLabel.text = projector.host;
     NSString* detailText = projector.projectorName;
-    if (detailText == nil && projector.beaconHost != nil) {
-        detailText = [NSString stringWithFormat:@"%@ %@", projector.beaconHost.make, projector.beaconHost.model];
-    }
+//    if (detailText == nil && projector.beaconHost != nil) {
+//        detailText = [NSString stringWithFormat:@"%@ %@", projector.beaconHost.make, projector.beaconHost.model];
+//    }
     // If the ip address selected, then put a checkmark
     BOOL isSelected = [self.selectedIPAddresses containsObject:projector.host];
     cell.accessoryType = (isSelected ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone);
@@ -253,7 +253,7 @@
         PJProjector* projector = [self.ipAddressToProjector objectForKey:beaconHost.ipAddressFromSocket];
         if (projector == nil) {
             // This is a new projector, so create a PJProjector for it
-            projector = [[PJProjector alloc] initWithBeaconHost:beaconHost];
+            projector = [[PJProjector alloc] initWithHost:beaconHost.ipAddressFromSocket];
             // Add this projector
             [self addProjector:projector atHost:beaconHost.ipAddressFromSocket];
             // Set the flag saying we added a projector

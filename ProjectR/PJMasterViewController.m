@@ -16,6 +16,7 @@
 #import "PJProjectorDetailTableViewController.h"
 #import "PJDiscoveredTableViewController.h"
 #import "PJManualAddViewController.h"
+#import "PJInputInfo.h"
 
 @interface PJMasterViewController() <UIActionSheetDelegate, PJLinkAddProjectorDelegate>
 
@@ -124,8 +125,14 @@
         default:
             break;
     }
+    // Get the active input name
+    NSString* activeInputName = @"";
+    if (projector.activeInputIndex < [projector countOfInputs]) {
+        PJInputInfo* activeInputInfo = [projector objectInInputsAtIndex:projector.activeInputIndex];
+        activeInputName = [activeInputInfo description];
+    }
     // Construct the subtitle
-    NSString* subtitle = [NSString stringWithFormat:@"%@,%@", powerStatusStr, projector.activeInputName];
+    NSString* subtitle = [NSString stringWithFormat:@"%@,%@", powerStatusStr, activeInputName];
     cell.detailTextLabel.text = subtitle;
 
     return cell;

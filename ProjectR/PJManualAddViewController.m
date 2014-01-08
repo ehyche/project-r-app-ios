@@ -80,11 +80,6 @@ CGFloat const kPJManualAddViewControllerDetectionTimeout = 5.0;
     [self detectProjector];
 }
 
-- (IBAction)cancelButtonTapped:(id)sender {
-    [self dismissKeyboard];
-    [self.navigationController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-}
-
 - (void)detectProjectorWithHost:(NSString*)host
                            port:(NSInteger)port
                         success:(void (^)(PJProjector* projector)) success

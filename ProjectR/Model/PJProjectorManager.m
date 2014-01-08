@@ -24,10 +24,9 @@ NSString* const PJProjectorManagerProjectorsDidChangeNotification = @"PJProjecto
 @end
 
 @interface PJProjectorManager() <UIAlertViewDelegate>
-{
-    NSMutableArray*      _projectors;
-    NSMutableDictionary* _hostToProjectorMap;
-}
+
+@property(nonatomic,strong) NSMutableArray*      mutableProjectors;
+@property(nonatomic,strong) NSMutableDictionary* hostToProjectorMap;
 
 @end
 
@@ -46,17 +45,17 @@ NSString* const PJProjectorManagerProjectorsDidChangeNotification = @"PJProjecto
 - (id)init {
     self = [super init];
     if (self) {
-        // Create the array of projectors
-        _projectors = [NSMutableArray array];
+        // Create the mutable array of projectors
+        self.mutableProjectors = [NSMutableArray array];
         // Create the map from IP address to PJProjector
-        _hostToProjectorMap = [NSMutableDictionary dictionary];
+        self.hostToProjectorMap = [NSMutableDictionary dictionary];
     }
 
     return self;
 }
 
 - (NSArray*)projectors {
-    return [NSArray arrayWithArray:_projectors];
+    return [NSArray arrayWithArray:self.mutableProjectors];
 }
 
 - (void)addProjectors:(NSArray *)projectors {
@@ -67,9 +66,9 @@ NSString* const PJProjectorManagerProjectorsDidChangeNotification = @"PJProjecto
             PJProjector* projectorInMap = [self projectorForHost:projector.host];
             if (projectorInMap == nil) {
                 // Add it to the mutable array
-                [_projectors addObject:projector];
+                [self.mutableProjectors addObject:projector];
                 // Add it to the map
-                [_hostToProjectorMap setObject:projector forKey:projector.host];
+                [self.hostToProjectorMap setObject:projector forKey:projector.host];
                 // Subscribe to notifications for this projector
                 [self subscribeToNotificationsForProjector:projector];
                 // Tell the projector to refresh itself
@@ -98,9 +97,9 @@ NSString* const PJProjectorManagerProjectorsDidChangeNotification = @"PJProjecto
                 // Unsubscribe to notifications for this projector
                 [self unsubscribeToNotificationsForProjector:projectorInMap];
                 // Remove it from the map
-                [_hostToProjectorMap removeObjectForKey:projectorInMap.host];
+                [self.hostToProjectorMap removeObjectForKey:projectorInMap.host];
                 // Remove it from the mutable array
-                [_projectors removeObject:projectorInMap];
+                [self.mutableProjectors removeObject:projectorInMap];
                 // Set the flag saying we removed projectors
                 projectorsRemoved = YES;
             }
@@ -117,22 +116,22 @@ NSString* const PJProjectorManagerProjectorsDidChangeNotification = @"PJProjecto
     PJProjector* ret = nil;
 
     if ([host length] > 0) {
-        ret = [_hostToProjectorMap objectForKey:host];
+        ret = [self.hostToProjectorMap objectForKey:host];
     }
 
     return ret;
 }
 
 - (NSUInteger)countOfProjectors {
-    return [_projectors count];
+    return [self.mutableProjectors count];
 }
 
 - (id)objectInProjectorsAtIndex:(NSUInteger)index {
-    return [_projectors objectAtIndex:index];
+    return [self.mutableProjectors objectAtIndex:index];
 }
 
 - (NSArray*)projectorsAtIndexes:(NSIndexSet *)indexes {
-    return [_projectors objectsAtIndexes:indexes];
+    return [self.mutableProjectors objectsAtIndexes:indexes];
 }
 
 #pragma mark - UIAlertViewDelegate methods
@@ -186,8 +185,8 @@ NSString* const PJProjectorManagerProjectorsDidChangeNotification = @"PJProjecto
 }
 
 - (void)unsubscribeToNotificationsForAllProjectors {
-    if ([_projectors count] > 0) {
-        for (PJProjector* projector in _projectors) {
+    if ([self.mutableProjectors count] > 0) {
+        for (PJProjector* projector in self.mutableProjectors) {
             [self unsubscribeToNotificationsForProjector:projector];
         }
     }

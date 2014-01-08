@@ -10,6 +10,7 @@
 #import "PJProjector.h"
 #import "PJLampStatus.h"
 #import "PJInputSelectTableViewController.h"
+#import "PJInputInfo.h"
 
 @interface PJProjectorDetailTableViewController ()
 
@@ -151,20 +152,26 @@
             [self.powerStatusActivityIndicatorView stopAnimating];
         }
         // Handle the input label
-        self.inputLabel.text = self.projector.activeInputName;
+        NSString* activeInputName = @"";
+        if (self.projector.activeInputIndex < [self.projector countOfInputs]) {
+            PJInputInfo* activeInputInfo = [self.projector objectInInputsAtIndex:self.projector.activeInputIndex];
+            activeInputName = [activeInputInfo description];
+        }
+        self.inputLabel.text = activeInputName;
         // Handle the mute switches
         self.audioMuteSwitch.on = self.projector.isAudioMuted;
         self.videoMuteSwitch.on = self.projector.isVideoMuted;
         // If there is only one lamp (which is the usual case), then we
         // put the number of hours in the detail text and disable the
         // accessory chevron.
-        if (self.projector.numberOfLamps == 1) {
-            PJLampStatus* lampStatus = [self.projector.lampStatus objectAtIndex:0];
+        NSUInteger lampStatusCount = [self.projector countOfLampStatus];
+        if (lampStatusCount == 1) {
+            PJLampStatus* lampStatus = (PJLampStatus*) [self.projector objectInLampStatusAtIndex:0];
             self.lampStatusLabel.text = [NSString stringWithFormat:@"%@ (%u hours)",
                                          (lampStatus.lampOn ? @"On" : @"Off"), lampStatus.cumulativeLightingTime];
             self.lampStatusCell.accessoryType = UITableViewCellAccessoryNone;
-        } else if (self.projector.numberOfLamps > 1) {
-            self.lampStatusLabel.text = [NSString stringWithFormat:@"%u Lamps", self.projector.numberOfLamps];
+        } else if (lampStatusCount > 1) {
+            self.lampStatusLabel.text = [NSString stringWithFormat:@"%u Lamps", lampStatusCount];
         }
         // Set the error statuses
         self.fanErrorLabel.text = [PJProjectorDetailTableViewController textForErrorStatus:self.projector.fanErrorStatus];
@@ -185,13 +192,13 @@
         // If we do not have an AMX beacon, then we just put "None"
         // in the detail text for this cell and remove the accessory
         // chevron from the cell.
-        if (self.projector.beaconHost != nil) {
-            self.amxBeaconLabel.text = @"Yes";
-            self.amxBeaconCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        } else {
-            self.amxBeaconLabel.text = @"None";
-            self.amxBeaconCell.accessoryType = UITableViewCellAccessoryNone;
-        }
+//        if (self.projector.beaconHost != nil) {
+//            self.amxBeaconLabel.text = @"Yes";
+//            self.amxBeaconCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//        } else {
+//            self.amxBeaconLabel.text = @"None";
+//            self.amxBeaconCell.accessoryType = UITableViewCellAccessoryNone;
+//        }
     }
 }
 
