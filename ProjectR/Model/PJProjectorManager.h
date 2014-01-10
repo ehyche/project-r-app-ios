@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString* const PJProjectorManagerProjectorsDidChangeNotification;
-
 @class PJProjector;
+
+extern NSString* const kPJProjectorManagerKeyProjectors;
 
 @interface PJProjectorManager : NSObject
 
@@ -19,16 +19,22 @@ extern NSString* const PJProjectorManagerProjectorsDidChangeNotification;
 + (PJProjectorManager*)sharedManager;
 
 // Add an array of PJProjector's
-- (void)addProjectors:(NSArray*)projectors;
+- (void)addProjectorsToManager:(NSArray*)projectors;
 // Remove an array of PJProjector's
-- (void)removeProjectors:(NSArray*)projectors;
+- (void)removeProjectorsFromManager:(NSArray*)projectors;
 
 // Look up a projector by its host name
 - (PJProjector*)projectorForHost:(NSString*)host;
+// Look up the index of a projector by its host name
+- (NSInteger)indexOfProjectorForHost:(NSString*)host;
 
 // KVO-compliant accessors for the .projectors property
 - (NSUInteger)countOfProjectors;
 - (id)objectInProjectorsAtIndex:(NSUInteger)index;
 - (NSArray*)projectorsAtIndexes:(NSIndexSet *)indexes;
+
+// Provide a display name for the projector
+// XXXMEH - this should get moved to PJProjector
++ (NSString*)displayNameForProjector:(PJProjector*)projector;
 
 @end

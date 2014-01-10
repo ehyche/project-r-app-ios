@@ -28,10 +28,12 @@
 NSString* const PJLinkSubnetScannerScanningDidBeginNotification                  = @"PJLinkSubnetScannerScanningDidBeginNotification";
 NSString* const PJLinkSubnetScannerScanningDidEndNotification                    = @"PJLinkSubnetScannerScanningDidEndNotification";
 NSString* const PJLinkSubnetScannerScanningDidProgressNotification               = @"PJLinkSubnetScannerScanningDidProgressNotification";
+NSString* const PJLinkSubnetScannerScannedHostDidChangeNotification              = @"PJLinkSubnetScannerScannedHostDidChangeNotification";
 NSString* const PJLinkSubnetScannerDiscoveredProjectorHostsDidChangeNotification = @"PJLinkSubnetScannerDiscoveredProjectorHostsDidChangeNotification";
 
 NSString* const PJLinkSubnetScannerProgressKey     = @"PJLinkSubnetScannerProgressKey";
 NSString* const PJLinkSubnetScannerNormalFinishKey = @"PJLinkSubnetScannerNormalFinishKey";
+NSString* const PJLinkSubnetScannerScannedHostKey  = @"PJLinkSubnetScannerScannedHostKey";
 
 NSTimeInterval const kDefaultPJLinkScanningTimeout       = 1.0;
 NSInteger      const kPJLinkScannerProjectorChallengeTag = 10;
@@ -42,6 +44,7 @@ NSInteger      const kPJLinkScannerProjectorChallengeTag = 10;
     BOOL             _abort;
     NSMutableArray*  _mutableProjectorHosts;
     NSMutableArray*  _mutableSubnetHosts;
+    NSString*        _scannedHost;
     NSUInteger       _originalSubnetHostsCount;
     dispatch_queue_t _queue;
     GCDAsyncSocket*  _socket;
@@ -80,6 +83,16 @@ NSInteger      const kPJLinkScannerProjectorChallengeTag = 10;
 
     dispatch_sync(_queue, ^{
         ret = _scanning;
+    });
+
+    return ret;
+}
+
+- (NSString*)scannedHost {
+    __block NSString* ret = nil;
+
+    dispatch_sync(_queue, ^{
+        ret = [_scannedHost copy];
     });
 
     return ret;
@@ -263,6 +276,12 @@ shouldTimeoutReadWithTag:(long)tag
                                                               userInfo:@{PJLinkSubnetScannerProgressKey: @(progress)}]];
 }
 
+- (void)postScannedHostDidChangeNotification:(NSString*)scannedHost {
+    [self postScannerNotification:[NSNotification notificationWithName:PJLinkSubnetScannerScannedHostDidChangeNotification
+                                                                object:self
+                                                              userInfo:@{PJLinkSubnetScannerScannedHostKey: [scannedHost copy]}]];
+}
+
 - (void)postProjectorHostsDidChangeNotification {
     [self postScannerNotification:[NSNotification notificationWithName:PJLinkSubnetScannerDiscoveredProjectorHostsDidChangeNotification object:self]];
 }
@@ -285,6 +304,8 @@ shouldTimeoutReadWithTag:(long)tag
         // Peek at the next host
         NSString* host = [_mutableSubnetHosts objectAtIndex:0];
         NSLog(@"scanNextHost %@", host);
+        // Issue a notification saying we are scanning this host
+        [self postScannedHostDidChangeNotification:host];
         // Try to connect the socket to this host on the default PJLink port
         NSError* connectError = nil;
         BOOL connectRet = [_socket connectToHost:host

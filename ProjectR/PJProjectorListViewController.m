@@ -13,6 +13,7 @@
 #import "PJResponseInfo.h"
 #import "PJProjectorDetailViewController.h"
 #import "PJManualAddTableViewController.h"
+#import "NSIndexSet+NSIndexPath.h"
 
 @interface PJProjectorListViewController ()
 
@@ -21,7 +22,7 @@
 @implementation PJProjectorListViewController
 
 - (void)dealloc {
-    [self unsubscribeFromNotifications];
+    [self unsubscribeFromKVONotifications];
 }
 
 - (id)init {
@@ -110,9 +111,8 @@
         // Get the projector for this row
         PJProjectorManager* mgr = [PJProjectorManager sharedManager];
         PJProjector* projector = (PJProjector*) [mgr objectInProjectorsAtIndex:indexPath.row];
-        // The title label is the host name
-        // XXXMEH - we may want to use projectorName if if has one
-        cell.textLabel.text = projector.host;
+        // The title label is the display name of the projector
+        cell.textLabel.text = [PJProjectorManager displayNameForProjector:projector];
         // Construct the detail text
         NSString* activeInputName = @"";
         if (projector.activeInputIndex < [projector countOfInputs]) {
@@ -125,9 +125,9 @@
         if (indexPath.row == 0) {
             cell.textLabel.text = @"Add Manually";
         } else if (indexPath.row == 1) {
-            cell.textLabel.text = @"Scan Subnet";
+            cell.textLabel.text = @"Scan WiFi Network";
         } else if (indexPath.row == 2) {
-            cell.textLabel.text = @"Scan for AMX Beacons";
+            cell.textLabel.text = @"Listen for AMX Beacons";
         }
     }
 
@@ -173,7 +173,7 @@
         // Get the projector for this row
         PJProjector* projector = [mgr objectInProjectorsAtIndex:indexPath.row];
         // Delete this projector
-        [mgr removeProjectors:@[projector]];
+        [mgr removeProjectorsFromManager:@[projector]];
     }
 }
 
@@ -221,29 +221,92 @@
 
 #pragma mark - PJProjectorListViewController private methods
 
-- (void)subscribeToNotifications {
+- (void)subscribeToKVONotifications {
     PJProjectorManager* mgr = [PJProjectorManager sharedManager];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(projectorsDidChange:)
-                                                 name:PJProjectorManagerProjectorsDidChangeNotification
-                                               object:mgr];
+    [mgr addObserver:self
+          forKeyPath:kPJProjectorManagerKeyProjectors
+             options:NSKeyValueObservingOptionNew
+             context:NULL];
 }
 
-- (void)unsubscribeFromNotifications {
+- (void)unsubscribeFromKVONotifications {
     PJProjectorManager* mgr = [PJProjectorManager sharedManager];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:PJProjectorManagerProjectorsDidChangeNotification
-                                                  object:mgr];
+    [mgr removeObserver:self forKeyPath:kPJProjectorManagerKeyProjectors context:NULL];
 }
 
-- (void)projectorsDidChange:(NSNotification*)notification {
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context {
+    PJProjectorManager* mgr = [PJProjectorManager sharedManager];
+    // Make sure the object is the projector manager
+    if (object == mgr) {
+        // Make sure this is the ".projectors" keypath
+        if ([keyPath isEqualToString:kPJProjectorManagerKeyProjectors]) {
+            // Get the change kind
+            NSKeyValueChange changeKind = [[change objectForKey:NSKeyValueChangeKindKey] integerValue];
+            // Switch on the kind of change it is
+            if (changeKind == NSKeyValueChangeSetting) {
+                [self projectorsDidChange];
+            } else if (changeKind == NSKeyValueChangeInsertion) {
+                // Get the index set that were inserted
+                NSIndexSet* indexSet = [change objectForKey:NSKeyValueChangeIndexesKey];
+                [self projectorsWereInserted:indexSet];
+            } else if (changeKind == NSKeyValueChangeRemoval) {
+                // Get the index set that were removed
+                NSIndexSet* indexSet = [change objectForKey:NSKeyValueChangeIndexesKey];
+                [self projectorsWereRemoved:indexSet];
+            } else if (changeKind == NSKeyValueChangeReplacement) {
+                // Even though the change kind is "replacement", this just
+                // means that a projector changed.
+                // Get the index set that were changed
+                NSIndexSet* indexSet = [change objectForKey:NSKeyValueChangeIndexesKey];
+                [self projectorsWereUpdated:indexSet];
+            }
+        }
+    }
+}
+
+- (void)projectorsDidChange {
     [self.tableView reloadData];
     [self checkToDismissEditingMode];
     [self updateEditButtonVisibilityAnimated:NO];
 }
 
+- (void)projectorsWereInserted:(NSIndexSet*)indexSet {
+    PJProjectorManager* mgr = [PJProjectorManager sharedManager];
+    BOOL firstProjectorsAdded = ([indexSet count] == [mgr countOfProjectors]);
+    if (firstProjectorsAdded) {
+        // If this was the first projector added, then we need to reload
+        // the whole section so that we get rid of the footer
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+    } else {
+        [self.tableView insertRowsAtIndexPaths:[indexSet indexPathsForSection:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    [self checkToDismissEditingMode];
+    [self updateEditButtonVisibilityAnimated:NO];
+}
+
+- (void)projectorsWereRemoved:(NSIndexSet*)indexSet {
+    PJProjectorManager* mgr = [PJProjectorManager sharedManager];
+    if ([mgr countOfProjectors] == 0) {
+        // If the last projectors were removed, then we need
+        // reload the whole section so that we will show the footer
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+    } else {
+        [self.tableView deleteRowsAtIndexPaths:[indexSet indexPathsForSection:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    [self checkToDismissEditingMode];
+    [self updateEditButtonVisibilityAnimated:NO];
+
+}
+
+- (void)projectorsWereUpdated:(NSIndexSet*)indexSet {
+    [self.tableView reloadRowsAtIndexPaths:[indexSet indexPathsForSection:0] withRowAnimation:UITableViewRowAnimationNone];
+}
+
 - (void)commonInit {
-    [self subscribeToNotifications];
+    [self subscribeToKVONotifications];
     self.navigationItem.title = @"ProjectR";
 }
 

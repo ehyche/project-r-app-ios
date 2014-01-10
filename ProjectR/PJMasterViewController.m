@@ -168,22 +168,15 @@
 
 - (void)pjlinkProjectorsWereAdded:(NSArray*)projectors {
     // Add these projectors to the PJProjectorManager
-    [[PJProjectorManager sharedManager] addProjectors:projectors];
+    [[PJProjectorManager sharedManager] addProjectorsToManager:projectors];
 }
 
 #pragma mark - PJMasterViewController private methods
 
 -(void)subscribeToNotifications {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(projectorsDidChange:)
-                                                 name:PJProjectorManagerProjectorsDidChangeNotification
-                                               object:[PJProjectorManager sharedManager]];
 }
 
 - (void)unsubscribeToNotifications {
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:PJProjectorManagerProjectorsDidChangeNotification
-                                                  object:[PJProjectorManager sharedManager]];
 }
 
 - (void)projectorsDidChange:(NSNotification*)notification {

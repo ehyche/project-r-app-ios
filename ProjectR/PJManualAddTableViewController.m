@@ -535,7 +535,7 @@ NSInteger const kPJManualAddAlertTagSuccess      =  50;
     // Create a projector
     PJProjector* projector = [[PJProjector alloc] initWithHost:self.projectorHost port:portInteger];
     // Add the projector to the projector manager
-    [[PJProjectorManager sharedManager] addProjectors:@[projector]];
+    [[PJProjectorManager sharedManager] addProjectorsToManager:@[projector]];
     // Show an alert to let the user know the projector was added
     UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Projector Added"
                                                         message:@"Projector was added successfully."

@@ -136,6 +136,8 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
         self.refreshBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
                                                                                   target:self
                                                                                   action:@selector(refreshBarButtonItemTapped:)];
+        // Initially show the refresh button
+        self.navigationItem.rightBarButtonItem = self.refreshBarButtonItem;
     }
 
     return self;

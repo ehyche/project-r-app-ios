@@ -11,7 +11,7 @@
 #import "PJAMXBeaconHost.h"
 #import "PJProjector.h"
 
-NSString* const PJProjectorManagerProjectorsDidChangeNotification = @"PJProjectorManagerProjectorsDidChangeNotification";
+NSString* const kPJProjectorManagerKeyProjectors = @"projectors";
 
 @interface PJProjectorAlertView : UIAlertView
 
@@ -58,56 +58,78 @@ NSString* const PJProjectorManagerProjectorsDidChangeNotification = @"PJProjecto
     return [NSArray arrayWithArray:self.mutableProjectors];
 }
 
-- (void)addProjectors:(NSArray *)projectors {
-    if ([projectors count] > 0) {
-        BOOL projectorsAdded = NO;
+- (void)addProjectorsToManager:(NSArray *)projectors {
+    NSUInteger projectorsCount = [projectors count];
+    if (projectorsCount > 0) {
+        NSMutableArray* tmp = [NSMutableArray arrayWithCapacity:projectorsCount];
         for (PJProjector* projector in projectors) {
             // See if I can look up the projector
             PJProjector* projectorInMap = [self projectorForHost:projector.host];
             if (projectorInMap == nil) {
-                // Add it to the mutable array
-                [self.mutableProjectors addObject:projector];
-                // Add it to the map
-                [self.hostToProjectorMap setObject:projector forKey:projector.host];
-                // Subscribe to notifications for this projector
-                [self subscribeToNotificationsForProjector:projector];
-                // Tell the projector to refresh itself
-                [projector refreshAllQueries];
-                // Turn on the refresh timer
-                projector.refreshTimerOn = YES;
-                // Set the flag saying we added projectors
-                projectorsAdded = YES;
+                // This projector is not already present, so add it.
+                [tmp addObject:projector];
             }
         }
+        // Get the count of projectors we will add
+        NSUInteger tmpCount = [tmp count];
         // Did we add any projectors?
-        if (projectorsAdded) {
-            // Post the notification saying the number of projectors we are managing changed
-            [self postProjectorsDidChangeNotification];
+        if (tmpCount > 0) {
+            // Get the current number of projectors
+            NSUInteger currentCount = [self countOfProjectors];
+            // Construct the insertion index set
+            NSIndexSet* insertionIndexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(currentCount, tmpCount)];
+            // Issue the willChange notification
+            [self willChange:NSKeyValueChangeInsertion valuesAtIndexes:insertionIndexSet forKey:kPJProjectorManagerKeyProjectors];
+            // Iterate through each projector we will add
+            [tmp enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                PJProjector* addedProjector = (PJProjector*)obj;
+                // Add it to the mutable array
+                [self.mutableProjectors addObject:addedProjector];
+                // Add it to the map
+                [self.hostToProjectorMap setObject:addedProjector forKey:addedProjector.host];
+                // Subscribe to notifications for this projector
+                [self subscribeToNotificationsForProjector:addedProjector];
+                // Tell the projector to refresh itself
+                [addedProjector refreshAllQueries];
+                // Turn on the refresh timer
+                addedProjector.refreshTimerOn = YES;
+            }];
+            // Issue the didChange notification
+            [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:insertionIndexSet forKey:kPJProjectorManagerKeyProjectors];
         }
     }
 }
 
-- (void)removeProjectors:(NSArray*)projectors {
-    if ([projectors count] > 0) {
-        BOOL projectorsRemoved = NO;
+- (void)removeProjectorsFromManager:(NSArray*)projectors {
+    // Get the count to remove
+    NSUInteger projectorsCount = [projectors count];
+    if (projectorsCount > 0) {
+        // Construct the index set of the projectors we will remove
+        NSMutableIndexSet* mutableIndexSet = [NSMutableIndexSet indexSet];
         for (PJProjector* projector in projectors) {
-            // See if I can look up the projector
-            PJProjector* projectorInMap = [self projectorForHost:projector.host];
-            if (projectorInMap != nil) {
-                // Unsubscribe to notifications for this projector
-                [self unsubscribeToNotificationsForProjector:projectorInMap];
-                // Remove it from the map
-                [self.hostToProjectorMap removeObjectForKey:projectorInMap.host];
-                // Remove it from the mutable array
-                [self.mutableProjectors removeObject:projectorInMap];
-                // Set the flag saying we removed projectors
-                projectorsRemoved = YES;
+            // Get the index of this projector
+            NSInteger projectorIndex = [self indexOfProjectorForHost:projector.host];
+            if (projectorIndex != NSNotFound) {
+                [mutableIndexSet addIndex:projectorIndex];
             }
         }
-        // Did we add any projectors?
-        if (projectorsRemoved) {
-            // Post the notification saying the number of projectors we are managing changed
-            [self postProjectorsDidChangeNotification];
+        // Are we actually removing any projectors
+        if ([mutableIndexSet count] > 0) {
+            // Issue the willChange notification
+            [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:mutableIndexSet forKey:kPJProjectorManagerKeyProjectors];
+            // Iterate through the indexes
+            [mutableIndexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                // Look up this projector
+                PJProjector* projectorToRemove = (PJProjector*) [self objectInProjectorsAtIndex:idx];
+                // Unsubscribe to notifications for this projector
+                [self unsubscribeToNotificationsForProjector:projectorToRemove];
+                // Remove it from the map
+                [self.hostToProjectorMap removeObjectForKey:projectorToRemove.host];
+            }];
+            // Remove the projectors from the mutable array
+            [self.mutableProjectors removeObjectsAtIndexes:mutableIndexSet];
+            // Issue the didChange notification
+            [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:mutableIndexSet forKey:kPJProjectorManagerKeyProjectors];
         }
     }
 }
@@ -117,6 +139,23 @@ NSString* const PJProjectorManagerProjectorsDidChangeNotification = @"PJProjecto
 
     if ([host length] > 0) {
         ret = [self.hostToProjectorMap objectForKey:host];
+    }
+
+    return ret;
+}
+
+- (NSInteger)indexOfProjectorForHost:(NSString*)host {
+    NSInteger ret = NSNotFound;
+
+    if ([host length] > 0) {
+        NSUInteger projectorCount = [self countOfProjectors];
+        for (NSUInteger i = 0; i < projectorCount; i++) {
+            PJProjector* projector = (PJProjector*)[self objectInProjectorsAtIndex:i];
+            if ([host isEqualToString:projector.host]) {
+                ret = i;
+                break;
+            }
+        }
     }
 
     return ret;
@@ -132,6 +171,14 @@ NSString* const PJProjectorManagerProjectorsDidChangeNotification = @"PJProjecto
 
 - (NSArray*)projectorsAtIndexes:(NSIndexSet *)indexes {
     return [self.mutableProjectors objectsAtIndexes:indexes];
+}
+
++ (NSString*)displayNameForProjector:(PJProjector*)projector {
+    NSString* ret = projector.projectorName;
+    if ([ret length] == 0) {
+        ret = projector.host;
+    }
+    return ret;
 }
 
 #pragma mark - UIAlertViewDelegate methods
@@ -162,7 +209,7 @@ NSString* const PJProjectorManagerProjectorsDidChangeNotification = @"PJProjecto
                     [projector refreshAllQueries];
                 } else {
                     // The user chose to delete the projector, so remove it
-                    [self removeProjectors:@[projector]];
+                    [self removeProjectorsFromManager:@[projector]];
                 }
             }
         }
@@ -172,16 +219,25 @@ NSString* const PJProjectorManagerProjectorsDidChangeNotification = @"PJProjecto
 #pragma mark - PJProjectorManager private methods
 
 - (void)subscribeToNotificationsForProjector:(PJProjector*)projector {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(projectorConnectionStateDidChange:)
-                                                 name:PJProjectorConnectionStateDidChangeNotification
-                                               object:projector];
+    NSNotificationCenter* notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter addObserver:self
+                           selector:@selector(projectorDidChange:)
+                               name:PJProjectorDidChangeNotification
+                             object:projector];
+    [notificationCenter addObserver:self
+                           selector:@selector(projectorConnectionStateDidChange:)
+                               name:PJProjectorConnectionStateDidChangeNotification
+                             object:projector];
 }
 
 - (void)unsubscribeToNotificationsForProjector:(PJProjector*)projector {
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:PJProjectorConnectionStateDidChangeNotification
-                                                  object:projector];
+    NSNotificationCenter* notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter removeObserver:self
+                                  name:PJProjectorDidChangeNotification
+                                object:projector];
+    [notificationCenter removeObserver:self
+                                  name:PJProjectorConnectionStateDidChangeNotification
+                                object:projector];
 }
 
 - (void)unsubscribeToNotificationsForAllProjectors {
@@ -189,6 +245,21 @@ NSString* const PJProjectorManagerProjectorsDidChangeNotification = @"PJProjecto
         for (PJProjector* projector in self.mutableProjectors) {
             [self unsubscribeToNotificationsForProjector:projector];
         }
+    }
+}
+
+- (void)projectorDidChange:(NSNotification*)notification {
+    // Get the projector that issued this notification
+    PJProjector* projector = (PJProjector*) [notification object];
+    // Get the index of this projector
+    NSInteger projectorIndex = [self indexOfProjectorForHost:projector.host];
+    if (projectorIndex != NSNotFound) {
+        // Get the index set for just this projector
+        NSIndexSet* changedIndexSet = [NSIndexSet indexSetWithIndex:projectorIndex];
+        // Issue the willChange notification
+        [self willChange:NSKeyValueChangeReplacement valuesAtIndexes:changedIndexSet forKey:kPJProjectorManagerKeyProjectors];
+        // Issue the didChange notification
+        [self didChange:NSKeyValueChangeReplacement valuesAtIndexes:changedIndexSet forKey:kPJProjectorManagerKeyProjectors];
     }
 }
 
@@ -224,22 +295,6 @@ NSString* const PJProjectorManagerProjectorsDidChangeNotification = @"PJProjecto
         alertView.host = projector.host;
         // Show the alert view
         [alertView show];
-    }
-}
-
-- (void)postProjectorsDidChangeNotification {
-    [self postManagerNotification:[NSNotification notificationWithName:PJProjectorManagerProjectorsDidChangeNotification object:self]];
-}
-
-- (void)postManagerNotification:(NSNotification*)notification {
-    dispatch_block_t block = ^{
-        [[NSNotificationCenter defaultCenter] postNotification:notification];
-    };
-    // Ensure this is posted on the main thread
-    if ([NSThread isMainThread]) {
-        block();
-    } else {
-        dispatch_async(dispatch_get_main_queue(), block);
     }
 }
 
