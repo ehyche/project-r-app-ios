@@ -30,6 +30,7 @@
 		FDB9161317AC9B850098755A /* PJLinkSubnetScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */; };
 		FDBCD5F917B4912900C1E03E /* PJInputSelectTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDBCD5F817B4912900C1E03E /* PJInputSelectTableViewController.m */; };
 		FDDA57DC1793BA58007B49D0 /* PJProjectorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */; };
+		FDDAEE65188DFDB80015D2E3 /* PJSubnetScannerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDAEE64188DFDB80015D2E3 /* PJSubnetScannerViewController.m */; };
 		FDDEA682187FA1E400C07EB8 /* NSIndexSet+NSIndexPath.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDEA681187FA1E400C07EB8 /* NSIndexSet+NSIndexPath.m */; };
 		FDEF71691878F963002FA55F /* PJProjectorListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEF71681878F963002FA55F /* PJProjectorListViewController.m */; };
 		FDEF716C18791349002FA55F /* PJManualAddTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEF716B18791349002FA55F /* PJManualAddTableViewController.m */; };
@@ -77,6 +78,8 @@
 		FDBCD5F817B4912900C1E03E /* PJInputSelectTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJInputSelectTableViewController.m; sourceTree = "<group>"; };
 		FDDA57DA1793BA58007B49D0 /* PJProjectorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJProjectorManager.h; path = Model/PJProjectorManager.h; sourceTree = "<group>"; };
 		FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PJProjectorManager.m; path = Model/PJProjectorManager.m; sourceTree = "<group>"; };
+		FDDAEE63188DFDB80015D2E3 /* PJSubnetScannerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJSubnetScannerViewController.h; sourceTree = "<group>"; };
+		FDDAEE64188DFDB80015D2E3 /* PJSubnetScannerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJSubnetScannerViewController.m; sourceTree = "<group>"; };
 		FDDEA680187FA1E400C07EB8 /* NSIndexSet+NSIndexPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexSet+NSIndexPath.h"; sourceTree = "<group>"; };
 		FDDEA681187FA1E400C07EB8 /* NSIndexSet+NSIndexPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexSet+NSIndexPath.m"; sourceTree = "<group>"; };
 		FDEF71671878F963002FA55F /* PJProjectorListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJProjectorListViewController.h; sourceTree = "<group>"; };
@@ -221,6 +224,8 @@
 				FDEF71681878F963002FA55F /* PJProjectorListViewController.m */,
 				FDEF716A18791349002FA55F /* PJManualAddTableViewController.h */,
 				FDEF716B18791349002FA55F /* PJManualAddTableViewController.m */,
+				FDDAEE63188DFDB80015D2E3 /* PJSubnetScannerViewController.h */,
+				FDDAEE64188DFDB80015D2E3 /* PJSubnetScannerViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -256,6 +261,11 @@
 				CLASSPREFIX = PJ;
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Eric Hyche";
+				TargetAttributes = {
+					FD2C35BD178A305A0080B1B7 = {
+						DevelopmentTeam = 82A2S5FGTA;
+					};
+				};
 			};
 			buildConfigurationList = FD2C35B9178A305A0080B1B7 /* Build configuration list for PBXProject "ProjectR" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -335,6 +345,7 @@
 				FDDA57DC1793BA58007B49D0 /* PJProjectorManager.m in Sources */,
 				FDB9161317AC9B850098755A /* PJLinkSubnetScanner.m in Sources */,
 				FDDEA682187FA1E400C07EB8 /* NSIndexSet+NSIndexPath.m in Sources */,
+				FDDAEE65188DFDB80015D2E3 /* PJSubnetScannerViewController.m in Sources */,
 				FD41B20017ADE52E00502703 /* PJDiscoveredTableViewController.m in Sources */,
 				FD41B20517AE136C00502703 /* PJInterfaceInfo.m in Sources */,
 				FD071ADE18765FD30020B192 /* PJProjectorDetailViewController.m in Sources */,
@@ -429,10 +440,13 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6B27D3B044CC4AFEB5884882 /* Pods.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ProjectR/ProjectR-Prefix.pch";
 				INFOPLIST_FILE = "ProjectR/ProjectR-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
@@ -442,10 +456,13 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6B27D3B044CC4AFEB5884882 /* Pods.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ProjectR/ProjectR-Prefix.pch";
 				INFOPLIST_FILE = "ProjectR/ProjectR-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};

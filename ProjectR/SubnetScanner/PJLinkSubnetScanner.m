@@ -142,6 +142,36 @@ NSInteger      const kPJLinkScannerProjectorChallengeTag = 10;
     });
 }
 
+- (NSUInteger)countOfProjectorHosts {
+    __block NSUInteger ret = 0;
+
+    dispatch_sync(_queue, ^{
+        ret = [_mutableProjectorHosts count];
+    });
+
+    return ret;
+}
+
+- (id)objectInProjectorHostsAtIndex:(NSUInteger)index {
+    __block id ret = nil;
+
+    dispatch_sync(_queue, ^{
+        ret = [_mutableProjectorHosts objectAtIndex:index];
+    });
+
+    return ret;
+}
+
+- (NSArray*)projectorHostsAtIndexes:(NSIndexSet *)indexes {
+    __block NSArray* ret = nil;
+
+    dispatch_sync(_queue, ^{
+        ret = [_mutableProjectorHosts objectsAtIndexes:indexes];
+    });
+
+    return ret;
+}
+
 #pragma mark - GCDAsyncSocketDelegate methods
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port {
@@ -239,21 +269,44 @@ shouldTimeoutReadWithTag:(long)tag
         uint32_t netmask           = wifiNetmask.sin_addr.s_addr;
         uint32_t netmaskCompHost   = ~netmask;
         uint32_t addressNetmaskAND = address & netmask;
+        // Get the native version of our device address
+        uint32_t nAddress = htonl(address);
+        // Mask out the upper 3 bytes
+        uint32_t nAddress256 = nAddress & 0x000000FF;
+        // Most consumer routers start assigning addresses at either 1 or 100. So, in order
+        // to speed scanning along, we decide if the device address is in the range [1,99]
+        // or in the range [100,255]. If it in the former, we will start scanning at 0.
+        // If in the latter, we will start scanning at 100.
+        uint32_t scanStart = (nAddress256 >= 100 ? 100 : 0);
         // Compute the number of addresses we need to scan
         uint32_t netmaskCompNative = htonl(netmaskCompHost);
         NSUInteger numSubnetAddresses = netmaskCompNative + 1;
-        NSMutableArray* tmp = [NSMutableArray arrayWithCapacity:numSubnetAddresses];
+        NSMutableArray* tmpArray = [NSMutableArray arrayWithCapacity:numSubnetAddresses];
+        NSMutableSet*   tmpSet   = [NSMutableSet setWithCapacity:numSubnetAddresses];
         // Compute each of the adddresses in the subnet
-        for (NSUInteger i = 0; i < numSubnetAddresses; i++) {
+        for (NSUInteger i = scanStart; i < numSubnetAddresses; i++) {
             uint32_t addr_host = ntohl(i);
             uint32_t s_addr = addressNetmaskAND | addr_host;
             subnetAddress.sin_addr.s_addr = s_addr;
             NSString* hostStr = [PJLinkSubnetScanner hostFromSockaddr4:&subnetAddress];
-            if ([hostStr length] > 0 && ![hostStr isEqualToString:selfHost]) {
-                [tmp addObject:hostStr];
+            if ([hostStr length] > 0 && ![hostStr isEqualToString:selfHost] && ![tmpSet containsObject:hostStr]) {
+                [tmpArray addObject:hostStr];
+                [tmpSet addObject:hostStr];
             }
         }
-        ret = [NSArray arrayWithArray:tmp];
+        if (scanStart > 0) {
+            for (NSUInteger i = 0; i < scanStart; i++) {
+                uint32_t addr_host = ntohl(i);
+                uint32_t s_addr = addressNetmaskAND | addr_host;
+                subnetAddress.sin_addr.s_addr = s_addr;
+                NSString* hostStr = [PJLinkSubnetScanner hostFromSockaddr4:&subnetAddress];
+                if ([hostStr length] > 0 && ![hostStr isEqualToString:selfHost] && ![tmpSet containsObject:hostStr]) {
+                    [tmpArray addObject:hostStr];
+                    [tmpSet addObject:hostStr];
+                }
+            }
+        }
+        ret = [NSArray arrayWithArray:tmpArray];
     }
 
     return ret;
@@ -304,6 +357,8 @@ shouldTimeoutReadWithTag:(long)tag
         // Peek at the next host
         NSString* host = [_mutableSubnetHosts objectAtIndex:0];
         NSLog(@"scanNextHost %@", host);
+        // Save a new value of the scanned host
+        _scannedHost = [host copy];
         // Issue a notification saying we are scanning this host
         [self postScannedHostDidChangeNotification:host];
         // Try to connect the socket to this host on the default PJLink port

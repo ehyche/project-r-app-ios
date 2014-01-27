@@ -14,6 +14,7 @@
 #import "PJProjectorDetailViewController.h"
 #import "PJManualAddTableViewController.h"
 #import "NSIndexSet+NSIndexPath.h"
+#import "PJSubnetScannerViewController.h"
 
 @interface PJProjectorListViewController ()
 
@@ -202,7 +203,10 @@
             // Push this onto the navigation stack
             [self.navigationController pushViewController:controller animated:YES];
         } else if (indexPath.row == 1) {
-            // Scan subnet
+            // Create a subnet scanner controller
+            PJSubnetScannerViewController* controller = [[PJSubnetScannerViewController alloc] init];
+            // Push this controller onto the navigation stack
+            [self.navigationController pushViewController:controller animated:YES];
         } else if (indexPath.row == 2) {
             // Scan using AMX beacons
         }

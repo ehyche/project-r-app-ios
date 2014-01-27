@@ -19,7 +19,7 @@ extern NSString* const kPJProjectorManagerKeyProjectors;
 + (PJProjectorManager*)sharedManager;
 
 // Add an array of PJProjector's
-- (void)addProjectorsToManager:(NSArray*)projectors;
+- (BOOL)addProjectorsToManager:(NSArray*)projectors;
 // Remove an array of PJProjector's
 - (void)removeProjectorsFromManager:(NSArray*)projectors;
 

@@ -30,4 +30,9 @@ NSString* const PJLinkSubnetScannerScannedHostKey;
 - (void)start;
 - (void)stop;
 
+// KVO compliant accessors for .projectorHosts
+- (NSUInteger)countOfProjectorHosts;
+- (id)objectInProjectorHostsAtIndex:(NSUInteger)index;
+- (NSArray*)projectorHostsAtIndexes:(NSIndexSet *)indexes;
+
 @end

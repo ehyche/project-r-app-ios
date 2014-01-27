@@ -24,7 +24,7 @@ NSInteger const kPJManualAddAlertTagSubnet       =  10;
 NSInteger const kPJManualAddAlertTagPort         =  20;
 NSInteger const kPJManualAddAlertTagPostDetect   =  30;
 NSInteger const kPJManualAddAlertTagNoDetect     =  40;
-NSInteger const kPJManualAddAlertTagSuccess      =  50;
+NSInteger const kPJManualAddAlertTagPostAdd      =  50;
 
 @interface PJManualAddTableViewController () <UIPickerViewDataSource,
                                               UIPickerViewDelegate,
@@ -535,14 +535,28 @@ NSInteger const kPJManualAddAlertTagSuccess      =  50;
     // Create a projector
     PJProjector* projector = [[PJProjector alloc] initWithHost:self.projectorHost port:portInteger];
     // Add the projector to the projector manager
-    [[PJProjectorManager sharedManager] addProjectorsToManager:@[projector]];
-    // Show an alert to let the user know the projector was added
-    UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Projector Added"
-                                                        message:@"Projector was added successfully."
+    BOOL added = [[PJProjectorManager sharedManager] addProjectorsToManager:@[projector]];
+    // Was the projector added successfully?
+    NSString* title   = nil;
+    NSString* message = nil;
+    if (added) {
+        // The projector was added successfully.
+        title   = @"Projector Added";
+        message = @"Projector was added successfully.";
+    } else {
+        // The only reason it would not be added is if it was already present.
+        // So in this case show an alert to the user saying the projector
+        // was already present.
+        title   = @"Projector Not Added";
+        message = @"This projector has already been added";
+    }
+    // Show an alert view with the result
+    UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:title
+                                                        message:message
                                                        delegate:nil
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];
-    alertView.tag = kPJManualAddAlertTagSuccess;
+    alertView.tag = kPJManualAddAlertTagPostAdd;
     [alertView show];
 }
 

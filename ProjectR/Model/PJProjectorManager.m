@@ -58,7 +58,9 @@ NSString* const kPJProjectorManagerKeyProjectors = @"projectors";
     return [NSArray arrayWithArray:self.mutableProjectors];
 }
 
-- (void)addProjectorsToManager:(NSArray *)projectors {
+- (BOOL)addProjectorsToManager:(NSArray *)projectors {
+    BOOL ret = NO;
+
     NSUInteger projectorsCount = [projectors count];
     if (projectorsCount > 0) {
         NSMutableArray* tmp = [NSMutableArray arrayWithCapacity:projectorsCount];
@@ -74,6 +76,8 @@ NSString* const kPJProjectorManagerKeyProjectors = @"projectors";
         NSUInteger tmpCount = [tmp count];
         // Did we add any projectors?
         if (tmpCount > 0) {
+            // Set the return value
+            ret = YES;
             // Get the current number of projectors
             NSUInteger currentCount = [self countOfProjectors];
             // Construct the insertion index set
@@ -98,6 +102,8 @@ NSString* const kPJProjectorManagerKeyProjectors = @"projectors";
             [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:insertionIndexSet forKey:kPJProjectorManagerKeyProjectors];
         }
     }
+
+    return ret;
 }
 
 - (void)removeProjectorsFromManager:(NSArray*)projectors {
