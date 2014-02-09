@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2BF8F08CA0A44E92BD0E14AF /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E3AB62D7AE546C993AC6D44 /* libPods.a */; };
 		FD071ADE18765FD30020B192 /* PJProjectorDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD071ADD18765FD30020B192 /* PJProjectorDetailViewController.m */; };
+		FD11FED41895DFFA00C69F96 /* PJBeaconListenerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD11FED31895DFFA00C69F96 /* PJBeaconListenerViewController.m */; };
 		FD275AAF1792388100DA9786 /* PJAMXBeaconListener.m in Sources */ = {isa = PBXBuildFile; fileRef = FD275AAE1792388100DA9786 /* PJAMXBeaconListener.m */; };
 		FD275AB4179238C300DA9786 /* PJAMXBeaconHost.m in Sources */ = {isa = PBXBuildFile; fileRef = FD275AB3179238C300DA9786 /* PJAMXBeaconHost.m */; };
 		FD2C35C2178A305A0080B1B7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD2C35C1178A305A0080B1B7 /* UIKit.framework */; };
@@ -41,6 +42,8 @@
 		6B27D3B044CC4AFEB5884882 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		FD071ADC18765FD30020B192 /* PJProjectorDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJProjectorDetailViewController.h; sourceTree = "<group>"; };
 		FD071ADD18765FD30020B192 /* PJProjectorDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJProjectorDetailViewController.m; sourceTree = "<group>"; };
+		FD11FED21895DFFA00C69F96 /* PJBeaconListenerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJBeaconListenerViewController.h; sourceTree = "<group>"; };
+		FD11FED31895DFFA00C69F96 /* PJBeaconListenerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJBeaconListenerViewController.m; sourceTree = "<group>"; };
 		FD275AAD1792388100DA9786 /* PJAMXBeaconListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJAMXBeaconListener.h; path = AMX/PJAMXBeaconListener.h; sourceTree = "<group>"; };
 		FD275AAE1792388100DA9786 /* PJAMXBeaconListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PJAMXBeaconListener.m; path = AMX/PJAMXBeaconListener.m; sourceTree = "<group>"; };
 		FD275AB2179238C300DA9786 /* PJAMXBeaconHost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJAMXBeaconHost.h; path = AMX/PJAMXBeaconHost.h; sourceTree = "<group>"; };
@@ -226,6 +229,8 @@
 				FDEF716B18791349002FA55F /* PJManualAddTableViewController.m */,
 				FDDAEE63188DFDB80015D2E3 /* PJSubnetScannerViewController.h */,
 				FDDAEE64188DFDB80015D2E3 /* PJSubnetScannerViewController.m */,
+				FD11FED21895DFFA00C69F96 /* PJBeaconListenerViewController.h */,
+				FD11FED31895DFFA00C69F96 /* PJBeaconListenerViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -337,6 +342,7 @@
 			files = (
 				FD2C35CE178A305A0080B1B7 /* main.m in Sources */,
 				FD2C35D2178A305A0080B1B7 /* PJAppDelegate.m in Sources */,
+				FD11FED41895DFFA00C69F96 /* PJBeaconListenerViewController.m in Sources */,
 				FD2C35E1178A305A0080B1B7 /* PJMasterViewController.m in Sources */,
 				FD2C35E4178A305A0080B1B7 /* PJDetailViewController.m in Sources */,
 				FD275AAF1792388100DA9786 /* PJAMXBeaconListener.m in Sources */,

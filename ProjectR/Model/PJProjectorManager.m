@@ -11,7 +11,8 @@
 #import "PJAMXBeaconHost.h"
 #import "PJProjector.h"
 
-NSString* const kPJProjectorManagerKeyProjectors = @"projectors";
+NSString* const kPJProjectorManagerKeyProjectors   = @"projectors";
+NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive";
 
 @interface PJProjectorAlertView : UIAlertView
 
@@ -42,6 +43,11 @@ NSString* const kPJProjectorManagerKeyProjectors = @"projectors";
     return g_sharedProjectorManager;
 }
 
+- (void)dealloc {
+    [self unsubscribeFromApplicationNotifications];
+    [self unsubscribeToNotificationsForAllProjectors];
+}
+
 - (id)init {
     self = [super init];
     if (self) {
@@ -49,6 +55,15 @@ NSString* const kPJProjectorManagerKeyProjectors = @"projectors";
         self.mutableProjectors = [NSMutableArray array];
         // Create the map from IP address to PJProjector
         self.hostToProjectorMap = [NSMutableDictionary dictionary];
+        // Subscribe to application notifications
+        [self subscribeToApplicationNotifications];
+        // Try loading the projectors from archive
+        BOOL success = [self unarchiveProjectors];
+        if (success) {
+            // We were able to unarchive some projectors
+            // so we need to start refreshing them
+            [self beginRefreshingAllProjectors];
+        }
     }
 
     return self;
@@ -93,13 +108,13 @@ NSString* const kPJProjectorManagerKeyProjectors = @"projectors";
                 [self.hostToProjectorMap setObject:addedProjector forKey:addedProjector.host];
                 // Subscribe to notifications for this projector
                 [self subscribeToNotificationsForProjector:addedProjector];
-                // Tell the projector to refresh itself
-                [addedProjector refreshAllQueries];
-                // Turn on the refresh timer
-                addedProjector.refreshTimerOn = YES;
+                // Begin refreshing this projector
+                [self beginRefreshingProjector:addedProjector];
             }];
             // Issue the didChange notification
             [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:insertionIndexSet forKey:kPJProjectorManagerKeyProjectors];
+            // We need to update the archive
+            [self archiveProjectors];
         }
     }
 
@@ -136,6 +151,8 @@ NSString* const kPJProjectorManagerKeyProjectors = @"projectors";
             [self.mutableProjectors removeObjectsAtIndexes:mutableIndexSet];
             // Issue the didChange notification
             [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:mutableIndexSet forKey:kPJProjectorManagerKeyProjectors];
+            // We need to update the archive
+            [self archiveProjectors];
         }
     }
 }
@@ -301,6 +318,122 @@ NSString* const kPJProjectorManagerKeyProjectors = @"projectors";
         alertView.host = projector.host;
         // Show the alert view
         [alertView show];
+    }
+}
+
+- (void)subscribeToApplicationNotifications {
+    NSNotificationCenter* notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter addObserver:self
+                           selector:@selector(applicationDidEnterBackground:)
+                               name:UIApplicationDidEnterBackgroundNotification
+                             object:nil];
+}
+
+- (void)unsubscribeFromApplicationNotifications {
+    NSNotificationCenter* notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter removeObserver:self
+                                  name:UIApplicationDidEnterBackgroundNotification
+                                object:nil];
+}
+
+- (void)applicationDidEnterBackground:(NSNotification*)notification {
+    [self archiveProjectors];
+}
+
+- (void)archiveProjectors {
+    // Get the URL for the archive
+    NSURL* archiveURL = [self urlForProjectorsArchive];
+    // Get the file manager
+    NSFileManager* fileMgr = [NSFileManager defaultManager];
+    // Does the archive file exist?
+    if ([fileMgr fileExistsAtPath:[archiveURL path]]) {
+        // Remove any existing archive
+        NSError* removeError = nil;
+        BOOL removed = [fileMgr removeItemAtURL:archiveURL error:&removeError];
+        if (removed) {
+            NSLog(@"Existing archive removed at %@", archiveURL);
+        } else {
+            NSLog(@"Error removing existing archive at %@", archiveURL);
+        }
+    } else {
+        NSLog(@"No existing archive at %@", archiveURL);
+    }
+    // Do we have any projectors?
+    if ([self.mutableProjectors count] > 0) {
+        // Now archive the projectors
+        BOOL success = [NSKeyedArchiver archiveRootObject:self.mutableProjectors toFile:[archiveURL path]];
+        if (success) {
+            NSLog(@"Projectors archive created successfully at %@", archiveURL);
+        } else {
+            NSLog(@"FAILED to create projectors archive at %@", archiveURL);
+        }
+    }
+}
+
+- (BOOL)unarchiveProjectors {
+    BOOL ret = NO;
+
+    // Do we have any projectors?
+    if ([self.mutableProjectors count] == 0) {
+        // Get the URL for the archive
+        NSURL* archiveURL = [self urlForProjectorsArchive];
+        // Get the file manager
+        NSFileManager* fileMgr = [NSFileManager defaultManager];
+        // Does an archive exist?
+        if ([fileMgr fileExistsAtPath:[archiveURL path]]) {
+            NSLog(@"Projectors archive exists at %@", archiveURL);
+            // We have an archive, so unarchive the projectors array from that
+            NSArray* projectors = [NSKeyedUnarchiver unarchiveObjectWithFile:[archiveURL path]];
+            if ([projectors count] > 0) {
+                NSLog(@"Unarchived %u projectors from archive", [projectors count]);
+                // Set these projectors into the mutable array
+                [self.mutableProjectors setArray:projectors];
+                // Set the return value
+                ret = YES;
+            }
+        } else {
+            // No archive exists
+            NSLog(@"No projectors archive exists at %@", archiveURL);
+        }
+    }
+
+    return ret;
+}
+
+- (NSURL*)urlForProjectorsArchive {
+    NSURL* ret = nil;
+
+    // Get the file manager
+    NSFileManager* fileMgr = [NSFileManager defaultManager];
+    // Get the URL for the Document directory
+    NSError* docDirectoryURLError = nil;
+    NSURL*   docDirectoryURL = [fileMgr URLForDirectory:NSDocumentDirectory
+                                               inDomain:NSUserDomainMask
+                                      appropriateForURL:nil
+                                                 create:YES
+                                                  error:&docDirectoryURLError];
+    if (docDirectoryURL != nil) {
+        // Append the file name to the documents directory
+        ret = [docDirectoryURL URLByAppendingPathComponent:kPJProjectorManagerArchiveFileName];
+    } else {
+        NSLog(@"Error occurred getting Documents directory, error = %@", docDirectoryURLError);
+    }
+
+    return ret;
+}
+
+- (void)beginRefreshingProjector:(PJProjector*)projector {
+    // Tell the projector to refresh itself
+    [projector refreshAllQueries];
+    // Turn on the refresh timer
+    projector.refreshTimerOn = YES;
+}
+
+- (void)beginRefreshingAllProjectors {
+    if ([self.mutableProjectors count] > 0) {
+        for (PJProjector* projector in self.mutableProjectors) {
+            [self beginRefreshingProjector:projector];
+        }
     }
 }
 

@@ -10,6 +10,8 @@
 
 @interface PJInterfaceInfo : NSObject
 
++ (uint32_t)integerHostForHost:(NSString*)host;
+
 @property(nonatomic,copy) NSString* host;
 @property(nonatomic,copy) NSString* netmask;
 

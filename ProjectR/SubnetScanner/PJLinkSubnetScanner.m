@@ -8,6 +8,7 @@
 
 #import "PJLinkSubnetScanner.h"
 #import "PJProjector.h"
+#import "PJDefinitions.h"
 #import <CocoaAsyncSocket/GCDAsyncSocket.h>
 #import <CFNetwork/CFNetwork.h>
 #import <arpa/inet.h>
@@ -22,8 +23,6 @@
 #import <sys/poll.h>
 #import <sys/uio.h>
 #import <unistd.h>
-
-#define kDefaultPJLinkPort 4352
 
 NSString* const PJLinkSubnetScannerScanningDidBeginNotification                  = @"PJLinkSubnetScannerScanningDidBeginNotification";
 NSString* const PJLinkSubnetScannerScanningDidEndNotification                    = @"PJLinkSubnetScannerScanningDidEndNotification";

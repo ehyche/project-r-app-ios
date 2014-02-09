@@ -59,6 +59,26 @@
     return self;
 }
 
++ (uint32_t)integerHostForHost:(NSString*)host {
+    uint32_t ret = 0;
+
+    if ([host length] > 0) {
+        NSArray* hostComponents = [host componentsSeparatedByString:@"."];
+        NSUInteger hostComponentsCount = [hostComponents count];
+        if (hostComponentsCount == 4) {
+            for (NSUInteger i = 0; i < hostComponentsCount; i++) {
+                NSString* ithComponent = [hostComponents objectAtIndex:i];
+                uint32_t ithComponentInt = [ithComponent integerValue];
+                // Shift this value up by the appropriate number of bits
+                uint32_t ithComponentIntShifted = ithComponentInt << ((3-i)*8);
+                ret |= ithComponentIntShifted;
+            }
+        }
+    }
+
+    return ret;
+}
+
 #pragma mark - PJInterfaceInfo private methods
 
 + (NSString *)hostFromSockaddr4:(const struct sockaddr_in *)pSockaddr4

@@ -15,6 +15,7 @@
 #import "PJManualAddTableViewController.h"
 #import "NSIndexSet+NSIndexPath.h"
 #import "PJSubnetScannerViewController.h"
+#import "PJBeaconListenerViewController.h"
 
 @interface PJProjectorListViewController ()
 
@@ -209,6 +210,11 @@
             [self.navigationController pushViewController:controller animated:YES];
         } else if (indexPath.row == 2) {
             // Scan using AMX beacons
+            //
+            // Create an AMX Beacon listener view controller
+            PJBeaconListenerViewController* controller = [[PJBeaconListenerViewController alloc] init];
+            // Push this controller onto the navigation stack
+            [self.navigationController pushViewController:controller animated:YES];
         }
     }
 }

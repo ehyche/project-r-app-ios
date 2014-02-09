@@ -61,6 +61,8 @@
         _progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
         _progressView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [_progressView sizeToFit];
+        // Give a title to this view controller
+        self.navigationItem.title = @"Subnet Scan";
     }
 
     return self;

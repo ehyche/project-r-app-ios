@@ -98,6 +98,12 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
 @property(nonatomic,strong) UIActivityIndicatorView* spinner;
 @property(nonatomic,strong) UIBarButtonItem*         spinnerBarButtonItem;
 @property(nonatomic,strong) UIBarButtonItem*         refreshBarButtonItem;
+@property(nonatomic,assign) NSInteger                pendingActiveInputIndex;
+@property(nonatomic,strong) UIActivityIndicatorView* activityIndicatorView;
+@property(nonatomic,strong) UIColor*                 detailTextColorErrorCellOK;
+@property(nonatomic,strong) UIColor*                 detailTextColorErrorCellWarning;
+@property(nonatomic,strong) UIColor*                 detailTextColorErrorCellError;
+@property(nonatomic,strong) UIColor*                 detailTextColorNonErrorCell;
 
 @end
 
@@ -127,7 +133,7 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
         [self.powerSwitch     addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
         [self.audioMuteSwitch addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
         [self.videoMuteSwitch addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
-        // Create a spinner
+        // Create a spinner to be used in the right bar button item
         self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         [self.spinner sizeToFit];
         // Create a bar button item with the spinner in it
@@ -138,6 +144,18 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
                                                                                   action:@selector(refreshBarButtonItemTapped:)];
         // Initially show the refresh button
         self.navigationItem.rightBarButtonItem = self.refreshBarButtonItem;
+        // Init the pending active input index
+        self.pendingActiveInputIndex = -1;
+        // Create the spinner for changing the input
+        self.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [self.activityIndicatorView sizeToFit];
+        // Set the title
+        self.navigationItem.title = self.projector.displayName;
+        // Configure the colors
+        self.detailTextColorErrorCellOK      = [UIColor colorWithRed:0.0 green:0.7 blue:0.0 alpha:1.0];
+        self.detailTextColorErrorCellWarning = [UIColor colorWithRed:0.7 green:0.7 blue:0.0 alpha:1.0];
+        self.detailTextColorErrorCellError   = [UIColor colorWithRed:0.7 green:0.0 blue:0.0 alpha:1.0];
+        self.detailTextColorNonErrorCell     = [UIColor colorWithRed:0.55686274509804 green:0.55686274509804 blue:0.57647058823529 alpha:1.0];
     }
 
     return self;
@@ -222,9 +240,8 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
     }
 
     // Configure the default cell properties
-    // By default, cells do not have any selection color
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    UIColor* detailTextColor = [UIColor blackColor];
+    // By default, we use the default detailTextLabel color
+    UIColor* detailTextColor = self.detailTextColorNonErrorCell;
 
     // Configure the per-section cell properties
     if (indexPath.section == kPJProjectorDetailSectionConnection) {
@@ -241,6 +258,7 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
             cell.textLabel.text       = @"State";
             cell.detailTextLabel.text = [PJProjector stringForConnectionState:self.projector.connectionState];
         }
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     } else if (indexPath.section == kPJProjectorDetailSectionStatus) {
         //
         // Status section
@@ -258,6 +276,7 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
             cell.textLabel.text = @"Video Mute";
             cell.accessoryView  = self.videoMuteSwitch;
         }
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     } else if (indexPath.section == kPJProjectorDetailSectionInputs) {
         //
         // Input section
@@ -270,8 +289,21 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
         }
         cell.textLabel.text = inputName;
         // If this is the active input, then use a checkmark for the accesory type.
+        // If this is the pending active input, then put a spinner.
         // Otherwise, nothing will be in accessory view.
+        // The active input take precedence over pending active input
+        if (indexPath.row == self.projector.activeInputIndex) {
+            cell.accessoryView = nil;
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        } else if (indexPath.row == self.pendingActiveInputIndex) {
+            cell.accessoryView = self.activityIndicatorView;
+            cell.accessoryType = UITableViewCellAccessoryNone;
+        } else {
+            cell.accessoryView = nil;
+            cell.accessoryType = UITableViewCellAccessoryNone;
+        }
         cell.accessoryType = (indexPath.row == self.projector.activeInputIndex ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone);
+        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
     } else if (indexPath.section == kPJProjectorDetailSectionErrors) {
         //
         // Error section
@@ -300,12 +332,13 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
         cell.detailTextLabel.text = [PJResponseInfoErrorStatusQuery stringForErrorStatus:errorStatus];
         // Try different colors for the error status
         if (errorStatus == PJErrorStatusNoError) {
-            detailTextColor = [UIColor greenColor];
+            detailTextColor = self.detailTextColorErrorCellOK;
         } else if (errorStatus == PJErrorStatusWarning) {
-            detailTextColor = [UIColor yellowColor];
+            detailTextColor = self.detailTextColorErrorCellWarning;
         } else if (errorStatus == PJErrorStatusError) {
-            detailTextColor = [UIColor redColor];
+            detailTextColor = self.detailTextColorErrorCellError;
         }
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     } else if (indexPath.section == kPJProjectorDetailSectionLamps) {
         //
         // Lamp status section
@@ -323,6 +356,7 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
         }
         cell.textLabel.text       = lampName;
         cell.detailTextLabel.text = lampDetail;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     } else if (indexPath.section == kPJProjectorDetailSectionInfo) {
         //
         // Info section
@@ -343,6 +377,7 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
             cell.textLabel.text       = @"Class 2 Compatible";
             cell.detailTextLabel.text = (self.projector.isClass2Compatible ? @"Yes" : @"No");
         }
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     // Assign the detail text label color
     cell.detailTextLabel.textColor = detailTextColor;
@@ -378,8 +413,17 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
     // The only section which has tappable rows is the input section,
     // since you switch inputs by tapping on the new input row you want.
     if (indexPath.section == kPJProjectorDetailSectionInputs) {
-        // We request an input change to this input
-        [self.projector requestInputChangeToInputIndex:indexPath.row];
+        // Is the projector already on this input?
+        if (indexPath.row != self.projector.activeInputIndex) {
+            // Save the pending active input row
+            self.pendingActiveInputIndex = indexPath.row;
+            // Start animating the activity indicator
+            [self.activityIndicatorView startAnimating];
+            // Reload the row at this index path
+            [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+            // A change in the input is requested
+            [self.projector requestInputChangeToInputIndex:indexPath.row];
+        }
     }
 }
 
@@ -502,6 +546,13 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
     [self updateAudioMuteSwitchState];
     [self updateVideoMuteSwitchState];
     [self.tableView reloadData];
+    // If the pending input is now the same as the active input,
+    // then re-set the active input index back to -1
+    // and stop animating the activity indicator view
+    if (self.pendingActiveInputIndex == self.projector.activeInputIndex) {
+        self.pendingActiveInputIndex = -1;
+        [self.activityIndicatorView stopAnimating];
+    }
 }
 
 @end
