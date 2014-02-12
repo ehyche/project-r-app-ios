@@ -444,7 +444,7 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
 
 - (void)refreshBarButtonItemTapped:(id)sender {
     // Refresh all the projector properties
-    [self.projector refreshAllQueries];
+    [self.projector refreshAllQueriesForReason:PJRefreshReasonUserInteraction];
 }
 
 - (void)projectorRequestDidBegin:(NSNotification*)notification {

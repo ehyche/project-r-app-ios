@@ -62,7 +62,7 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
         if (success) {
             // We were able to unarchive some projectors
             // so we need to start refreshing them
-            [self beginRefreshingAllProjectors];
+            [self beginRefreshingAllProjectorsForReason:PJRefreshReasonAppStateChange];
         }
     }
 
@@ -109,7 +109,7 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
                 // Subscribe to notifications for this projector
                 [self subscribeToNotificationsForProjector:addedProjector];
                 // Begin refreshing this projector
-                [self beginRefreshingProjector:addedProjector];
+                [self beginRefreshingProjector:addedProjector forReason:PJRefreshReasonUserInteraction];
             }];
             // Issue the didChange notification
             [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:insertionIndexSet forKey:kPJProjectorManagerKeyProjectors];
@@ -221,7 +221,7 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
                     // PJProjector and have it try again.
                     projector.password = password;
                     // Try again to refresh
-                    [projector refreshAllQueries];
+                    [projector refreshAllQueriesForReason:PJRefreshReasonUserInteraction];
                 }
             } else if (projector.connectionState == PJConnectionStateConnectionError) {
                 // The user could have chosen to retry or delete the projector.
@@ -229,7 +229,7 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
                 NSInteger firstOtherButtonIndex = alertView.firstOtherButtonIndex;
                 if (buttonIndex == firstOtherButtonIndex) {
                     // The user chose to retry, so refresh the projector
-                    [projector refreshAllQueries];
+                    [projector refreshAllQueriesForReason:PJRefreshReasonUserInteraction];
                 } else {
                     // The user chose to delete the projector, so remove it
                     [self removeProjectorsFromManager:@[projector]];
@@ -422,17 +422,17 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
     return ret;
 }
 
-- (void)beginRefreshingProjector:(PJProjector*)projector {
+- (void)beginRefreshingProjector:(PJProjector*)projector forReason:(PJRefreshReason)reason {
     // Tell the projector to refresh itself
-    [projector refreshAllQueries];
+    [projector refreshAllQueriesForReason:PJRefreshReasonUserInteraction];
     // Turn on the refresh timer
     projector.refreshTimerOn = YES;
 }
 
-- (void)beginRefreshingAllProjectors {
+- (void)beginRefreshingAllProjectorsForReason:(PJRefreshReason)reason {
     if ([self.mutableProjectors count] > 0) {
         for (PJProjector* projector in self.mutableProjectors) {
-            [self beginRefreshingProjector:projector];
+            [self beginRefreshingProjector:projector forReason:reason];
         }
     }
 }
