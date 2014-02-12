@@ -60,6 +60,8 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
         // Try loading the projectors from archive
         BOOL success = [self unarchiveProjectors];
         if (success) {
+            // Subscribe to notifications for these projectors
+            [self subscribeToNotificationsForAllProjectors];
             // We were able to unarchive some projectors
             // so we need to start refreshing them
             [self beginRefreshingAllProjectorsForReason:PJRefreshReasonAppStateChange];
@@ -263,6 +265,14 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
                                 object:projector];
 }
 
+- (void)subscribeToNotificationsForAllProjectors {
+    if ([self.mutableProjectors count] > 0) {
+        for (PJProjector* projector in self.mutableProjectors) {
+            [self subscribeToNotificationsForProjector:projector];
+        }
+    }
+}
+
 - (void)unsubscribeToNotificationsForAllProjectors {
     if ([self.mutableProjectors count] > 0) {
         for (PJProjector* projector in self.mutableProjectors) {
@@ -274,50 +284,48 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
 - (void)projectorDidChange:(NSNotification*)notification {
     // Get the projector that issued this notification
     PJProjector* projector = (PJProjector*) [notification object];
-    // Get the index of this projector
-    NSInteger projectorIndex = [self indexOfProjectorForHost:projector.host];
-    if (projectorIndex != NSNotFound) {
-        // Get the index set for just this projector
-        NSIndexSet* changedIndexSet = [NSIndexSet indexSetWithIndex:projectorIndex];
-        // Issue the willChange notification
-        [self willChange:NSKeyValueChangeReplacement valuesAtIndexes:changedIndexSet forKey:kPJProjectorManagerKeyProjectors];
-        // Issue the didChange notification
-        [self didChange:NSKeyValueChangeReplacement valuesAtIndexes:changedIndexSet forKey:kPJProjectorManagerKeyProjectors];
-    }
+    // Post a KVO notification
+    [self postProjectorReplacedForProjector:projector];
 }
 
 - (void)projectorConnectionStateDidChange:(NSNotification*)notification {
     PJProjector* projector = [notification object];
-    // If we encountered a no password error, then we need to pop up
-    // a UIAlertView to ask the user for a password. If this is a general
-    // connection error, then we just pop up a UIAlertView to inform
-    // the user that there was a connection problem.
-    if (projector.connectionState == PJConnectionStatePasswordError) {
-        // Construct the message
-        NSString* message = [NSString stringWithFormat:@"The projector at %@ requires a password. Please enter it below", projector.host];
-        PJProjectorAlertView* alertView = [[PJProjectorAlertView alloc] initWithTitle:@"Password Needed"
-                                                                              message:message
-                                                                             delegate:self
-                                                                    cancelButtonTitle:@"Cancel"
-                                                                    otherButtonTitles:@"Submit", nil];
-        // Save the host with the alert view
-        alertView.host = projector.host;
-        // Set the style so that the UIAlertView provides a field for the password
-        alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
-        // Show the alert view
-        [alertView show];
-    } else if (projector.connectionState == PJConnectionStateConnectionError) {
-        // Construct the message
-        NSString* message = [NSString stringWithFormat:@"A network error encountered while trying to reach projector at %@.", projector.host];
-        PJProjectorAlertView* alertView = [[PJProjectorAlertView alloc] initWithTitle:@"Error"
-                                                                              message:message
-                                                                             delegate:self
-                                                                    cancelButtonTitle:@"Dimiss"
-                                                                    otherButtonTitles:@"Retry", @"Delete", nil];
-        // Save the host with the alert view
-        alertView.host = projector.host;
-        // Show the alert view
-        [alertView show];
+    // Post a KVO notification
+    [self postProjectorReplacedForProjector:projector];
+    // We only want to present an alert view to the user
+    // if the refresh was due to user interaction
+    if (projector.lastRefreshReason == PJRefreshReasonUserInteraction) {
+        // If we encountered a no password error, then we need to pop up
+        // a UIAlertView to ask the user for a password. If this is a general
+        // connection error, then we just pop up a UIAlertView to inform
+        // the user that there was a connection problem.
+        if (projector.connectionState == PJConnectionStatePasswordError) {
+            // Construct the message
+            NSString* message = [NSString stringWithFormat:@"The projector at %@ requires a password. Please enter it below", projector.host];
+            PJProjectorAlertView* alertView = [[PJProjectorAlertView alloc] initWithTitle:@"Password Needed"
+                                                                                  message:message
+                                                                                 delegate:self
+                                                                        cancelButtonTitle:@"Cancel"
+                                                                        otherButtonTitles:@"Submit", nil];
+            // Save the host with the alert view
+            alertView.host = projector.host;
+            // Set the style so that the UIAlertView provides a field for the password
+            alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+            // Show the alert view
+            [alertView show];
+        } else if (projector.connectionState == PJConnectionStateConnectionError) {
+            // Construct the message
+            NSString* message = [NSString stringWithFormat:@"A network error encountered while trying to reach projector at %@.", projector.host];
+            PJProjectorAlertView* alertView = [[PJProjectorAlertView alloc] initWithTitle:@"Error"
+                                                                                  message:message
+                                                                                 delegate:self
+                                                                        cancelButtonTitle:@"Dimiss"
+                                                                        otherButtonTitles:@"Retry", @"Delete", nil];
+            // Save the host with the alert view
+            alertView.host = projector.host;
+            // Show the alert view
+            [alertView show];
+        }
     }
 }
 
@@ -424,7 +432,7 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
 
 - (void)beginRefreshingProjector:(PJProjector*)projector forReason:(PJRefreshReason)reason {
     // Tell the projector to refresh itself
-    [projector refreshAllQueriesForReason:PJRefreshReasonUserInteraction];
+    [projector refreshAllQueriesForReason:reason];
     // Turn on the refresh timer
     projector.refreshTimerOn = YES;
 }
@@ -434,6 +442,19 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
         for (PJProjector* projector in self.mutableProjectors) {
             [self beginRefreshingProjector:projector forReason:reason];
         }
+    }
+}
+
+- (void)postProjectorReplacedForProjector:(PJProjector*)projector {
+    // Get the index of this projector
+    NSInteger projectorIndex = [self indexOfProjectorForHost:projector.host];
+    if (projectorIndex != NSNotFound) {
+        // Get the index set for just this projector
+        NSIndexSet* changedIndexSet = [NSIndexSet indexSetWithIndex:projectorIndex];
+        // Issue the willChange notification
+        [self willChange:NSKeyValueChangeReplacement valuesAtIndexes:changedIndexSet forKey:kPJProjectorManagerKeyProjectors];
+        // Issue the didChange notification
+        [self didChange:NSKeyValueChangeReplacement valuesAtIndexes:changedIndexSet forKey:kPJProjectorManagerKeyProjectors];
     }
 }
 

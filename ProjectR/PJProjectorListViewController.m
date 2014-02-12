@@ -93,7 +93,7 @@
     UITableViewCellStyle cellStyle   = UITableViewCellStyleDefault;
     if (indexPath.section == 0) {
         cellReuseID = cellReuseIDProjector;
-        cellStyle   = UITableViewCellStyleSubtitle;
+        cellStyle   = UITableViewCellStyleValue1;
     } else if (indexPath.section == 1) {
         cellReuseID = cellReuseIDDefault;
         cellStyle   = UITableViewCellStyleDefault;
@@ -115,14 +115,8 @@
         PJProjector* projector = (PJProjector*) [mgr objectInProjectorsAtIndex:indexPath.row];
         // The title label is the display name of the projector
         cell.textLabel.text = [PJProjectorManager displayNameForProjector:projector];
-        // Construct the detail text
-        NSString* activeInputName = @"";
-        if (projector.activeInputIndex < [projector countOfInputs]) {
-            PJInputInfo* inputInfo = (PJInputInfo*) [projector objectInInputsAtIndex:projector.activeInputIndex];
-            activeInputName = [inputInfo description];
-        }
-        NSString* powerStatusName = [PJResponseInfoPowerStatusQuery stringForPowerStatus:projector.powerStatus];
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"%@,%@", powerStatusName, activeInputName];
+        // The detail is the connection state
+        cell.detailTextLabel.text = [PJProjector stringForConnectionState:projector.connectionState];
     } else if (indexPath.section == 1) {
         if (indexPath.row == 0) {
             cell.textLabel.text = @"Add Manually";
