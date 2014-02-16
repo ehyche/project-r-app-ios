@@ -116,7 +116,7 @@
         // The title label is the display name of the projector
         cell.textLabel.text = [PJProjectorManager displayNameForProjector:projector];
         // The detail is the connection state
-        cell.detailTextLabel.text = [PJProjector stringForConnectionState:projector.connectionState];
+        cell.detailTextLabel.text = [PJProjectorManager stringForConnectionState:projector.connectionState];
     } else if (indexPath.section == 1) {
         if (indexPath.row == 0) {
             cell.textLabel.text = @"Add Manually";
