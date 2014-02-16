@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <PJLinkCocoa/PJDefinitions.h>
 
 @class PJProjector;
 
@@ -36,5 +37,8 @@ extern NSString* const kPJProjectorManagerKeyProjectors;
 // Provide a display name for the projector
 // XXXMEH - this should get moved to PJProjector
 + (NSString*)displayNameForProjector:(PJProjector*)projector;
+
+// Get the string for the connection state
++ (NSString*)stringForConnectionState:(PJConnectionState)state;
 
 @end

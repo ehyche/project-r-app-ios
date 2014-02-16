@@ -206,6 +206,21 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
     return ret;
 }
 
++ (NSString*)stringForConnectionState:(PJConnectionState)state {
+    NSString* ret = nil;
+
+    switch (state) {
+        case PJConnectionStateDiscovered:      ret = @"Discovered";     break;
+        case PJConnectionStateConnecting:      ret = @"Connecting";     break;
+        case PJConnectionStateConnectionError: ret = @"Not Connected";  break;
+        case PJConnectionStatePasswordError:   ret = @"Needs Password"; break;
+        case PJConnectionStateConnected:       ret = @"Connected";      break;
+        default:                               ret = @"Unknown";        break;
+    }
+
+    return ret;
+}
+
 #pragma mark - UIAlertViewDelegate methods
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
