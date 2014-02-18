@@ -110,13 +110,17 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
                 [self.hostToProjectorMap setObject:addedProjector forKey:addedProjector.host];
                 // Subscribe to notifications for this projector
                 [self subscribeToNotificationsForProjector:addedProjector];
-                // Begin refreshing this projector
-                [self beginRefreshingProjector:addedProjector forReason:PJRefreshReasonUserInteraction];
             }];
             // Issue the didChange notification
             [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:insertionIndexSet forKey:kPJProjectorManagerKeyProjectors];
             // We need to update the archive
             [self archiveProjectors];
+            // Begin refreshing these projectors
+            [tmp enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                PJProjector* addedProjector = (PJProjector*)obj;
+                // Begin refreshing this projector
+                [self beginRefreshingProjector:addedProjector forReason:PJRefreshReasonUserInteraction];
+            }];
         }
     }
 
@@ -315,19 +319,21 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
         // connection error, then we just pop up a UIAlertView to inform
         // the user that there was a connection problem.
         if (projector.connectionState == PJConnectionStatePasswordError) {
-            // Construct the message
-            NSString* message = [NSString stringWithFormat:@"The projector at %@ requires a password. Please enter it below", projector.host];
-            PJProjectorAlertView* alertView = [[PJProjectorAlertView alloc] initWithTitle:@"Password Needed"
-                                                                                  message:message
-                                                                                 delegate:self
-                                                                        cancelButtonTitle:@"Cancel"
-                                                                        otherButtonTitles:@"Submit", nil];
-            // Save the host with the alert view
-            alertView.host = projector.host;
-            // Set the style so that the UIAlertView provides a field for the password
-            alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
-            // Show the alert view
-            [alertView show];
+            // We changed the UI so that the user types in a password
+            // via the detail screen rather than typing it in via a UIAlertView.
+//            // Construct the message
+//            NSString* message = [NSString stringWithFormat:@"The projector at %@ requires a password. Please enter it below", projector.host];
+//            PJProjectorAlertView* alertView = [[PJProjectorAlertView alloc] initWithTitle:@"Password Needed"
+//                                                                                  message:message
+//                                                                                 delegate:self
+//                                                                        cancelButtonTitle:@"Cancel"
+//                                                                        otherButtonTitles:@"Submit", nil];
+//            // Save the host with the alert view
+//            alertView.host = projector.host;
+//            // Set the style so that the UIAlertView provides a field for the password
+//            alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+//            // Show the alert view
+//            [alertView show];
         } else if (projector.connectionState == PJConnectionStateConnectionError) {
             // Construct the message
             NSString* message = [NSString stringWithFormat:@"A network error encountered while trying to reach projector at %@.", projector.host];
