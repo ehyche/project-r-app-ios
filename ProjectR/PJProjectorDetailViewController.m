@@ -20,6 +20,8 @@
  * Host                          <Host> (UITableViewCellStyleValue1)
  * Port                          <Port> (UITableViewCellStyleValue1)
  * State       <Text Connection Status> (UITableViewCellStyleValue1)
+ * Use Password                UISwitch (UITableViewCellStyleDefault)
+ * Password                 UITextField (UITableViewCellStyleDefault)
  *
  * Status
  *
@@ -67,13 +69,15 @@ NSInteger const kPJProjectorDetailSectionInputs             = 2;
 NSInteger const kPJProjectorDetailSectionErrors             = 3;
 NSInteger const kPJProjectorDetailSectionLamps              = 4;
 NSInteger const kPJProjectorDetailSectionInfo               = 5;
-NSInteger const kPJProjectorDetailConnectionSectionRowCount = 3;
+NSInteger const kPJProjectorDetailConnectionSectionRowCount = 5;
 NSInteger const kPJProjectorDetailStatusSectionRowCount     = 4;
 NSInteger const kPJProjectorDetailErrorsSectionRowCount     = 6;
 NSInteger const kPJProjectorDetailInfoSectionRowCount       = 5;
 NSInteger const kPJProjectorDetailHostRow                   = 0;
 NSInteger const kPJProjectorDetailPortRow                   = 1;
 NSInteger const kPJProjectorDetailConnectionStateRow        = 2;
+NSInteger const kPJProjectorDetailUsePasswordRow            = 3;
+NSInteger const kPJProjectorDetailPasswordRow               = 4;
 NSInteger const kPJProjectorDetailPowerStatusRow            = 0;
 NSInteger const kPJProjectorDetailPowerToggleRow            = 1;
 NSInteger const kPJProjectorDetailAudioMuteRow              = 2;
@@ -90,8 +94,10 @@ NSInteger const kPJProjectorDetailProductInfoRow            = 2;
 NSInteger const kPJProjectorDetailOtherInfoRow              = 3;
 NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
 
-@interface PJProjectorDetailViewController ()
+@interface PJProjectorDetailViewController () <UITextFieldDelegate>
 
+@property(nonatomic,strong) UISwitch*                usePasswordSwitch;
+@property(nonatomic,strong) UITextField*             passwordTextField;
 @property(nonatomic,strong) UISwitch*                powerSwitch;
 @property(nonatomic,strong) UISwitch*                audioMuteSwitch;
 @property(nonatomic,strong) UISwitch*                videoMuteSwitch;
@@ -122,17 +128,29 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
     self = [super initWithStyle:style];
     if (self) {
         // Create the switches
-        self.powerSwitch     = [[UISwitch alloc] init];
-        self.audioMuteSwitch = [[UISwitch alloc] init];
-        self.videoMuteSwitch = [[UISwitch alloc] init];
+        self.usePasswordSwitch = [[UISwitch alloc] init];
+        self.powerSwitch       = [[UISwitch alloc] init];
+        self.audioMuteSwitch   = [[UISwitch alloc] init];
+        self.videoMuteSwitch   = [[UISwitch alloc] init];
         // Tell each switch to take on its default size
+        [self.usePasswordSwitch sizeToFit];
         [self.powerSwitch sizeToFit];
         [self.audioMuteSwitch sizeToFit];
         [self.videoMuteSwitch sizeToFit];
         // Add the target/action for each switch
-        [self.powerSwitch     addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
-        [self.audioMuteSwitch addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
-        [self.videoMuteSwitch addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
+        [self.usePasswordSwitch addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
+        [self.powerSwitch       addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
+        [self.audioMuteSwitch   addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
+        [self.videoMuteSwitch   addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
+        // Create the password text field
+        CGRect passwordTextFieldFrame = CGRectMake(0.0, 0.0, 160.0, 44.0);
+        self.passwordTextField = [[UITextField alloc] initWithFrame:passwordTextFieldFrame];
+        self.passwordTextField.delegate = self;
+        self.passwordTextField.textColor = [UIColor colorWithRed:0.556863 green:0.556863 blue:0.576471 alpha:1.0];
+        self.passwordTextField.textAlignment = NSTextAlignmentRight;
+        self.passwordTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.passwordTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.passwordTextField.enablesReturnKeyAutomatically = YES;
         // Create a spinner to be used in the right bar button item
         self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         [self.spinner sizeToFit];
@@ -216,6 +234,7 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSLog(@"XXXMEH tableView:cellForRowAtIndexPath:(%d,%d)", indexPath.section, indexPath.row);
     // Define the two cell ID's we will use
     static NSString* cellIDDefault = @"PJProjectorDetailCellIDDefault";
     static NSString* cellIDValue1  = @"PJProjectorDetailCellIDValue1";
@@ -223,7 +242,13 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
     // Determine which cell reuse ID to use
     NSString*            cellReuseID = cellIDValue1;
     UITableViewCellStyle cellStyle   = UITableViewCellStyleValue1;
-    if (indexPath.section == kPJProjectorDetailSectionStatus) {
+    if (indexPath.section == kPJProjectorDetailSectionConnection) {
+        if (indexPath.row == kPJProjectorDetailUsePasswordRow ||
+            indexPath.row == kPJProjectorDetailPasswordRow) {
+            cellReuseID = cellIDDefault;
+            cellStyle   = UITableViewCellStyleDefault;
+        }
+    } else if (indexPath.section == kPJProjectorDetailSectionStatus) {
         if (indexPath.row != kPJProjectorDetailPowerStatusRow) {
             cellReuseID = cellIDDefault;
             cellStyle   = UITableViewCellStyleDefault;
@@ -257,6 +282,12 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
         } else if (indexPath.row == kPJProjectorDetailConnectionStateRow) {
             cell.textLabel.text       = @"State";
             cell.detailTextLabel.text = [PJProjector stringForConnectionState:self.projector.connectionState];
+        } else if (indexPath.row == kPJProjectorDetailUsePasswordRow) {
+            cell.textLabel.text = @"Use Password";
+            cell.accessoryView  = self.usePasswordSwitch;
+        } else if (indexPath.row == kPJProjectorDetailPasswordRow) {
+            cell.textLabel.text = @"Password";
+            cell.accessoryView  = self.passwordTextField;
         }
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     } else if (indexPath.section == kPJProjectorDetailSectionStatus) {
@@ -297,12 +328,11 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
         } else if (indexPath.row == self.pendingActiveInputIndex) {
             cell.accessoryView = self.activityIndicatorView;
-            cell.accessoryType = UITableViewCellAccessoryNone;
+            [self.activityIndicatorView startAnimating];
         } else {
             cell.accessoryView = nil;
             cell.accessoryType = UITableViewCellAccessoryNone;
         }
-        cell.accessoryType = (indexPath.row == self.projector.activeInputIndex ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone);
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;
     } else if (indexPath.section == kPJProjectorDetailSectionErrors) {
         //
@@ -421,16 +451,42 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
             [self.activityIndicatorView startAnimating];
             // Reload the row at this index path
             [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+//            [tableView reloadSections:[NSIndexSet indexSetWithIndex:kPJProjectorDetailSectionInputs] withRowAnimation:UITableViewRowAnimationNone];
             // A change in the input is requested
             [self.projector requestInputChangeToInputIndex:indexPath.row];
         }
     }
 }
 
+#pragma mark - UITextFieldDelegate methods
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return YES;
+}
+
 #pragma mark - PJProjectorDetailViewController private methods
 
 - (void)switchValueChanged:(id)sender {
-    if (sender == self.powerSwitch) {
+    [self resignFirstResponderIfNecessary];
+    if (sender == self.usePasswordSwitch) {
+        if (self.usePasswordSwitch.isOn) {
+            if ([self.passwordTextField.text length] > 0) {
+                self.projector.password = self.passwordTextField.text;
+            }
+        } else {
+            // Clear the password in the model
+            self.projector.password = nil;
+        }
+    } else if (sender == self.powerSwitch) {
         // Request a power change
         [self.projector requestPowerStateChange:self.powerSwitch.isOn];
     } else if (sender == self.audioMuteSwitch) {
@@ -541,10 +597,21 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
     self.videoMuteSwitch.on = self.projector.isVideoMuted;
 }
 
+- (void)updatePassword {
+    if ([self.projector.password length] > 0) {
+        self.usePasswordSwitch.on   = YES;
+        self.passwordTextField.text = self.projector.password;
+    } else {
+        self.usePasswordSwitch.on   = NO;
+        self.passwordTextField.text = nil;
+    }
+}
+
 - (void)dataDidChange {
     [self updatePowerSwitchState];
     [self updateAudioMuteSwitchState];
     [self updateVideoMuteSwitchState];
+    [self updatePassword];
     [self.tableView reloadData];
     // If the pending input is now the same as the active input,
     // then re-set the active input index back to -1
@@ -552,6 +619,12 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
     if (self.pendingActiveInputIndex == self.projector.activeInputIndex) {
         self.pendingActiveInputIndex = -1;
         [self.activityIndicatorView stopAnimating];
+    }
+}
+
+- (void)resignFirstResponderIfNecessary {
+    if ([self.passwordTextField isFirstResponder]) {
+        [self.passwordTextField resignFirstResponder];
     }
 }
 
