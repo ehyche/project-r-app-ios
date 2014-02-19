@@ -49,6 +49,9 @@
 {
     [super viewDidLoad];
 
+    // Tell the projector manager to start refreshing
+    [[PJProjectorManager sharedManager] beginRefreshingAllProjectorsForReason:PJRefreshReasonAppStateChange];
+
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 

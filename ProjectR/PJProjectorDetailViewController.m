@@ -234,7 +234,6 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"XXXMEH tableView:cellForRowAtIndexPath:(%d,%d)", indexPath.section, indexPath.row);
     // Define the two cell ID's we will use
     static NSString* cellIDDefault = @"PJProjectorDetailCellIDDefault";
     static NSString* cellIDValue1  = @"PJProjectorDetailCellIDValue1";

@@ -23,6 +23,8 @@ extern NSString* const kPJProjectorManagerKeyProjectors;
 - (BOOL)addProjectorsToManager:(NSArray*)projectors;
 // Remove an array of PJProjector's
 - (void)removeProjectorsFromManager:(NSArray*)projectors;
+// Start refreshing all projectors
+- (void)beginRefreshingAllProjectorsForReason:(PJRefreshReason)reason;
 
 // Look up a projector by its host name
 - (PJProjector*)projectorForHost:(NSString*)host;

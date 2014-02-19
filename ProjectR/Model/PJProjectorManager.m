@@ -62,9 +62,6 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
         if (success) {
             // Subscribe to notifications for these projectors
             [self subscribeToNotificationsForAllProjectors];
-            // We were able to unarchive some projectors
-            // so we need to start refreshing them
-            [self beginRefreshingAllProjectorsForReason:PJRefreshReasonAppStateChange];
         }
     }
 
@@ -159,6 +156,14 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
             [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:mutableIndexSet forKey:kPJProjectorManagerKeyProjectors];
             // We need to update the archive
             [self archiveProjectors];
+        }
+    }
+}
+
+- (void)beginRefreshingAllProjectorsForReason:(PJRefreshReason)reason {
+    if ([self.mutableProjectors count] > 0) {
+        for (PJProjector* projector in self.mutableProjectors) {
+            [self beginRefreshingProjector:projector forReason:reason];
         }
     }
 }
@@ -419,6 +424,17 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
                 [self.mutableProjectors setArray:projectors];
                 // Set the return value
                 ret = YES;
+                // XXXMEH - workaround for PJProjector bug. When unarchiving, then
+                // if the projector has a password, then the default credential
+                // needs to be set into the PJLink client. Manually setting the
+                // password accomplishes the same thing.
+                for (PJProjector* projector in projectors) {
+                    if ([projector.password length] > 0) {
+                        NSString* password = projector.password;
+                        projector.password = nil;
+                        projector.password = password;
+                    }
+                }
             }
         } else {
             // No archive exists
@@ -452,17 +468,12 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
 }
 
 - (void)beginRefreshingProjector:(PJProjector*)projector forReason:(PJRefreshReason)reason {
-    // Tell the projector to refresh itself
-    [projector refreshAllQueriesForReason:reason];
-    // Turn on the refresh timer
-    projector.refreshTimerOn = YES;
-}
-
-- (void)beginRefreshingAllProjectorsForReason:(PJRefreshReason)reason {
-    if ([self.mutableProjectors count] > 0) {
-        for (PJProjector* projector in self.mutableProjectors) {
-            [self beginRefreshingProjector:projector forReason:reason];
-        }
+    if (projector.connectionState != PJConnectionStateConnected &&
+        projector.connectionState != PJConnectionStateConnecting) {
+        // Tell the projector to refresh itself
+        [projector refreshAllQueriesForReason:reason];
+        // Turn on the refresh timer
+        projector.refreshTimerOn = YES;
     }
 }
 
