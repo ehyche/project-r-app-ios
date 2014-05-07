@@ -22,9 +22,9 @@ CGFloat   const kPJManualAddRowHeightPicker      = 200.0;
 CGFloat   const kPJManualAddDetectionTimeout     =   5.0;
 NSInteger const kPJManualAddAlertTagSubnet       =  10;
 NSInteger const kPJManualAddAlertTagPort         =  20;
-NSInteger const kPJManualAddAlertTagPostDetect   =  30;
 NSInteger const kPJManualAddAlertTagNoDetect     =  40;
 NSInteger const kPJManualAddAlertTagPostAdd      =  50;
+CGFloat   const kPJManualAddButtonHeight         =  64.0;
 
 @interface PJManualAddTableViewController () <UIPickerViewDataSource,
                                               UIPickerViewDelegate,
@@ -40,9 +40,9 @@ NSInteger const kPJManualAddAlertTagPostAdd      =  50;
 @property(nonatomic,strong) UIColor*                 hostColorNormal;
 @property(nonatomic,strong) UIColor*                 hostColorWhenPickerDisplayed;
 @property(nonatomic,strong) AFPJLinkClient*          pjlinkClient;
-@property(nonatomic,strong) UIBarButtonItem*         addBarButtonItem;
 @property(nonatomic,strong) UIActivityIndicatorView* spinner;
 @property(nonatomic,strong) UIBarButtonItem*         spinnerBarButtonItem;
+@property(nonatomic,strong) UIButton*                addButton;
 
 @end
 
@@ -80,10 +80,6 @@ NSInteger const kPJManualAddAlertTagPostAdd      =  50;
         [self.portTextField sizeToFit];
         // Now set it to be the default PJLink port
         self.portTextField.text = [[NSNumber numberWithInteger:kDefaultPJLinkPort] stringValue];
-        // Create the add bar button item
-        self.addBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                                              target:self
-                                                                              action:@selector(addButtonTapped:)];
         // Create the spinner
         self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         [self.spinner sizeToFit];
@@ -93,6 +89,12 @@ NSInteger const kPJManualAddAlertTagPostAdd      =  50;
         self.navigationItem.title = @"Manual Add";
         // Put the add button up initially
         [self showHideActivityIndicator:NO];
+        // Create the add button
+        self.addButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.addButton.backgroundColor = [UIColor colorWithRed:0.0 green:0.7 blue:0.0 alpha:1.0];
+        [self.addButton setTitle:@"Add Projector" forState:UIControlStateNormal];
+        [self.addButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.addButton addTarget:self action:@selector(addButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     }
     return self;
 }
@@ -100,11 +102,11 @@ NSInteger const kPJManualAddAlertTagPostAdd      =  50;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-}
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonTapped:)];
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
+    self.addButton.frame = CGRectMake(0.0, 0.0, self.tableView.frame.size.width, kPJManualAddButtonHeight);
+    self.tableView.tableFooterView = self.addButton;
 }
 
 #pragma mark - UITableViewDataSource methods
@@ -298,9 +300,9 @@ NSInteger const kPJManualAddAlertTagPostAdd      =  50;
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex != alertView.cancelButtonIndex) {
-        if (alertView.tag == kPJManualAddAlertTagSubnet ||
-            alertView.tag == kPJManualAddAlertTagPostDetect) {
+        if (alertView.tag == kPJManualAddAlertTagSubnet) {
             [self addProjectorToManager];
+            [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
         }
     }
 }
@@ -336,17 +338,10 @@ NSInteger const kPJManualAddAlertTagPostAdd      =  50;
             [self detectProjectorWithHost:projectorIPAddress
                                      port:portFieldInteger
                                   success:^{
-                                      // Construct the message
-                                      NSString* message = [NSString stringWithFormat:@"Projector detected at %@:%d. Tap Add to add the projector.",
-                                                           projectorIPAddress, portFieldInteger];
-                                      // Pop up the alert view saying we detected the projector
-                                      UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Projector Detected"
-                                                                                          message:message
-                                                                                         delegate:self
-                                                                                cancelButtonTitle:@"Cancel"
-                                                                                otherButtonTitles:@"Add", nil];
-                                      alertView.tag = kPJManualAddAlertTagPostDetect;
-                                      [alertView show];
+                                      // We found a projector, so we can add it to the manager
+                                      [self addProjectorToManager];
+                                      // Now dismiss ourself
+                                      [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
                                   }
                                   failure:^(NSError* error) {
                                       // Construct the message
@@ -385,6 +380,7 @@ NSInteger const kPJManualAddAlertTagPostAdd      =  50;
 
 - (void)cancelButtonTapped:(id)sender {
     [self portTextFieldResignFirstResponderIfNeeded];
+    [self.pjlinkClient.operationQueue cancelAllOperations];
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -524,40 +520,19 @@ NSInteger const kPJManualAddAlertTagPostAdd      =  50;
     } else {
         // Stop spinning
         [self.spinner stopAnimating];
-        // Make the right bar button the add button
-        self.navigationItem.rightBarButtonItem = self.addBarButtonItem;
+        self.navigationItem.rightBarButtonItem = nil;
     }
 }
 
-- (void)addProjectorToManager {
+- (BOOL)addProjectorToManager {
     // Get the port
     NSInteger portInteger = [self.portTextField.text integerValue];
     // Create a projector
     PJProjector* projector = [[PJProjector alloc] initWithHost:self.projectorHost port:portInteger];
     // Add the projector to the projector manager
     BOOL added = [[PJProjectorManager sharedManager] addProjectorsToManager:@[projector]];
-    // Was the projector added successfully?
-    NSString* title   = nil;
-    NSString* message = nil;
-    if (added) {
-        // The projector was added successfully.
-        title   = @"Projector Added";
-        message = @"Projector was added successfully.";
-    } else {
-        // The only reason it would not be added is if it was already present.
-        // So in this case show an alert to the user saying the projector
-        // was already present.
-        title   = @"Projector Not Added";
-        message = @"This projector has already been added";
-    }
-    // Show an alert view with the result
-    UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:title
-                                                        message:message
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-    alertView.tag = kPJManualAddAlertTagPostAdd;
-    [alertView show];
+    
+    return added;
 }
 
 @end
