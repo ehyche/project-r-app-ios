@@ -39,7 +39,9 @@
             // Set the cursor to the beginning
             cursor = addrs;
             while (cursor != NULL) {
-                if (strcmp(cursor->ifa_name, "en0") == 0 && cursor->ifa_addr->sa_family == AF_INET) {
+                NSLog(@"ifa_name=%s ifa_flags=%u ifa_addr->sa_family=%u", cursor->ifa_name, cursor->ifa_flags, cursor->ifa_addr->sa_family);
+                char* interfaceName = cursor->ifa_name;
+                if (strlen(interfaceName) >= 2 && strncmp((const char*)interfaceName, "en", 2) == 0 && cursor->ifa_addr->sa_family == AF_INET) {
                     memcpy(&wifiAddress, cursor->ifa_addr, sizeof(wifiAddress));
                     memcpy(&wifiNetmask, cursor->ifa_netmask, sizeof(wifiNetmask));
                     break;
