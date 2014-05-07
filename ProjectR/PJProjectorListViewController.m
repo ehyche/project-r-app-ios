@@ -17,7 +17,7 @@
 #import "PJSubnetScannerViewController.h"
 #import "PJBeaconListenerViewController.h"
 
-@interface PJProjectorListViewController ()
+@interface PJProjectorListViewController () <UIActionSheetDelegate>
 
 @end
 
@@ -52,55 +52,31 @@
     // Tell the projector manager to start refreshing
     [[PJProjectorManager sharedManager] beginRefreshingAllProjectorsForReason:PJRefreshReasonAppStateChange];
 
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    [self updateEditButtonVisibilityAnimated:animated];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonAction:)];
 }
 
 #pragma mark - UITableViewDataSource methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 2;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSInteger ret = 0;
-
-    if (section == 0) {
-        PJProjectorManager* mgr = [PJProjectorManager sharedManager];
-        ret = [mgr countOfProjectors];
-    } else if (section == 1) {
-        ret = 3;
-    }
+    PJProjectorManager* mgr = [PJProjectorManager sharedManager];
+    NSInteger ret = [mgr countOfProjectors];
 
     return ret;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString* cellReuseIDDefault   = @"PJProjectorListCellIDDefault";
     static NSString* cellReuseIDProjector = @"PJProjectorListCellIDProjector";
 
     // Determine which cell reuse ID to use
-    NSString*            cellReuseID = nil;
+    NSString*            cellReuseID = cellReuseIDProjector;
     UITableViewCellStyle cellStyle   = UITableViewCellStyleDefault;
-    if (indexPath.section == 0) {
-        cellReuseID = cellReuseIDProjector;
-        cellStyle   = UITableViewCellStyleValue1;
-    } else if (indexPath.section == 1) {
-        cellReuseID = cellReuseIDDefault;
-        cellStyle   = UITableViewCellStyleDefault;
-    }
 
     // Re-use or create the cell
     UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:cellReuseID];
@@ -111,36 +87,19 @@
     // Configure the cell defaults
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
-    // Configure the cell
-    if (indexPath.section == 0) {
-        // Get the projector for this row
-        PJProjectorManager* mgr = [PJProjectorManager sharedManager];
-        PJProjector* projector = (PJProjector*) [mgr objectInProjectorsAtIndex:indexPath.row];
-        // The title label is the display name of the projector
-        cell.textLabel.text = [PJProjectorManager displayNameForProjector:projector];
-        // The detail is the connection state
-        cell.detailTextLabel.text = [PJProjectorManager stringForConnectionState:projector.connectionState];
-    } else if (indexPath.section == 1) {
-        if (indexPath.row == 0) {
-            cell.textLabel.text = @"Add Manually";
-        } else if (indexPath.row == 1) {
-            cell.textLabel.text = @"Scan WiFi Network";
-        } else if (indexPath.row == 2) {
-            cell.textLabel.text = @"Listen for AMX Beacons";
-        }
-    }
+    // Get the projector for this row
+    PJProjectorManager* mgr = [PJProjectorManager sharedManager];
+    PJProjector* projector = (PJProjector*) [mgr objectInProjectorsAtIndex:indexPath.row];
+    // The title label is the display name of the projector
+    cell.textLabel.text = [PJProjectorManager displayNameForProjector:projector];
+    // The detail is the connection state
+    cell.detailTextLabel.text = [PJProjectorManager stringForConnectionState:projector.connectionState];
 
     return cell;
 }
 
 - (NSString*)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    NSString* ret = nil;
-
-    if (section == 0) {
-        ret = @"Projectors";
-    } else if (section == 1) {
-        ret = @"Add Projectors";
-    }
+    NSString* ret = @"Projectors";
 
     return ret;
 }
@@ -161,69 +120,63 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return (indexPath.section == 0 ? YES : NO);
+    return YES;
 }
 
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 0) {
-        PJProjectorManager* mgr = [PJProjectorManager sharedManager];
-        // Get the projector for this row
-        PJProjector* projector = [mgr objectInProjectorsAtIndex:indexPath.row];
-        // Delete this projector
-        [mgr removeProjectorsFromManager:@[projector]];
-    }
+    PJProjectorManager* mgr = [PJProjectorManager sharedManager];
+    // Get the projector for this row
+    PJProjector* projector = [mgr objectInProjectorsAtIndex:indexPath.row];
+    // Delete this projector
+    [mgr removeProjectorsFromManager:@[projector]];
 }
 
 #pragma mark - UITableViewDelegate methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    if (indexPath.section == 0) {
-        PJProjectorManager* mgr = [PJProjectorManager sharedManager];
-        NSUInteger projectorsCount = [mgr countOfProjectors];
-        if (indexPath.row < projectorsCount) {
-            PJProjector* projector = (PJProjector*) [mgr objectInProjectorsAtIndex:indexPath.row];
-            // Create a detail view controller
-            PJProjectorDetailViewController* controller = [[PJProjectorDetailViewController alloc] init];
-            // Assign the projector to the controller
-            controller.projector = projector;
-            // Push this controller
-            [self.navigationController pushViewController:controller animated:YES];
-        }
-    } else if (indexPath.section == 1) {
-        if (indexPath.row == 0) {
-            // Manually add a projector
-            //
-            // Create a view controller to manually add a projector
-            PJManualAddTableViewController* controller = [[PJManualAddTableViewController alloc] init];
-            // Push this onto the navigation stack
-            [self.navigationController pushViewController:controller animated:YES];
-        } else if (indexPath.row == 1) {
-            // Create a subnet scanner controller
-            PJSubnetScannerViewController* controller = [[PJSubnetScannerViewController alloc] init];
-            // Push this controller onto the navigation stack
-            [self.navigationController pushViewController:controller animated:YES];
-        } else if (indexPath.row == 2) {
-            // Scan using AMX beacons
-            //
-            // Create an AMX Beacon listener view controller
-            PJBeaconListenerViewController* controller = [[PJBeaconListenerViewController alloc] init];
-            // Push this controller onto the navigation stack
-            [self.navigationController pushViewController:controller animated:YES];
-        }
+    
+    PJProjectorManager* mgr = [PJProjectorManager sharedManager];
+    NSUInteger projectorsCount = [mgr countOfProjectors];
+    if (indexPath.row < projectorsCount) {
+        PJProjector* projector = (PJProjector*) [mgr objectInProjectorsAtIndex:indexPath.row];
+        // Create a detail view controller
+        PJProjectorDetailViewController* controller = [[PJProjectorDetailViewController alloc] init];
+        // Assign the projector to the controller
+        controller.projector = projector;
+        // Push this controller
+        [self.navigationController pushViewController:controller animated:YES];
     }
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCellEditingStyle ret = UITableViewCellEditingStyleNone;
-
-    if (indexPath.section == 0) {
-        ret = UITableViewCellEditingStyleDelete;
-    }
+    UITableViewCellEditingStyle ret = UITableViewCellEditingStyleDelete;
 
     return ret;
+}
+
+#pragma mark - UIActionSheetDelegate methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    UIViewController* controller = nil;
+    if (buttonIndex == 0) {
+        // Manually add a projector
+        controller = [[PJManualAddTableViewController alloc] init];
+    } else if (buttonIndex == 1) {
+        // Create a subnet scanner controller
+        controller = [[PJSubnetScannerViewController alloc] init];
+    } else if (buttonIndex == 2) {
+        // Create an AMX Beacon listener view controller
+        controller = [[PJBeaconListenerViewController alloc] init];
+    }
+    if (controller != nil) {
+        // Wrap this in a UINavigationController
+        UINavigationController* navController = [[UINavigationController alloc] initWithRootViewController:controller];
+        // Present this controller
+        [self presentViewController:navController animated:YES completion:nil];
+    }
 }
 
 #pragma mark - PJProjectorListViewController private methods
@@ -277,7 +230,6 @@
 - (void)projectorsDidChange {
     [self.tableView reloadData];
     [self checkToDismissEditingMode];
-    [self updateEditButtonVisibilityAnimated:NO];
 }
 
 - (void)projectorsWereInserted:(NSIndexSet*)indexSet {
@@ -291,7 +243,6 @@
         [self.tableView insertRowsAtIndexPaths:[indexSet indexPathsForSection:0] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
     [self checkToDismissEditingMode];
-    [self updateEditButtonVisibilityAnimated:NO];
 }
 
 - (void)projectorsWereRemoved:(NSIndexSet*)indexSet {
@@ -304,7 +255,6 @@
         [self.tableView deleteRowsAtIndexPaths:[indexSet indexPathsForSection:0] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
     [self checkToDismissEditingMode];
-    [self updateEditButtonVisibilityAnimated:NO];
 
 }
 
@@ -317,22 +267,6 @@
     self.navigationItem.title = @"ProjectR";
 }
 
-- (void)updateEditButtonVisibilityAnimated:(BOOL)animated {
-    // If we have at least one projector, then we need an Edit button.
-    // Otherwise, we don't.
-    PJProjectorManager* mgr = [PJProjectorManager sharedManager];
-    BOOL showEditButton = ([mgr countOfProjectors] > 0);
-    [self showHideEditButton:showEditButton animated:animated];
-}
-
-- (void)showHideEditButton:(BOOL)show animated:(BOOL)animated {
-    if (show) {
-        [self.navigationItem setRightBarButtonItem:self.editButtonItem animated:animated];
-    } else {
-        [self.navigationItem setRightBarButtonItem:nil animated:animated];
-    }
-}
-
 - (void)checkToDismissEditingMode {
     if (self.editing) {
         // We are in editing mode. If we don't have any more projectors
@@ -343,6 +277,15 @@
             self.editing = NO;
         }
     }
+}
+
+- (void)addButtonAction:(id)sender {
+    UIActionSheet* addActionSheet = [[UIActionSheet alloc] initWithTitle:@"Add A Projector"
+                                                                delegate:self
+                                                       cancelButtonTitle:@"Cancel"
+                                                  destructiveButtonTitle:nil
+                                                       otherButtonTitles:@"Add Manually", @"Scan WiFi Network", @"Listen for AMX Beacons", nil];
+    [addActionSheet showFromBarButtonItem:sender animated:YES];
 }
 
 @end
