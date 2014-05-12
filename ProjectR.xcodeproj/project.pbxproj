@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2BF8F08CA0A44E92BD0E14AF /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E3AB62D7AE546C993AC6D44 /* libPods.a */; };
 		FD071ADE18765FD30020B192 /* PJProjectorDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD071ADD18765FD30020B192 /* PJProjectorDetailViewController.m */; };
+		FD0FED5F191FFC2400373AA6 /* UIImage+SolidColor.m in Sources */ = {isa = PBXBuildFile; fileRef = FD0FED5E191FFC2400373AA6 /* UIImage+SolidColor.m */; };
 		FD11FED41895DFFA00C69F96 /* PJBeaconListenerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD11FED31895DFFA00C69F96 /* PJBeaconListenerViewController.m */; };
 		FD275AAF1792388100DA9786 /* PJAMXBeaconListener.m in Sources */ = {isa = PBXBuildFile; fileRef = FD275AAE1792388100DA9786 /* PJAMXBeaconListener.m */; };
 		FD275AB4179238C300DA9786 /* PJAMXBeaconHost.m in Sources */ = {isa = PBXBuildFile; fileRef = FD275AB3179238C300DA9786 /* PJAMXBeaconHost.m */; };
@@ -25,6 +26,7 @@
 		FD41B20517AE136C00502703 /* PJInterfaceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = FD41B20417AE136C00502703 /* PJInterfaceInfo.m */; };
 		FDB9161317AC9B850098755A /* PJLinkSubnetScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */; };
 		FDDA57DC1793BA58007B49D0 /* PJProjectorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */; };
+		FDDA6A55192066AA00757F96 /* PJSubnetScannerProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDA6A54192066AA00757F96 /* PJSubnetScannerProgressView.m */; };
 		FDDAEE65188DFDB80015D2E3 /* PJSubnetScannerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDAEE64188DFDB80015D2E3 /* PJSubnetScannerViewController.m */; };
 		FDDEA682187FA1E400C07EB8 /* NSIndexSet+NSIndexPath.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDEA681187FA1E400C07EB8 /* NSIndexSet+NSIndexPath.m */; };
 		FDEF71691878F963002FA55F /* PJProjectorListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEF71681878F963002FA55F /* PJProjectorListViewController.m */; };
@@ -36,6 +38,8 @@
 		6B27D3B044CC4AFEB5884882 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		FD071ADC18765FD30020B192 /* PJProjectorDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJProjectorDetailViewController.h; sourceTree = "<group>"; };
 		FD071ADD18765FD30020B192 /* PJProjectorDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJProjectorDetailViewController.m; sourceTree = "<group>"; };
+		FD0FED5D191FFC2400373AA6 /* UIImage+SolidColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+SolidColor.h"; sourceTree = "<group>"; };
+		FD0FED5E191FFC2400373AA6 /* UIImage+SolidColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+SolidColor.m"; sourceTree = "<group>"; };
 		FD11FED21895DFFA00C69F96 /* PJBeaconListenerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJBeaconListenerViewController.h; sourceTree = "<group>"; };
 		FD11FED31895DFFA00C69F96 /* PJBeaconListenerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJBeaconListenerViewController.m; sourceTree = "<group>"; };
 		FD275AAD1792388100DA9786 /* PJAMXBeaconListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJAMXBeaconListener.h; path = AMX/PJAMXBeaconListener.h; sourceTree = "<group>"; };
@@ -62,6 +66,8 @@
 		FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PJLinkSubnetScanner.m; path = SubnetScanner/PJLinkSubnetScanner.m; sourceTree = "<group>"; };
 		FDDA57DA1793BA58007B49D0 /* PJProjectorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJProjectorManager.h; path = Model/PJProjectorManager.h; sourceTree = "<group>"; };
 		FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PJProjectorManager.m; path = Model/PJProjectorManager.m; sourceTree = "<group>"; };
+		FDDA6A53192066AA00757F96 /* PJSubnetScannerProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJSubnetScannerProgressView.h; sourceTree = "<group>"; };
+		FDDA6A54192066AA00757F96 /* PJSubnetScannerProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJSubnetScannerProgressView.m; sourceTree = "<group>"; };
 		FDDAEE63188DFDB80015D2E3 /* PJSubnetScannerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJSubnetScannerViewController.h; sourceTree = "<group>"; };
 		FDDAEE64188DFDB80015D2E3 /* PJSubnetScannerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJSubnetScannerViewController.m; sourceTree = "<group>"; };
 		FDDEA680187FA1E400C07EB8 /* NSIndexSet+NSIndexPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexSet+NSIndexPath.h"; sourceTree = "<group>"; };
@@ -130,6 +136,7 @@
 		FD2C35C7178A305A0080B1B7 /* ProjectR */ = {
 			isa = PBXGroup;
 			children = (
+				FDDA6A521920667300757F96 /* Views */,
 				FDDEA67C187FA19300C07EB8 /* Categories */,
 				FDEF71661878F8F1002FA55F /* View Controllers */,
 				FD5AA27517A8B100004B5269 /* Subnet Scanner */,
@@ -177,11 +184,22 @@
 			name = "Subnet Scanner";
 			sourceTree = "<group>";
 		};
+		FDDA6A521920667300757F96 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				FDDA6A53192066AA00757F96 /* PJSubnetScannerProgressView.h */,
+				FDDA6A54192066AA00757F96 /* PJSubnetScannerProgressView.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
 		FDDEA67C187FA19300C07EB8 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
 				FDDEA680187FA1E400C07EB8 /* NSIndexSet+NSIndexPath.h */,
 				FDDEA681187FA1E400C07EB8 /* NSIndexSet+NSIndexPath.m */,
+				FD0FED5D191FFC2400373AA6 /* UIImage+SolidColor.h */,
+				FD0FED5E191FFC2400373AA6 /* UIImage+SolidColor.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -309,7 +327,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				FD2C35CE178A305A0080B1B7 /* main.m in Sources */,
+				FD0FED5F191FFC2400373AA6 /* UIImage+SolidColor.m in Sources */,
 				FD2C35D2178A305A0080B1B7 /* PJAppDelegate.m in Sources */,
+				FDDA6A55192066AA00757F96 /* PJSubnetScannerProgressView.m in Sources */,
 				FD11FED41895DFFA00C69F96 /* PJBeaconListenerViewController.m in Sources */,
 				FD275AAF1792388100DA9786 /* PJAMXBeaconListener.m in Sources */,
 				FD275AB4179238C300DA9786 /* PJAMXBeaconHost.m in Sources */,
