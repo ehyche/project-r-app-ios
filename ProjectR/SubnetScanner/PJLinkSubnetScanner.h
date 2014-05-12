@@ -20,6 +20,12 @@ NSString* const PJLinkSubnetScannerScannedHostKey;
 
 @interface PJLinkSubnetScanner : NSObject
 
+// This should be set to YES if we should include the
+// device address in the set of IP addresses we scan.
+// Mostly this would just be used for testing when using
+// the simulator and the emulator on the same machine.
+@property(nonatomic,assign) BOOL shouldIncludeDeviceAddress;
+
 @property(nonatomic,readonly,getter=isScanning) BOOL      scanning;
 @property(nonatomic,readonly,assign)            CGFloat   progress; // In the range [0.0,1.0]
 @property(nonatomic,readonly,copy)              NSString* scannedHost;

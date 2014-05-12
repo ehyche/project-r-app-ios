@@ -122,6 +122,7 @@ NSInteger      const kPJLinkScannerProjectorChallengeTag = 10;
             if (_originalSubnetHostsCount > 0) {
                 // Set the flag saying we are scanning
                 _scanning = YES;
+                _abort    = NO;
                 // Save the hosts into the mutable array
                 [_mutableSubnetHosts setArray:subnetHosts];
                 // Send the notification saying we are beginning scanning
@@ -247,7 +248,7 @@ shouldTimeoutReadWithTag:(long)tag
         // Set the cursor to the beginning
         cursor = addrs;
         while (cursor != NULL) {
-            if (strcmp(cursor->ifa_name, "en0") == 0 && cursor->ifa_addr->sa_family == AF_INET) {
+            if (strlen(cursor->ifa_name) >= 2 && strncmp((const char*)cursor->ifa_name, "en", 2) == 0 && cursor->ifa_addr->sa_family == AF_INET) {
                 memcpy(&wifiAddress, cursor->ifa_addr, sizeof(wifiAddress));
                 memcpy(&wifiNetmask, cursor->ifa_netmask, sizeof(wifiNetmask));
                 break;
@@ -288,9 +289,11 @@ shouldTimeoutReadWithTag:(long)tag
             uint32_t s_addr = addressNetmaskAND | addr_host;
             subnetAddress.sin_addr.s_addr = s_addr;
             NSString* hostStr = [PJLinkSubnetScanner hostFromSockaddr4:&subnetAddress];
-            if ([hostStr length] > 0 && ![hostStr isEqualToString:selfHost] && ![tmpSet containsObject:hostStr]) {
-                [tmpArray addObject:hostStr];
-                [tmpSet addObject:hostStr];
+            if ([hostStr length] > 0 && ![tmpSet containsObject:hostStr]) {
+                if (![hostStr isEqualToString:selfHost] || self.shouldIncludeDeviceAddress) {
+                    [tmpArray addObject:hostStr];
+                    [tmpSet addObject:hostStr];
+                }
             }
         }
         if (scanStart > 0) {
@@ -299,9 +302,11 @@ shouldTimeoutReadWithTag:(long)tag
                 uint32_t s_addr = addressNetmaskAND | addr_host;
                 subnetAddress.sin_addr.s_addr = s_addr;
                 NSString* hostStr = [PJLinkSubnetScanner hostFromSockaddr4:&subnetAddress];
-                if ([hostStr length] > 0 && ![hostStr isEqualToString:selfHost] && ![tmpSet containsObject:hostStr]) {
-                    [tmpArray addObject:hostStr];
-                    [tmpSet addObject:hostStr];
+                if ([hostStr length] > 0 && ![tmpSet containsObject:hostStr]) {
+                    if (![hostStr isEqualToString:selfHost] || self.shouldIncludeDeviceAddress) {
+                        [tmpArray addObject:hostStr];
+                        [tmpSet addObject:hostStr];
+                    }
                 }
             }
         }
