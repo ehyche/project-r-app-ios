@@ -13,6 +13,7 @@
 #import "AFPJLinkClient.h"
 #import "PJURLProtocolRunLoop.h"
 #import "PJProjectorManager.h"
+#import "UIImage+SolidColor.h"
 
 NSInteger const kPJManualAddIPPickerFontSize     =  17.0;
 CGFloat   const kPJManualAddPickerComponentWidth =  50.0;
@@ -91,7 +92,9 @@ CGFloat   const kPJManualAddButtonHeight         =  64.0;
         [self showHideActivityIndicator:NO];
         // Create the add button
         self.addButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        self.addButton.backgroundColor = [UIColor colorWithRed:0.0 green:0.7 blue:0.0 alpha:1.0];
+        CGSize imageSize = CGSizeMake(8.0, 8.0);
+        [self.addButton setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:0.0 green:0.7 blue:0.0 alpha:1.0] size:imageSize] forState:UIControlStateNormal];
+        [self.addButton setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:0.0 green:0.6 blue:0.0 alpha:1.0] size:imageSize] forState:UIControlStateHighlighted];
         [self.addButton setTitle:@"Add Projector" forState:UIControlStateNormal];
         [self.addButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [self.addButton addTarget:self action:@selector(addButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
