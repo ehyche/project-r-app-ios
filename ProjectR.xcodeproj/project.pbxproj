@@ -26,7 +26,7 @@
 		FD41B20517AE136C00502703 /* PJInterfaceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = FD41B20417AE136C00502703 /* PJInterfaceInfo.m */; };
 		FDB9161317AC9B850098755A /* PJLinkSubnetScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */; };
 		FDDA57DC1793BA58007B49D0 /* PJProjectorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */; };
-		FDDA6A55192066AA00757F96 /* PJSubnetScannerProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDA6A54192066AA00757F96 /* PJSubnetScannerProgressView.m */; };
+		FDDA6A55192066AA00757F96 /* PJLabeledProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDA6A54192066AA00757F96 /* PJLabeledProgressView.m */; };
 		FDDAEE65188DFDB80015D2E3 /* PJSubnetScannerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDAEE64188DFDB80015D2E3 /* PJSubnetScannerViewController.m */; };
 		FDDEA682187FA1E400C07EB8 /* NSIndexSet+NSIndexPath.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDEA681187FA1E400C07EB8 /* NSIndexSet+NSIndexPath.m */; };
 		FDEF71691878F963002FA55F /* PJProjectorListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEF71681878F963002FA55F /* PJProjectorListViewController.m */; };
@@ -66,8 +66,8 @@
 		FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PJLinkSubnetScanner.m; path = SubnetScanner/PJLinkSubnetScanner.m; sourceTree = "<group>"; };
 		FDDA57DA1793BA58007B49D0 /* PJProjectorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJProjectorManager.h; path = Model/PJProjectorManager.h; sourceTree = "<group>"; };
 		FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PJProjectorManager.m; path = Model/PJProjectorManager.m; sourceTree = "<group>"; };
-		FDDA6A53192066AA00757F96 /* PJSubnetScannerProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJSubnetScannerProgressView.h; sourceTree = "<group>"; };
-		FDDA6A54192066AA00757F96 /* PJSubnetScannerProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJSubnetScannerProgressView.m; sourceTree = "<group>"; };
+		FDDA6A53192066AA00757F96 /* PJLabeledProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJLabeledProgressView.h; sourceTree = "<group>"; };
+		FDDA6A54192066AA00757F96 /* PJLabeledProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJLabeledProgressView.m; sourceTree = "<group>"; };
 		FDDAEE63188DFDB80015D2E3 /* PJSubnetScannerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJSubnetScannerViewController.h; sourceTree = "<group>"; };
 		FDDAEE64188DFDB80015D2E3 /* PJSubnetScannerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJSubnetScannerViewController.m; sourceTree = "<group>"; };
 		FDDEA680187FA1E400C07EB8 /* NSIndexSet+NSIndexPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexSet+NSIndexPath.h"; sourceTree = "<group>"; };
@@ -187,8 +187,8 @@
 		FDDA6A521920667300757F96 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				FDDA6A53192066AA00757F96 /* PJSubnetScannerProgressView.h */,
-				FDDA6A54192066AA00757F96 /* PJSubnetScannerProgressView.m */,
+				FDDA6A53192066AA00757F96 /* PJLabeledProgressView.h */,
+				FDDA6A54192066AA00757F96 /* PJLabeledProgressView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -329,7 +329,7 @@
 				FD2C35CE178A305A0080B1B7 /* main.m in Sources */,
 				FD0FED5F191FFC2400373AA6 /* UIImage+SolidColor.m in Sources */,
 				FD2C35D2178A305A0080B1B7 /* PJAppDelegate.m in Sources */,
-				FDDA6A55192066AA00757F96 /* PJSubnetScannerProgressView.m in Sources */,
+				FDDA6A55192066AA00757F96 /* PJLabeledProgressView.m in Sources */,
 				FD11FED41895DFFA00C69F96 /* PJBeaconListenerViewController.m in Sources */,
 				FD275AAF1792388100DA9786 /* PJAMXBeaconListener.m in Sources */,
 				FD275AB4179238C300DA9786 /* PJAMXBeaconHost.m in Sources */,

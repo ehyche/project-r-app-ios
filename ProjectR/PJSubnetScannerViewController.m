@@ -12,7 +12,7 @@
 #import "PJProjectorManager.h"
 #import "PJInterfaceInfo.h"
 #import "UIImage+SolidColor.h"
-#import "PJSubnetScannerProgressView.h"
+#import "PJLabeledProgressView.h"
 
 CGFloat const kPJSubnetScannerButtonHeight = 64.0;
 
@@ -20,7 +20,7 @@ CGFloat const kPJSubnetScannerButtonHeight = 64.0;
 
 @property(nonatomic,strong) PJLinkSubnetScanner*         scanner;
 @property(nonatomic,strong) UIButton*                    button;
-@property(nonatomic,strong) PJSubnetScannerProgressView* progressView;
+@property(nonatomic,strong) PJLabeledProgressView* progressView;
 
 @end
 
@@ -67,7 +67,7 @@ CGFloat const kPJSubnetScannerButtonHeight = 64.0;
         [self.button setTitle:@"Cancel Scanning" forState:UIControlStateSelected | UIControlStateHighlighted];
         [self.button addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
         // Create the progress view
-        self.progressView = [[PJSubnetScannerProgressView alloc] init];
+        self.progressView = [[PJLabeledProgressView alloc] init];
         [self.progressView sizeToFit];
     }
 
