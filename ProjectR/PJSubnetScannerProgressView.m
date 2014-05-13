@@ -11,7 +11,7 @@
 CGFloat const kPJSubnetScannerProgressViewHeight                  = 56.0;
 CGFloat const kPJSubnetScannerProgressViewMarginLeftRight         = 10.0;
 CGFloat const kPJSubnetScannerProgressViewMarginBottom            = 10.0;
-CGFloat const kPJSubnetScannerProgressViewMarginTop               = 10.0;
+CGFloat const kPJSubnetScannerProgressViewMarginTop               = 20.0;
 CGFloat const kPJSubnetScannerProgressViewBetweenLabelAndProgress =  5.0;
 
 @interface PJSubnetScannerProgressView()
@@ -30,10 +30,10 @@ CGFloat const kPJSubnetScannerProgressViewBetweenLabelAndProgress =  5.0;
     }
 }
 
-- (void)setCurrentHost:(NSString *)currentHost {
-    if (![_currentHost isEqualToString:currentHost]) {
-        _currentHost = [currentHost copy];
-        [self currentHostDidChange];
+- (void)setProgressText:(NSString *)progressText {
+    if (![_progressText isEqualToString:progressText]) {
+        _progressText = [progressText copy];
+        [self progressTextDidChange];
     }
 }
 
@@ -59,7 +59,11 @@ CGFloat const kPJSubnetScannerProgressViewBetweenLabelAndProgress =  5.0;
     CGFloat progressViewHeight = self.progressView.frame.size.height;
 
     // Get the height of the label
-    CGSize textSize = [@"Scanning" sizeWithFont:self.label.font];
+    NSString* text = self.label.text;
+    if ([text length] == 0) {
+        text = @"Scanning";
+    }
+    CGSize textSize = [text sizeWithFont:self.label.font];
     
     // Compute the overall height of the view
     CGFloat viewHeight = kPJSubnetScannerProgressViewMarginTop +
@@ -67,7 +71,7 @@ CGFloat const kPJSubnetScannerProgressViewBetweenLabelAndProgress =  5.0;
                          kPJSubnetScannerProgressViewBetweenLabelAndProgress +
                          progressViewHeight +
                          kPJSubnetScannerProgressViewMarginBottom;
-    CGSize retSize = CGSizeMake(size.width, viewHeight);
+    CGSize retSize = CGSizeMake(self.frame.size.width, viewHeight);
 
     return retSize;
 }
@@ -95,17 +99,12 @@ CGFloat const kPJSubnetScannerProgressViewBetweenLabelAndProgress =  5.0;
 
 - (void)progressDidChange {
     self.progressView.progress = self.progress;
-    [self updateProgressLabel];
-    [self setNeedsLayout];
+    [self setNeedsDisplay];
 }
 
-- (void)currentHostDidChange {
-    [self updateProgressLabel];
+- (void)progressTextDidChange {
+    self.label.text = self.progressText;
     [self setNeedsLayout];
-}
-
-- (void)updateProgressLabel {
-    self.label.text = [NSString stringWithFormat:@"Scanning %@ (%.0f%%)", self.currentHost, self.progress * 100.0];
 }
 
 @end

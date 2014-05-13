@@ -203,7 +203,8 @@ CGFloat const kPJSubnetScannerButtonHeight = 64.0;
 }
 
 - (void)scannedHostDidChange:(NSNotification*)notification {
-    self.progressView.currentHost = self.scanner.scannedHost;
+    NSString* progressText = [NSString stringWithFormat:@"Scanning %@ (%.0f%%)", self.scanner.scannedHost, self.progressView.progress * 100.0];
+    self.progressView.progressText = progressText;
 }
 
 - (void)scannerProjectorHostsDidChange:(NSNotification*)notification {
@@ -247,6 +248,9 @@ CGFloat const kPJSubnetScannerButtonHeight = 64.0;
 
 - (void)showHideProgressView:(BOOL)show {
     if (show) {
+        CGSize progressViewSizeThatFits = [self.progressView sizeThatFits:self.tableView.frame.size];
+        CGRect progressViewFrame = CGRectMake(0.0, 0.0, self.tableView.frame.size.width, progressViewSizeThatFits.height);
+        self.progressView.frame = progressViewFrame;
         self.tableView.tableHeaderView = self.progressView;
     } else {
         self.tableView.tableHeaderView = nil;

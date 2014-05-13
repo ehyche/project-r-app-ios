@@ -10,7 +10,7 @@
 
 @interface PJSubnetScannerProgressView : UIView
 
-@property(nonatomic,copy)   NSString* currentHost;
+@property(nonatomic,copy)   NSString* progressText;
 @property(nonatomic,assign) CGFloat   progress;
 
 @end
