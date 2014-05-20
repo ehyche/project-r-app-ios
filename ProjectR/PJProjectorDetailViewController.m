@@ -101,9 +101,6 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
 @property(nonatomic,strong) UISwitch*                powerSwitch;
 @property(nonatomic,strong) UISwitch*                audioMuteSwitch;
 @property(nonatomic,strong) UISwitch*                videoMuteSwitch;
-@property(nonatomic,strong) UIActivityIndicatorView* spinner;
-@property(nonatomic,strong) UIBarButtonItem*         spinnerBarButtonItem;
-@property(nonatomic,strong) UIBarButtonItem*         refreshBarButtonItem;
 @property(nonatomic,assign) NSInteger                pendingActiveInputIndex;
 @property(nonatomic,strong) UIActivityIndicatorView* activityIndicatorView;
 @property(nonatomic,strong) UIColor*                 detailTextColorErrorCellOK;
@@ -151,24 +148,11 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
         self.passwordTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.passwordTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         self.passwordTextField.enablesReturnKeyAutomatically = YES;
-        // Create a spinner to be used in the right bar button item
-        self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        [self.spinner sizeToFit];
-        // Create a bar button item with the spinner in it
-        self.spinnerBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.spinner];
-        // Create a manual refreh bar button item
-        self.refreshBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                                                                                  target:self
-                                                                                  action:@selector(refreshBarButtonItemTapped:)];
-        // Initially show the refresh button
-        self.navigationItem.rightBarButtonItem = self.refreshBarButtonItem;
         // Init the pending active input index
         self.pendingActiveInputIndex = -1;
         // Create the spinner for changing the input
         self.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         [self.activityIndicatorView sizeToFit];
-        // Set the title
-        self.navigationItem.title = self.projector.displayName;
         // Configure the colors
         self.detailTextColorErrorCellOK      = [UIColor colorWithRed:0.0 green:0.7 blue:0.0 alpha:1.0];
         self.detailTextColorErrorCellWarning = [UIColor colorWithRed:0.7 green:0.7 blue:0.0 alpha:1.0];
@@ -184,6 +168,10 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
     [super viewDidLoad];
     // Ensure we have loaded the table view
     [self dataDidChange];
+    // Create the refresh control
+    self.refreshControl = [[UIRefreshControl alloc] init];
+//    self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull To Refresh Projector"];
+    [self.refreshControl addTarget:self action:@selector(refreshControlValueDidChange:) forControlEvents:UIControlEventValueChanged];
 }
 
 - (void)didReceiveMemoryWarning
@@ -498,20 +486,24 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
 }
 
 - (void)refreshBarButtonItemTapped:(id)sender {
+    NSLog(@"XXXMEH refreshBarButtonItemTapped:%@", sender);
+    // Refresh all the projector properties
+    [self.projector refreshAllQueriesForReason:PJRefreshReasonUserInteraction];
+}
+
+- (void)refreshControlValueDidChange:(id)sender {
+    NSLog(@"XXXMEH refreshControlValueDidChange:%@", sender);
     // Refresh all the projector properties
     [self.projector refreshAllQueriesForReason:PJRefreshReasonUserInteraction];
 }
 
 - (void)projectorRequestDidBegin:(NSNotification*)notification {
-    // When we begin a request, we put the spinner for the right bar button item
-    [self.spinner startAnimating];
-    self.navigationItem.rightBarButtonItem = self.spinnerBarButtonItem;
+    NSLog(@"XXXMEH projectorRequestDidBegin:%@", notification);
 }
 
 - (void)projectorRequestDidEnd:(NSNotification*)notification {
-    // When we end the requestm we put the manual refresh button back as the right bar button item
-    [self.spinner stopAnimating];
-    self.navigationItem.rightBarButtonItem = self.refreshBarButtonItem;
+    NSLog(@"XXXMEH projectorRequestDidEnd:%@", notification);
+    [self.refreshControl endRefreshing];
 }
 
 - (void)projectorDidChange:(NSNotification*)notification {
@@ -607,6 +599,7 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
 }
 
 - (void)dataDidChange {
+    self.navigationItem.title = self.projector.displayName;
     [self updatePowerSwitchState];
     [self updateAudioMuteSwitchState];
     [self updateVideoMuteSwitchState];

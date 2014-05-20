@@ -15,6 +15,8 @@
 #import "PJProjector.h"
 #import "PJProjectorManager.h"
 #import "PJInterfaceInfo.h"
+#import "UIImage+SolidColor.h"
+#import "PJLabeledProgressView.h"
 
 typedef NS_ENUM(NSInteger, PJProjectorDetectionStatus) {
     PJProjectorDetectionStatusUnknown,
@@ -37,24 +39,20 @@ CGFloat const kPJBeaconListenerViewControllerLabelInsetRight         = 20.0;
 CGFloat const kPJBeaconListenerViewControllerProgressViewInsetTop    =  5.0;
 CGFloat const kPJBeaconListenerViewControllerProgressViewInsetLeft   = 20.0;
 CGFloat const kPJBeaconListenerViewControllerProgressViewInsetBottom = 10.0;
-CGFloat const kPJBeaconListenerViewConrtollerProgressViewInsetRight  = 20.0;
+CGFloat const kPJBeaconListenerViewControllerProgressViewInsetRight  = 20.0;
+CGFloat const kPJBeaconListenerViewControllerButtonHeight            = 64.0;
+
 
 @interface PJBeaconListenerViewController ()
 
-@property(nonatomic,strong) UIView*              headerView;
-@property(nonatomic,strong) UILabel*             headerLabel;
-@property(nonatomic,strong) UIProgressView*      headerProgressView;
-@property(nonatomic,strong) PJAMXBeaconListener* amxBeaconListener;
-@property(nonatomic,strong) UIBarButtonItem*     scanBarButtonItem;
-@property(nonatomic,strong) UIBarButtonItem*     cancelBarButtonItem;
-@property(nonatomic,strong) UIBarButtonItem*     addBarButtonItem;
-@property(nonatomic,strong) NSTimer*             progressTimer;
-@property(nonatomic,strong) NSTimer*             pingTimer;
-@property(nonatomic,strong) NSString*            preScanHeaderText;
-@property(nonatomic,strong) NSString*            addDiscoveredHeaderText;
-@property(nonatomic,strong) NSDate*              listenStartDate;
-@property(nonatomic,strong) NSMutableDictionary* hostStatus;
-@property(nonatomic,strong) NSMutableArray*      projectorHosts;
+@property(nonatomic,strong) UIButton*              button;
+@property(nonatomic,strong) PJLabeledProgressView* progressView;
+@property(nonatomic,strong) PJAMXBeaconListener*   amxBeaconListener;
+@property(nonatomic,strong) NSTimer*               progressTimer;
+@property(nonatomic,strong) NSTimer*               pingTimer;
+@property(nonatomic,strong) NSDate*                listenStartDate;
+@property(nonatomic,strong) NSMutableDictionary*   hostStatus;
+@property(nonatomic,strong) NSMutableArray*        projectorHosts;
 
 @end
 
@@ -77,32 +75,36 @@ CGFloat const kPJBeaconListenerViewConrtollerProgressViewInsetRight  = 20.0;
         _amxBeaconListener = [[PJAMXBeaconListener alloc] init];
         // Subscribe to notifications from the beacon listener
         [self subscribeToNotifications];
-        // Create the bar button items
-        _scanBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Scan"
-                                                              style:UIBarButtonItemStylePlain
-                                                             target:self
-                                                             action:@selector(scanButtonTapped:)];
-        _cancelBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                             target:self
-                                                                             action:@selector(cancelButtonTapped:)];
-        _addBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                                          target:self
-                                                                          action:@selector(addButtonTapped:)];
-        // Create the header label
-        _headerLabel = [[UILabel alloc] init];
-        _headerLabel.textAlignment = NSTextAlignmentCenter;
-        _headerLabel.numberOfLines = 0;
-        // Create the progress view
-        _headerProgressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
-        // Initialize the text
-        _preScanHeaderText       = @"Tap Scan to begin listening for AMX beacons.";
-        _addDiscoveredHeaderText = @"Tap + to add discovered projectors";
+        // Create the footer button
+        // Create the add button
+        self.button = [UIButton buttonWithType:UIButtonTypeCustom];
+        [self.button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        CGSize imageSize = CGSizeMake(8.0, 8.0);
+        [self.button setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:0.0 green:0.7 blue:0.0 alpha:1.0] size:imageSize]
+                               forState:UIControlStateNormal];
+        [self.button setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:0.0 green:0.6 blue:0.0 alpha:1.0] size:imageSize]
+                               forState:UIControlStateHighlighted];
+        [self.button setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:0.8 green:0.0 blue:0.0 alpha:1.0] size:imageSize]
+                               forState:UIControlStateSelected];
+        [self.button setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:0.7 green:0.0 blue:0.0 alpha:1.0] size:imageSize]
+                               forState:UIControlStateSelected | UIControlStateHighlighted];
+        [self.button setTitle:@"Start Scanning" forState:UIControlStateNormal];
+        [self.button setTitle:@"Start Scanning" forState:UIControlStateHighlighted];
+        [self.button setTitle:@"Cancel Scanning" forState:UIControlStateSelected];
+        [self.button setTitle:@"Cancel Scanning" forState:UIControlStateSelected | UIControlStateHighlighted];
+        [self.button addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
         // Initialize a host status dictionary
         _hostStatus = [NSMutableDictionary dictionary];
         // Initialize the array of projector hosts
         _projectorHosts = [NSMutableArray array];
         // Give a title to this view controller
         self.navigationItem.title = @"AMX Beacon Scan";
+        // Set the cancel button in the upper left
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                              target:self
+                                                                                              action:@selector(cancelButtonTapped:)];
+        // Create the progress view
+        self.progressView = [[PJLabeledProgressView alloc] init];
     }
 
     return self;
@@ -112,62 +114,8 @@ CGFloat const kPJBeaconListenerViewConrtollerProgressViewInsetRight  = 20.0;
 {
     [super viewDidLoad];
 
-    // Get the table view width
-    CGFloat tableViewWidth = self.tableView.frame.size.width;
-    // Compute the width available to the label
-    CGFloat labelWidth = tableViewWidth - kPJBeaconListenerViewControllerLabelInsetLeft - kPJBeaconListenerViewControllerLabelInsetRight;
-    // Get the constrained size
-    CGSize constrainedSize = CGSizeMake(labelWidth, 2000.0);
-    // Compute the size of the pre-scan header text and the add discovered text
-    CGSize preScanHeaderTextSize = [self.preScanHeaderText sizeWithFont:self.headerLabel.font
-                                                      constrainedToSize:constrainedSize
-                                                          lineBreakMode:NSLineBreakByWordWrapping];
-    CGSize addDiscoveredTextSize = [self.addDiscoveredHeaderText sizeWithFont:self.headerLabel.font
-                                                            constrainedToSize:constrainedSize
-                                                                lineBreakMode:NSLineBreakByWordWrapping];
-    // Take the max of the two
-    CGFloat maxHeight = MAX(preScanHeaderTextSize.height, addDiscoveredTextSize.height);
-    // Make this an integer height
-    maxHeight = ceilf(maxHeight);
-    // Compute the width for the progress view
-    CGFloat progressViewWidth = tableViewWidth -
-                                kPJBeaconListenerViewControllerProgressViewInsetLeft -
-                                kPJBeaconListenerViewConrtollerProgressViewInsetRight;
-    // Get the size that fits for the progress view
-    CGSize progressViewSizeThatFits = [self.headerProgressView sizeThatFits:CGSizeMake(progressViewWidth, 2000.0)];
-    CGFloat progressViewHeight = ceilf(progressViewSizeThatFits.height);
-    // Compute the overall height for the header view
-    CGFloat headerViewHeight = ceilf(kPJBeaconListenerViewControllerLabelInsetTop +
-                                     maxHeight +
-                                     kPJBeaconListenerViewControllerLabelInsetBottom +
-                                     kPJBeaconListenerViewControllerProgressViewInsetTop +
-                                     progressViewHeight +
-                                     kPJBeaconListenerViewControllerProgressViewInsetBottom);
-    // Create the header view
-    CGRect headerViewFrame = CGRectMake(0.0, 0.0, tableViewWidth, headerViewHeight);
-    self.headerView = [[UIView alloc] initWithFrame:headerViewFrame];
-    // Compute the frame for the header label
-    CGRect headerLabelFrame = CGRectMake(kPJBeaconListenerViewControllerLabelInsetLeft,
-                                         kPJBeaconListenerViewControllerLabelInsetTop,
-                                         labelWidth,
-                                         maxHeight);
-    self.headerLabel.frame = headerLabelFrame;
-    self.headerLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [self.headerView addSubview:self.headerLabel];
-    // Compute the frame for the progress view
-    CGFloat progressViewOriginY = headerLabelFrame.origin.y + headerLabelFrame.size.height +
-                                  kPJBeaconListenerViewControllerLabelInsetBottom +
-                                  kPJBeaconListenerViewControllerProgressViewInsetTop;
-    CGRect progressViewFrame = CGRectMake(kPJBeaconListenerViewControllerProgressViewInsetLeft,
-                                          progressViewOriginY,
-                                          progressViewWidth,
-                                          progressViewHeight);
-    self.headerProgressView.frame = progressViewFrame;
-    self.headerProgressView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [self.headerView addSubview:self.headerProgressView];
-
-    // Set the header view into the table header view
-    self.tableView.tableHeaderView = self.headerView;
+    self.button.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, kPJBeaconListenerViewControllerButtonHeight);
+    self.tableView.tableFooterView = self.button;
 
     // Update the UI state
     [self updateUIState];
@@ -225,103 +173,109 @@ CGFloat const kPJBeaconListenerViewConrtollerProgressViewInsetRight  = 20.0;
                                              selector:@selector(beaconHostsDidChange:)
                                                  name:PJAMXBeaconHostsDidChangeNotification
                                                object:self.amxBeaconListener];
+    [self.amxBeaconListener addObserver:self
+                             forKeyPath:@"listening"
+                                options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
+                                context:NULL];
 }
 
 - (void)unsubscribeFromNotifications {
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:PJAMXBeaconHostsDidChangeNotification
                                                   object:self.amxBeaconListener];
+    [self.amxBeaconListener removeObserver:self
+                                forKeyPath:@"listening"
+                                   context:NULL];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context {
+    if ([keyPath isEqualToString:@"listening"]) {
+        BOOL oldListening = [[change objectForKey:NSKeyValueChangeOldKey] boolValue];
+        BOOL newListening = [[change objectForKey:NSKeyValueChangeNewKey] boolValue];
+        if (oldListening != newListening) {
+            [self listeningDidChange];
+        }
+    }
+}
+
+- (void)listeningDidChange {
+    if (self.amxBeaconListener.isListening) {
+        // We just started listening, so start the timers
+        // Start the progress timer
+        [self.progressTimer invalidate];
+        self.progressTimer = [NSTimer scheduledTimerWithTimeInterval:kPJBeaconListenerViewControllerProgressInterval
+                                                              target:self
+                                                            selector:@selector(timerFired:)
+                                                            userInfo:nil
+                                                             repeats:YES];
+        // Start the ping timer
+        [self.pingTimer invalidate];
+        self.pingTimer = [NSTimer scheduledTimerWithTimeInterval:kPJBeaconListenerViewControllerPingInterval
+                                                          target:self
+                                                        selector:@selector(timerFired:)
+                                                        userInfo:nil
+                                                         repeats:YES];
+    } else {
+        // We stopped listening, so kill the timers
+        [self stopPingTimer];
+        [self stopProgressTimer];
+    }
+    [self updateUIState];
 }
 
 - (void)beaconHostsDidChange:(NSNotification *)notification {
     [self updateHostsStatusFromBeaconHosts];
 }
 
-- (void)scanButtonTapped:(id)sender {
-    // Save the date we started listening
-    self.listenStartDate = [NSDate date];
-    // Start listening
-    [self.amxBeaconListener startListening:nil];
-    // Issue an AMX ping
-    [self.amxBeaconListener ping];
-    // Start the progress timer
-    [self.progressTimer invalidate];
-    self.progressTimer = [NSTimer scheduledTimerWithTimeInterval:kPJBeaconListenerViewControllerProgressInterval
-                                                          target:self
-                                                        selector:@selector(timerFired:)
-                                                        userInfo:nil
-                                                         repeats:YES];
-    // Start the ping timer
-    [self.pingTimer invalidate];
-    self.pingTimer = [NSTimer scheduledTimerWithTimeInterval:kPJBeaconListenerViewControllerPingInterval
-                                                      target:self
-                                                    selector:@selector(timerFired:)
-                                                    userInfo:nil
-                                                     repeats:YES];
-    // Update the UI state
-    [self updateUIState];
+- (void)buttonTapped:(id)sender {
+    // Are we currently listening?
+    if (self.amxBeaconListener.isListening) {
+        // Stop listening
+        [self.amxBeaconListener stopListening];
+    } else {
+        // We are not scanning. Do we have any discovered projectors?
+        if ([self.projectorHosts count] > 0) {
+            // Add the array of PJProjectors to the projector manager
+            [[PJProjectorManager sharedManager] addProjectorsToManager:self.projectorHosts];
+            // Dismiss ourself
+            [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+        } else {
+            // Save the date we started listening
+            self.listenStartDate = [NSDate date];
+            // Start listening
+            [self.amxBeaconListener startListening:nil];
+        }
+    }
 }
 
 - (void)cancelButtonTapped:(id)sender {
     // Stop listening and stop the timers
     [self stopListenerAndTimers];
-    // Update the UI state
-    [self updateUIState];
+    // Dismiss ourself
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)addButtonTapped:(id)sender {
-    NSUInteger projectorHostsCount = [self.projectorHosts count];
-    if (projectorHostsCount > 0) {
-        // Add the array of PJProjectors to the projector manager
-        BOOL added = [[PJProjectorManager sharedManager] addProjectorsToManager:self.projectorHosts];
-        // Was the projector added successfully?
-        NSString* title   = nil;
-        NSString* message = nil;
-        if (added) {
-            // The projector was added successfully.
-            title   = @"Projectors Added";
-            message = @"Projectors were added successfully.";
-        } else {
-            // The only reason it would not be added is if it was already present.
-            // So in this case show an alert to the user saying the projector
-            // was already present.
-            title   = @"Projectors Not Added";
-            message = @"These projectors have already been added";
-        }
-        // Show an alert view with the result
-        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:title
-                                                            message:message
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
-        [alertView show];
+- (void)showHideProgressView:(BOOL)show {
+    if (show) {
+        CGSize progressViewSizeThatFits = [self.progressView sizeThatFits:self.tableView.frame.size];
+        CGRect progressViewFrame = CGRectMake(0.0, 0.0, self.tableView.frame.size.width, progressViewSizeThatFits.height);
+        self.progressView.frame = progressViewFrame;
+        self.tableView.tableHeaderView = self.progressView;
+    } else {
+        self.tableView.tableHeaderView = nil;
     }
 }
 
 - (void)updateUIState {
-    // Are we currently listening?
-    if (self.amxBeaconListener.isListening) {
-        // We are listening
-        //
-        // Make sure the progress view is visible
-        self.headerProgressView.hidden = NO;
-        // Provide a way to cancel
-        self.navigationItem.rightBarButtonItem = self.cancelBarButtonItem;
-        // Update the progress view and label
-        [self updateProgress];
-    } else {
-        // Hide the progress view
-        self.headerProgressView.hidden = YES;
-        // We are not scanning. Do we have any discovered projectors?
-        if ([self.projectorHosts count] > 0) {
-            // We have some discovered projectors
-            self.navigationItem.rightBarButtonItem = self.addBarButtonItem;
-            self.headerLabel.text = self.addDiscoveredHeaderText;
-        } else {
-            // We have no discovered projectors
-            self.headerLabel.text = self.preScanHeaderText;
-            self.navigationItem.rightBarButtonItem = self.scanBarButtonItem;
-        }
+    [self showHideProgressView:self.amxBeaconListener.isListening];
+    self.button.selected = self.amxBeaconListener.isListening;
+    if (!self.amxBeaconListener.isListening) {
+        NSString* buttonTitle = ([self.projectorHosts count] > 0 ? @"Add Projectors" : @"Start Scanning");
+        [self.button setTitle:buttonTitle forState:UIControlStateNormal];
+        [self.button setTitle:buttonTitle forState:UIControlStateHighlighted];
     }
 }
 
@@ -346,19 +300,11 @@ CGFloat const kPJBeaconListenerViewConrtollerProgressViewInsetRight  = 20.0;
     // Cap this at 1.0
     listeningProgress = MIN(listeningProgress, 1.0);
     // Update the progress view
-    self.headerProgressView.progress = listeningProgress;
-    // Compute the progress as a percent
-    CGFloat listeningProgressPercent = listeningProgress * 100.0;
-    NSUInteger listeningProgressPercentInt = (NSUInteger) ceilf(listeningProgressPercent);
-    // Update the label
-    NSString* listeningLabelText = [NSString stringWithFormat:@"Listening %u%%", listeningProgressPercentInt];
-    self.headerLabel.text = listeningLabelText;
+    self.progressView.progress = listeningProgress;
+    self.progressView.progressText = [NSString stringWithFormat:@"Listening (%.0f%%)", listeningProgress * 100.0];
     // If we have exceeded the scan duration, then we should quit listening
-    if (listeningProgress >= 1.0) {
-        // Stop listening and stop timing
-        [self stopListenerAndTimers];
-        // Update our UI
-        [self updateUIState];
+    if (listeningProgress >= 1.0 && self.amxBeaconListener.isListening) {
+        [self.amxBeaconListener stopListening];
     }
 }
 

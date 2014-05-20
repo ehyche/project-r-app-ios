@@ -16,8 +16,12 @@
 #import "NSIndexSet+NSIndexPath.h"
 #import "PJSubnetScannerViewController.h"
 #import "PJBeaconListenerViewController.h"
+#import "PJNoProjectorsTableViewCell.h"
+#import "PJProjectorTableViewCell.h"
 
 @interface PJProjectorListViewController () <UIActionSheetDelegate>
+
+@property(nonatomic,strong) UIButton *addButton;
 
 @end
 
@@ -72,47 +76,32 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString* cellReuseIDProjector = @"PJProjectorListCellIDProjector";
+    UITableViewCell *cell = nil;
 
-    // Determine which cell reuse ID to use
-    NSString*            cellReuseID = cellReuseIDProjector;
-    UITableViewCellStyle cellStyle   = UITableViewCellStyleDefault;
-
-    // Re-use or create the cell
-    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:cellReuseID];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:cellStyle reuseIdentifier:cellReuseID];
-    }
-
-    // Configure the cell defaults
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-
-    // Get the projector for this row
     PJProjectorManager* mgr = [PJProjectorManager sharedManager];
-    PJProjector* projector = (PJProjector*) [mgr objectInProjectorsAtIndex:indexPath.row];
-    // The title label is the display name of the projector
-    cell.textLabel.text = [PJProjectorManager displayNameForProjector:projector];
-    // The detail is the connection state
-    cell.detailTextLabel.text = [PJProjectorManager stringForConnectionState:projector.connectionState];
+    NSUInteger projectorCount = [mgr countOfProjectors];
+    
+    if (projectorCount > 0) {
+        PJProjectorTableViewCell* projectorCell = (PJProjectorTableViewCell*) [tableView dequeueReusableCellWithIdentifier:[PJProjectorTableViewCell reuseID]];
+        if (projectorCell == nil) {
+            projectorCell = [[PJProjectorTableViewCell alloc] init];
+        }
+        // Get the projector for this row
+        PJProjector* projector = (PJProjector*) [mgr objectInProjectorsAtIndex:indexPath.row];
+        projectorCell.projector = projector;
+        cell = projectorCell;
+    }
 
     return cell;
 }
 
 - (NSString*)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    NSString* ret = @"Projectors";
-
-    return ret;
-}
-
-- (NSString*)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     NSString* ret = nil;
-
-    if (section == 0) {
-        // If we don't have any projectors, then use a footer. Otherwise, do not.
-        PJProjectorManager* mgr = [PJProjectorManager sharedManager];
-        if ([mgr countOfProjectors] == 0) {
-            ret = @"None";
-        }
+    
+    // If we have any projectors, then use a section header. Otherwise, do not.
+    PJProjectorManager* mgr = [PJProjectorManager sharedManager];
+    if ([mgr countOfProjectors] > 0) {
+        ret = @"Projectors";
     }
 
     return ret;
@@ -155,6 +144,19 @@
     UITableViewCellEditingStyle ret = UITableViewCellEditingStyleDelete;
 
     return ret;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    CGFloat height = 0.0;
+
+    PJProjectorManager* mgr = [PJProjectorManager sharedManager];
+    if ([mgr countOfProjectors] > 0) {
+        // Get the projector for this row
+        PJProjector* projector = [mgr objectInProjectorsAtIndex:indexPath.row];
+        height = [PJProjectorTableViewCell heightForProjector:projector containerWidth:self.tableView.frame.size.width];
+    }
+
+    return height;
 }
 
 #pragma mark - UIActionSheetDelegate methods
