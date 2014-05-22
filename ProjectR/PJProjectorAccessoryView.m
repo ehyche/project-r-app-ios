@@ -22,6 +22,8 @@ CGFloat const kPJProjectorAccessoryViewButtonPaddingLeftRight =  5.0;
 
 @property(nonatomic, readwrite, strong) UISwitch* powerStatusSwitch;
 @property(nonatomic, readwrite, strong) UIButton* inputButton;
+@property(nonatomic, strong)            UIColor*  normalOnTintColor;
+@property(nonatomic, strong)            UIColor*  normalTintColor;
 
 @end
 
@@ -32,6 +34,7 @@ CGFloat const kPJProjectorAccessoryViewButtonPaddingLeftRight =  5.0;
     self = [super initWithFrame:frame];
     if (self) {
         self.powerStatusSwitch = [[UISwitch alloc] init];
+        self.normalOnTintColor = self.powerStatusSwitch.onTintColor;
         [self addSubview:self.powerStatusSwitch];
         self.inputButton = [UIButton buttonWithType:UIButtonTypeCustom];
         self.inputButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:kPJProjectorAccessoryViewFontSize];
@@ -103,10 +106,12 @@ CGFloat const kPJProjectorAccessoryViewButtonPaddingLeftRight =  5.0;
         case PJPowerStatusStandby:
             self.powerStatusSwitch.enabled = YES;
             self.powerStatusSwitch.on = NO;
+            self.powerStatusSwitch.onTintColor = self.normalOnTintColor;
             break;
         case PJPowerStatusWarmUp:
             self.powerStatusSwitch.enabled = NO;
             self.powerStatusSwitch.on = YES;
+            self.powerStatusSwitch.onTintColor = [UIColor redColor];
             break;
         default:
             break;
