@@ -7,14 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PJDefinitions.h"
 
 @class PJProjector;
+@protocol PJProjectorTableViewCellDelegate;
 
 @interface PJProjectorTableViewCell : UITableViewCell
 
-@property(nonatomic,strong) PJProjector *projector;
+@property(nonatomic,strong) PJProjector*                         projector;
+@property(nonatomic,weak)   id<PJProjectorTableViewCellDelegate> delegate;
 
 + (NSString*)reuseID;
+
 + (CGFloat)heightForProjector:(PJProjector*)projector containerWidth:(CGFloat)width;
 
 @end

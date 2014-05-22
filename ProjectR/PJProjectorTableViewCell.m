@@ -9,17 +9,20 @@
 #import "PJProjectorTableViewCell.h"
 #import "PJProjector.h"
 #import "PJProjectorManager.h"
+#import "PJProjectorAccessoryView.h"
+#import "PJProjectorTableViewCellDelegate.h"
 
 static NSString* const kPJProjectorTableViewCellReuseID = @"kPJProjectorTableViewCellReuseID";
 
 NSTimeInterval const kPJProjectorTableViewCellAnimationDuration =  2.0;
-CGFloat        const kPJProjectorTableViewCellHeight            = 44.0;
+CGFloat        const kPJProjectorTableViewCellHeight            = 88.0;
 
 @interface PJProjectorTableViewCell()
 
-@property(nonatomic,strong) UIImage* imageDisconnected;
-@property(nonatomic,strong) UIImage* imageConnected;
-@property(nonatomic,strong) UIImage* imageConnecting;
+@property(nonatomic,strong) UIImage*                  imageDisconnected;
+@property(nonatomic,strong) UIImage*                  imageConnected;
+@property(nonatomic,strong) UIImage*                  imageConnecting;
+@property(nonatomic,strong) PJProjectorAccessoryView* projectorAccessoryView;
 
 @end
 
@@ -33,10 +36,6 @@ CGFloat        const kPJProjectorTableViewCellHeight            = 44.0;
     return kPJProjectorTableViewCellHeight;
 }
 
-- (void)dealloc {
-    [self unsubscribeFromAllNotifications];
-}
-
 - (id)init {
     return [self initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:[PJProjectorTableViewCell reuseID]];
 }
@@ -48,50 +47,29 @@ CGFloat        const kPJProjectorTableViewCellHeight            = 44.0;
         self.imageConnected    = [UIImage imageNamed:@"projector_connected"];
         self.imageDisconnected = [UIImage imageNamed:@"projector_disconnected"];
         self.imageConnecting   = [UIImage animatedImageNamed:@"projector_connecting" duration:kPJProjectorTableViewCellAnimationDuration];
-        self.accessoryType     = UITableViewCellAccessoryDisclosureIndicator;
+        self.projectorAccessoryView = [[PJProjectorAccessoryView alloc] init];
+        [self.projectorAccessoryView.inputButton addTarget:self
+                                                    action:@selector(buttonWasTapped:)
+                                          forControlEvents:UIControlEventTouchUpInside];
+        [self.projectorAccessoryView.powerStatusSwitch addTarget:self
+                                                          action:@selector(switchValueDidChange:)
+                                                forControlEvents:UIControlEventValueChanged];
     }
 
     return self;
 }
 
 - (void)setProjector:(PJProjector *)projector {
-    if (_projector != projector) {
-        [self unsubscribeFromNotificationsForProjector:_projector];
-        _projector = projector;
-        [self subscribeToNotificationsForProjector:_projector];
-        [self dataDidChange];
-    }
+    _projector = projector;
+    [self dataDidChange];
 }
 
 #pragma mark - PJProjectorTableViewCell private methods
 
-- (void)subscribeToNotificationsForProjector:(PJProjector*)projector {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(projectorConnectionStateDidChange:)
-                                                 name:PJProjectorConnectionStateDidChangeNotification
-                                               object:projector];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(projectorDidChange:)
-                                                 name:PJProjectorDidChangeNotification
-                                               object:projector];
-}
-
-- (void)unsubscribeFromNotificationsForProjector:(PJProjector*)projector {
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:PJProjectorConnectionStateDidChangeNotification
-                                                  object:projector];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:PJProjectorDidChangeNotification
-                                                  object:projector];
-}
-
-- (void)unsubscribeFromAllNotifications {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
 - (void)dataDidChange {
     [self updateConnectionImage];
-    self.textLabel.text = [PJProjectorManager displayNameForProjector:self.projector];
+    [self updateProjectorDisplayName];
+    [self updateAccessoryView];
 }
 
 - (void)updateConnectionImage {
@@ -121,12 +99,22 @@ CGFloat        const kPJProjectorTableViewCellHeight            = 44.0;
     }
 }
 
-- (void)projectorDidChange:(NSNotification*)notification {
+- (void)updateProjectorDisplayName {
+    self.textLabel.text = [PJProjectorManager displayNameForProjector:self.projector];
 }
 
-- (void)projectorConnectionStateDidChange:(NSNotification*)notification {
-    [self updateConnectionImage];
-    self.detailTextLabel.text = [PJProjectorManager stringForConnectionState:self.projector.connectionState];
+- (void)updateAccessoryView {
+    self.projectorAccessoryView.projector = self.projector;
+    [self.projectorAccessoryView sizeToFit];
+    self.accessoryView = self.projectorAccessoryView;
+}
+
+- (void)switchValueDidChange:(id)sender {
+    [self.delegate projectorCell:self switchValueChangedTo:self.projectorAccessoryView.powerStatusSwitch.isOn];
+}
+
+- (void)buttonWasTapped:(id)sender {
+    [self.delegate projectorCellInputButtonWasSelected:self];
 }
 
 @end
