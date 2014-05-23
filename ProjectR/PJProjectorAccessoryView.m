@@ -9,14 +9,16 @@
 #import "PJProjectorAccessoryView.h"
 #import "PJProjector.h"
 #import "PJInputInfo.h"
+#import "UIImage+SolidColor.h"
 
 CGFloat const kPJProjectorAccessoryViewFontSize               = 16.0;
 CGFloat const kPJProjectorAccessoryViewPaddingTop             = 10.0;
 CGFloat const kPJProjectorAccessoryViewPaddingBottom          =  5.0;
 CGFloat const kPJProjectorAccessoryViewPaddingLeft            =  5.0;
 CGFloat const kPJProjectorAccessoryViewPaddingRight           =  5.0;
-CGFloat const kPJProjectorAccessoryViewPaddingBetween         =  5.0;
-CGFloat const kPJProjectorAccessoryViewButtonPaddingLeftRight =  5.0;
+CGFloat const kPJProjectorAccessoryViewPaddingBetween         = 10.0;
+CGFloat const kPJProjectorAccessoryViewButtonPaddingLeftRight =  8.0;
+CGFloat const kPJProjectorAccessoryViewButtonPaddingTopBottom =  5.0;
 
 @interface PJProjectorAccessoryView()
 
@@ -37,6 +39,9 @@ CGFloat const kPJProjectorAccessoryViewButtonPaddingLeftRight =  5.0;
         self.normalOnTintColor = self.powerStatusSwitch.onTintColor;
         [self addSubview:self.powerStatusSwitch];
         self.inputButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIImage *bgImage = [UIImage imageNamed:@"blue_rounded_rect.png"];
+        UIImage *bgImageResizable = [bgImage resizableImageWithCapInsets:UIEdgeInsetsMake(12.0, 12.0, 12.0, 12.0)];
+        [self.inputButton setBackgroundImage:bgImageResizable forState:UIControlStateNormal];
         self.inputButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:kPJProjectorAccessoryViewFontSize];
         [self.inputButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [self addSubview:self.inputButton];
@@ -52,8 +57,8 @@ CGFloat const kPJProjectorAccessoryViewButtonPaddingLeftRight =  5.0;
 - (CGSize)sizeThatFits:(CGSize)size {
     CGSize switchSize = [self.powerStatusSwitch sizeThatFits:size];
     CGSize maxInputNameSize = [self maxSizeForInputNamesForProjector:self.projector];
-    CGSize buttonSizeThatFits = [self.inputButton sizeThatFits:size];
-    CGSize buttonSize = CGSizeMake(maxInputNameSize.width + (2.0 * kPJProjectorAccessoryViewButtonPaddingLeftRight), buttonSizeThatFits.height);
+    CGSize buttonSize = CGSizeMake(maxInputNameSize.width + (2.0 * kPJProjectorAccessoryViewButtonPaddingLeftRight),
+                                   maxInputNameSize.height + (2.0 * kPJProjectorAccessoryViewButtonPaddingTopBottom));
     CGFloat height = kPJProjectorAccessoryViewPaddingTop +
                      switchSize.height +
                      kPJProjectorAccessoryViewPaddingBetween +
@@ -77,8 +82,8 @@ CGFloat const kPJProjectorAccessoryViewButtonPaddingLeftRight =  5.0;
     [self.powerStatusSwitch sizeToFit];
     CGSize switchSize = self.powerStatusSwitch.frame.size;
     CGSize maxInputNameSize = [self maxSizeForInputNamesForProjector:self.projector];
-    CGSize buttonSizeThatFits = [self.inputButton sizeThatFits:selfFrameSize];
-    CGSize buttonSize = CGSizeMake(maxInputNameSize.width + (2.0 * kPJProjectorAccessoryViewButtonPaddingLeftRight), buttonSizeThatFits.height);
+    CGSize buttonSize = CGSizeMake(maxInputNameSize.width + (2.0 * kPJProjectorAccessoryViewButtonPaddingLeftRight),
+                                   maxInputNameSize.height + (2.0 * kPJProjectorAccessoryViewButtonPaddingTopBottom));
     
     CGRect switchFrame = CGRectMake(floorf((selfFrameSize.width - switchSize.width) / 2.0),
                                     kPJProjectorAccessoryViewPaddingTop,
