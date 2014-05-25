@@ -9,7 +9,7 @@
 #import "PJProjectorTableViewCell.h"
 #import "PJProjector.h"
 #import "PJProjectorManager.h"
-#import "PJProjectorAccessoryView.h"
+#import "PJProjectorInputPowerStatusView.h"
 #import "PJProjectorTableViewCellDelegate.h"
 
 static NSString* const kPJProjectorTableViewCellReuseID = @"kPJProjectorTableViewCellReuseID";
@@ -22,7 +22,7 @@ CGFloat        const kPJProjectorTableViewCellHeight            = 88.0;
 @property(nonatomic,strong) UIImage*                  imageDisconnected;
 @property(nonatomic,strong) UIImage*                  imageConnected;
 @property(nonatomic,strong) UIImage*                  imageConnecting;
-@property(nonatomic,strong) PJProjectorAccessoryView* projectorAccessoryView;
+@property(nonatomic,strong) PJProjectorInputPowerStatusView* projectorAccessoryView;
 
 @end
 
@@ -44,10 +44,11 @@ CGFloat        const kPJProjectorTableViewCellHeight            = 88.0;
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+        self.textLabel.numberOfLines = 0;
         self.imageConnected    = [UIImage imageNamed:@"projector_connected"];
         self.imageDisconnected = [UIImage imageNamed:@"projector_disconnected"];
         self.imageConnecting   = [UIImage animatedImageNamed:@"projector_connecting" duration:kPJProjectorTableViewCellAnimationDuration];
-        self.projectorAccessoryView = [[PJProjectorAccessoryView alloc] init];
+        self.projectorAccessoryView = [[PJProjectorInputPowerStatusView alloc] init];
         [self.projectorAccessoryView.inputButton addTarget:self
                                                     action:@selector(buttonWasTapped:)
                                           forControlEvents:UIControlEventTouchUpInside];
