@@ -37,6 +37,11 @@
 		FD32A59019326A4C00047BA1 /* PJProjectorConnectionStateView.m in Sources */ = {isa = PBXBuildFile; fileRef = FD32A58F19326A4C00047BA1 /* PJProjectorConnectionStateView.m */; };
 		FD41B20517AE136C00502703 /* PJInterfaceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = FD41B20417AE136C00502703 /* PJInterfaceInfo.m */; };
 		FD4EE0161925C18B0061B1C2 /* PJNoProjectorsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FD4EE0151925C18B0061B1C2 /* PJNoProjectorsTableViewCell.m */; };
+		FD5BDEDA19340710002B86DF /* Reveal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD5BDED919340710002B86DF /* Reveal.framework */; };
+		FD5BDEDF19340D22002B86DF /* blue_circle_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = FD5BDEDB19340D22002B86DF /* blue_circle_selected.png */; };
+		FD5BDEE019340D22002B86DF /* blue_circle_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FD5BDEDC19340D22002B86DF /* blue_circle_selected@2x.png */; };
+		FD5BDEE119340D22002B86DF /* blue_circle.png in Resources */ = {isa = PBXBuildFile; fileRef = FD5BDEDD19340D22002B86DF /* blue_circle.png */; };
+		FD5BDEE219340D22002B86DF /* blue_circle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FD5BDEDE19340D22002B86DF /* blue_circle@2x.png */; };
 		FD94CFAF192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = FD94CFAE192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.m */; };
 		FDB9161317AC9B850098755A /* PJLinkSubnetScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */; };
 		FDDA57DC1793BA58007B49D0 /* PJProjectorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */; };
@@ -92,6 +97,12 @@
 		FD41B20417AE136C00502703 /* PJInterfaceInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJInterfaceInfo.m; sourceTree = "<group>"; };
 		FD4EE0141925C18B0061B1C2 /* PJNoProjectorsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJNoProjectorsTableViewCell.h; sourceTree = "<group>"; };
 		FD4EE0151925C18B0061B1C2 /* PJNoProjectorsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJNoProjectorsTableViewCell.m; sourceTree = "<group>"; };
+		FD5BDED7193406C0002B86DF /* Reveal.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; name = Reveal.app; path = ../../Downloads/Reveal.app; sourceTree = "<group>"; };
+		FD5BDED919340710002B86DF /* Reveal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reveal.framework; path = "../../Downloads/Reveal.app/Contents/SharedSupport/iOS-Libraries/Reveal.framework"; sourceTree = "<group>"; };
+		FD5BDEDB19340D22002B86DF /* blue_circle_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blue_circle_selected.png; sourceTree = "<group>"; };
+		FD5BDEDC19340D22002B86DF /* blue_circle_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue_circle_selected@2x.png"; sourceTree = "<group>"; };
+		FD5BDEDD19340D22002B86DF /* blue_circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blue_circle.png; sourceTree = "<group>"; };
+		FD5BDEDE19340D22002B86DF /* blue_circle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue_circle@2x.png"; sourceTree = "<group>"; };
 		FD94CFAD192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJProjectorInputPowerStatusView.h; sourceTree = "<group>"; };
 		FD94CFAE192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJProjectorInputPowerStatusView.m; sourceTree = "<group>"; };
 		FD94CFB1192C479200C1DB05 /* PJProjectorTableViewCellDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PJProjectorTableViewCellDelegate.h; sourceTree = "<group>"; };
@@ -118,6 +129,7 @@
 			files = (
 				FD2C35C2178A305A0080B1B7 /* UIKit.framework in Frameworks */,
 				FD2C35C4178A305A0080B1B7 /* Foundation.framework in Frameworks */,
+				FD5BDEDA19340710002B86DF /* Reveal.framework in Frameworks */,
 				FD2C35C6178A305A0080B1B7 /* CoreGraphics.framework in Frameworks */,
 				2BF8F08CA0A44E92BD0E14AF /* libPods.a in Frameworks */,
 			);
@@ -129,6 +141,10 @@
 		FD1C4086192B05F4005B38B8 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				FD5BDEDB19340D22002B86DF /* blue_circle_selected.png */,
+				FD5BDEDC19340D22002B86DF /* blue_circle_selected@2x.png */,
+				FD5BDEDD19340D22002B86DF /* blue_circle.png */,
+				FD5BDEDE19340D22002B86DF /* blue_circle@2x.png */,
 				FD26B2FF192EE6DD0077F336 /* ProjectRAppIcon.png */,
 				FD26B2FD192EE63A0077F336 /* ProjectRAppIcon@2x.png */,
 				FD26B2F9192EDDB80077F336 /* blue_rounded_rect.png */,
@@ -178,6 +194,8 @@
 		FD2C35C0178A305A0080B1B7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FD5BDED919340710002B86DF /* Reveal.framework */,
+				FD5BDED7193406C0002B86DF /* Reveal.app */,
 				FD2C35C1178A305A0080B1B7 /* UIKit.framework */,
 				FD2C35C3178A305A0080B1B7 /* Foundation.framework */,
 				FD2C35C5178A305A0080B1B7 /* CoreGraphics.framework */,
@@ -348,10 +366,14 @@
 				FD2C35D4178A305A0080B1B7 /* Default.png in Resources */,
 				FD26B2FB192EDDB80077F336 /* blue_rounded_rect.png in Resources */,
 				FD1C408E192B0639005B38B8 /* projector_connecting0@2x.png in Resources */,
+				FD5BDEE019340D22002B86DF /* blue_circle_selected@2x.png in Resources */,
+				FD5BDEE119340D22002B86DF /* blue_circle.png in Resources */,
 				FD26B2FC192EDDB80077F336 /* blue_rounded_rect@2x.png in Resources */,
 				FD2C35D6178A305A0080B1B7 /* Default@2x.png in Resources */,
 				FD1C4090192B0639005B38B8 /* projector_connecting2@2x.png in Resources */,
 				FD1C4091192B0639005B38B8 /* projector_connecting3@2x.png in Resources */,
+				FD5BDEDF19340D22002B86DF /* blue_circle_selected.png in Resources */,
+				FD5BDEE219340D22002B86DF /* blue_circle@2x.png in Resources */,
 				FD26B300192EE6DD0077F336 /* ProjectRAppIcon.png in Resources */,
 				FD2C35D8178A305A0080B1B7 /* Default-568h@2x.png in Resources */,
 				FD2C35DB178A305A0080B1B7 /* MainStoryboard_iPhone.storyboard in Resources */,
@@ -504,6 +526,10 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/ehyche/Downloads/Reveal.app/Contents/SharedSupport/iOS-Libraries",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ProjectR/ProjectR-Prefix.pch";
 				INFOPLIST_FILE = "ProjectR/ProjectR-Info.plist";
@@ -520,6 +546,10 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/ehyche/Downloads/Reveal.app/Contents/SharedSupport/iOS-Libraries",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ProjectR/ProjectR-Prefix.pch";
 				INFOPLIST_FILE = "ProjectR/ProjectR-Info.plist";
