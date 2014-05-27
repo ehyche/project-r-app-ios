@@ -235,12 +235,18 @@
             NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
             [self changeSelectedProjectorsInputTo:buttonTitle];
         }
+        [self.tableView setEditing:NO animated:YES];
+        [self updateNavigationItemStateAnimated:YES];
+        [self updateToolbarHiddenStateAnimated:YES];
     } else if (actionSheet == self.powerStatusActionSheet) {
         if (buttonIndex != actionSheet.cancelButtonIndex) {
             NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
             BOOL powerOn = [buttonTitle isEqualToString:@"On"];
             [self changeSelectedProjectorsPowerStatusTo:powerOn];
         }
+        [self.tableView setEditing:NO animated:YES];
+        [self updateNavigationItemStateAnimated:YES];
+        [self updateToolbarHiddenStateAnimated:YES];
     }
 }
 
@@ -502,10 +508,14 @@
 }
 
 - (void)updateToolbarHiddenStateAnimated:(BOOL)animated {
-    BOOL isToolbarHidden = self.navigationController.toolbarHidden;
-    BOOL shouldToolbarBeHidden = ([self.selectedProjectors count] > 0 ? NO : YES);
-    if (isToolbarHidden != shouldToolbarBeHidden) {
-        [self.navigationController setToolbarHidden:shouldToolbarBeHidden animated:animated];
+    if (self.tableView.isEditing) {
+        BOOL isToolbarHidden = self.navigationController.toolbarHidden;
+        BOOL shouldToolbarBeHidden = ([self.selectedProjectors count] > 0 ? NO : YES);
+        if (isToolbarHidden != shouldToolbarBeHidden) {
+            [self.navigationController setToolbarHidden:shouldToolbarBeHidden animated:animated];
+        }
+    } else {
+        [self.navigationController setToolbarHidden:YES animated:animated];
     }
 }
 
