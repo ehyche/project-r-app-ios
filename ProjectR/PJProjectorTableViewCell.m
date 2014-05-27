@@ -142,12 +142,26 @@ CGFloat const kPJProjectorTableViewCellSelectionAnimationDuration =  0.3;
     }
 }
 
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    CGRect textLabelFrame = self.textLabel.frame;
+    CGSize textSize = [self.textLabel.text sizeWithFont:self.textLabel.font
+                                      constrainedToSize:CGSizeMake(textLabelFrame.size.width, self.frame.size.height)
+                                          lineBreakMode:self.textLabel.lineBreakMode];
+    textLabelFrame = CGRectMake(textLabelFrame.origin.x,
+                                floorf((self.frame.size.height - textSize.height) / 2.0),
+                                textLabelFrame.size.width,
+                                textSize.height);
+    self.textLabel.frame = textLabelFrame;
+}
+
 #pragma mark - PJProjectorTableViewCell private methods
 
 - (void)dataDidChange {
     [self updateProjectorDisplayName];
 //    [self updateAccessoryView];
     [self updateDetailTextLabel];
+    [self setNeedsLayout];
 }
 
 - (void)updateProjectorDisplayName {
