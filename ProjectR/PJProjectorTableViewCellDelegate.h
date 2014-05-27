@@ -18,4 +18,6 @@
 
 - (void)projectorCellInputButtonWasSelected:(PJProjectorTableViewCell*)cell;
 
+- (void)projectorCellMultiSelectionStateChanged:(PJProjectorTableViewCell*)cell;
+
 @end

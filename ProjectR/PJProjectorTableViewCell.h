@@ -16,6 +16,7 @@
 
 @property(nonatomic,strong) PJProjector*                         projector;
 @property(nonatomic,weak)   id<PJProjectorTableViewCellDelegate> delegate;
+@property(nonatomic,assign) BOOL                                 multiSelect;
 
 + (NSString*)reuseID;
 

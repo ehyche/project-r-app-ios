@@ -23,9 +23,18 @@
 @interface PJProjectorListViewController () <UIActionSheetDelegate,
                                              PJProjectorTableViewCellDelegate>
 
-@property(nonatomic,strong) UIButton      *addButton;
-@property(nonatomic,strong) UIActionSheet *addActionSheet;
-@property(nonatomic,strong) UIActionSheet *inputActionSheet;
+@property(nonatomic,strong) UIActionSheet*   addActionSheet;
+@property(nonatomic,strong) UIActionSheet*   inputActionSheet;
+@property(nonatomic,strong) UIActionSheet*   powerStatusActionSheet;
+@property(nonatomic,strong) UIBarButtonItem* addBarButtonItem;
+@property(nonatomic,strong) UIBarButtonItem* selectAllBarButtonItem;
+@property(nonatomic,strong) UIBarButtonItem* clearAllBarButtonItem;
+@property(nonatomic,strong) UIBarButtonItem* selectBarButtonItem;
+@property(nonatomic,strong) UIBarButtonItem* cancelBarButtonItem;
+@property(nonatomic,strong) NSMutableArray*  selectedProjectors;
+@property(nonatomic,strong) UIBarButtonItem* inputBarButtonItem;
+@property(nonatomic,strong) UIBarButtonItem* powerStatusBarButtonItem;
+@property(nonatomic,strong) NSMutableArray*  inputNames;
 
 @end
 
@@ -59,10 +68,41 @@
 
     // Tell the projector manager to start refreshing
     [[PJProjectorManager sharedManager] beginRefreshingAllProjectorsForReason:PJRefreshReasonAppStateChange];
-
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                                                           target:self
-                                                                                           action:@selector(addButtonAction:)];
+    
+    self.selectBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Select"
+                                                                style:UIBarButtonItemStylePlain
+                                                               target:self
+                                                               action:@selector(selectButtonAction:)];
+    self.cancelBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"
+                                                                style:UIBarButtonItemStylePlain
+                                                               target:self
+                                                               action:@selector(selectButtonAction:)];
+    self.addBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                                          target:self
+                                                                          action:@selector(addButtonAction:)];
+    self.selectAllBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Select All"
+                                                                   style:UIBarButtonItemStylePlain
+                                                                  target:self
+                                                                  action:@selector(selectAllBarButtonItemAction:)];
+    self.clearAllBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Clear All"
+                                                                  style:UIBarButtonItemStylePlain
+                                                                 target:self
+                                                                 action:@selector(clearAllBarButtonItemAction:)];
+    // Set up the toolbar
+    self.inputBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Input"
+                                                               style:UIBarButtonItemStylePlain
+                                                              target:self
+                                                              action:@selector(inputBarButtonItemAction:)];
+    self.powerStatusBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Power"
+                                                                     style:UIBarButtonItemStylePlain
+                                                                    target:self
+                                                                    action:@selector(powerStatusBarButtonItemAction:)];
+    self.toolbarItems = @[[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
+                          self.inputBarButtonItem,
+                          [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
+                          self.powerStatusBarButtonItem,
+                          [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL]];
+    [self updateNavigationItemStateAnimated:NO];
 }
 
 #pragma mark - UITableViewDataSource methods
@@ -96,6 +136,7 @@
         // Get the projector for this row
         PJProjector* projector = (PJProjector*) [mgr objectInProjectorsAtIndex:indexPath.row];
         projectorCell.projector = projector;
+        projectorCell.multiSelect = [self.selectedProjectors containsObject:projector];
         cell = projectorCell;
     }
 
@@ -148,7 +189,7 @@
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCellEditingStyle ret = UITableViewCellEditingStyleDelete;
+    UITableViewCellEditingStyle ret = UITableViewCellEditingStyleNone;
 
     return ret;
 }
@@ -170,48 +211,35 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (actionSheet == self.addActionSheet) {
-        UIViewController* controller = nil;
-        if (buttonIndex == 0) {
-            // Manually add a projector
-            controller = [[PJManualAddTableViewController alloc] init];
-        } else if (buttonIndex == 1) {
-            // Create a subnet scanner controller
-            controller = [[PJSubnetScannerViewController alloc] init];
-        } else if (buttonIndex == 2) {
-            // Create an AMX Beacon listener view controller
-            controller = [[PJBeaconListenerViewController alloc] init];
-        }
-        if (controller != nil) {
-            // Wrap this in a UINavigationController
-            UINavigationController* navController = [[UINavigationController alloc] initWithRootViewController:controller];
-            // Present this controller
-            [self presentViewController:navController animated:YES completion:nil];
+        if (buttonIndex != actionSheet.cancelButtonIndex) {
+            UIViewController* controller = nil;
+            if (buttonIndex == 0) {
+                // Manually add a projector
+                controller = [[PJManualAddTableViewController alloc] init];
+            } else if (buttonIndex == 1) {
+                // Create a subnet scanner controller
+                controller = [[PJSubnetScannerViewController alloc] init];
+            } else if (buttonIndex == 2) {
+                // Create an AMX Beacon listener view controller
+                controller = [[PJBeaconListenerViewController alloc] init];
+            }
+            if (controller != nil) {
+                // Wrap this in a UINavigationController
+                UINavigationController* navController = [[UINavigationController alloc] initWithRootViewController:controller];
+                // Present this controller
+                [self presentViewController:navController animated:YES completion:nil];
+            }
         }
     } else if (actionSheet == self.inputActionSheet) {
-        PJProjectorManager *mgr = [PJProjectorManager sharedManager];
-        NSUInteger projectorsCount = [mgr countOfProjectors];
-        // Look up the projector
-        NSUInteger projectorIndex = actionSheet.tag;
-        if (projectorIndex < projectorsCount) {
-            PJProjector* projector = [mgr objectInProjectorsAtIndex:projectorIndex];
-            // Find out which input this button refers to
+        if (buttonIndex != actionSheet.cancelButtonIndex) {
             NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-            NSUInteger inputsCount = [projector countOfInputs];
-            NSUInteger selectedInputIndex = inputsCount;
-            for (NSUInteger i = 0; i < inputsCount; i++) {
-                PJInputInfo *ithInputInfo = [projector objectInInputsAtIndex:i];
-                NSString *ithInputName = [ithInputInfo description];
-                if ([buttonTitle isEqualToString:ithInputName]) {
-                    selectedInputIndex = i;
-                    break;
-                }
-            }
-            if (selectedInputIndex < inputsCount) {
-                // We found the selected input. Is this different than the active input index
-                if (selectedInputIndex != projector.activeInputIndex) {
-                    [projector requestInputChangeToInputIndex:selectedInputIndex];
-                }
-            }
+            [self changeSelectedProjectorsInputTo:buttonTitle];
+        }
+    } else if (actionSheet == self.powerStatusActionSheet) {
+        if (buttonIndex != actionSheet.cancelButtonIndex) {
+            NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+            BOOL powerOn = [buttonTitle isEqualToString:@"On"];
+            [self changeSelectedProjectorsPowerStatusTo:powerOn];
         }
     }
 }
@@ -254,6 +282,15 @@
     }
 }
 
+- (void)projectorCellMultiSelectionStateChanged:(PJProjectorTableViewCell *)cell {
+    if (cell.multiSelect) {
+        [self.selectedProjectors addObject:cell.projector];
+    } else {
+        [self.selectedProjectors removeObject:cell.projector];
+    }
+    [self updateNavigationItemStateAnimated:YES];
+    [self updateToolbarHiddenStateAnimated:YES];
+}
 
 #pragma mark - PJProjectorListViewController private methods
 
@@ -305,8 +342,8 @@
 
 - (void)projectorsDidChange {
     NSLog(@"XXXMEH projectorsDidChange");
+    [self updateNavigationItemStateAnimated:YES];
     [self.tableView reloadData];
-    [self checkToDismissEditingMode];
 }
 
 - (void)projectorsWereInserted:(NSIndexSet*)indexSet {
@@ -320,7 +357,7 @@
     } else {
         [self.tableView insertRowsAtIndexPaths:[indexSet indexPathsForSection:0] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
-    [self checkToDismissEditingMode];
+    [self updateNavigationItemStateAnimated:YES];
 }
 
 - (void)projectorsWereRemoved:(NSIndexSet*)indexSet {
@@ -333,30 +370,20 @@
     } else {
         [self.tableView deleteRowsAtIndexPaths:[indexSet indexPathsForSection:0] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
-    [self checkToDismissEditingMode];
-
+    [self updateNavigationItemStateAnimated:YES];
 }
 
 - (void)projectorsWereUpdated:(NSIndexSet*)indexSet {
     NSLog(@"XXXMEH projectorsWereUpdated:%@", indexSet);
     [self.tableView reloadRowsAtIndexPaths:[indexSet indexPathsForSection:0] withRowAnimation:UITableViewRowAnimationNone];
+    [self updateNavigationItemStateAnimated:YES];
 }
 
 - (void)commonInit {
     [self subscribeToKVONotifications];
+    self.selectedProjectors = [NSMutableArray array];
+    self.inputNames         = [NSMutableArray array];
     self.navigationItem.title = @"ProjectR";
-}
-
-- (void)checkToDismissEditingMode {
-    if (self.editing) {
-        // We are in editing mode. If we don't have any more projectors
-        // (which could happen if we just deleted our last one), then
-        // come out of editing mode.
-        PJProjectorManager* mgr = [PJProjectorManager sharedManager];
-        if ([mgr countOfProjectors] == 0) {
-            self.editing = NO;
-        }
-    }
 }
 
 - (void)addButtonAction:(id)sender {
@@ -366,6 +393,119 @@
                                         destructiveButtonTitle:nil
                                              otherButtonTitles:@"Add Manually", @"Scan WiFi Network", @"Listen for AMX Beacons", nil];
     [self.addActionSheet showFromBarButtonItem:sender animated:YES];
+}
+
+- (void)selectButtonAction:(id)sender {
+    BOOL newEditingMode = !self.tableView.isEditing;
+    [self.tableView setEditing:newEditingMode animated:YES];
+    [self updateNavigationItemStateAnimated:YES];
+}
+
+- (void)selectAllBarButtonItemAction:(id)sender {
+    [self.selectedProjectors removeAllObjects];
+    PJProjectorManager* mgr = [PJProjectorManager sharedManager];
+    for (NSUInteger i = 0; i < [mgr countOfProjectors]; i++) {
+        PJProjector* ithProjector = [mgr objectInProjectorsAtIndex:i];
+        [self.selectedProjectors addObject:ithProjector];
+    }
+    [self updateNavigationItemStateAnimated:YES];
+    [self updateToolbarHiddenStateAnimated:YES];
+    [self.tableView reloadData];
+}
+
+- (void)clearAllBarButtonItemAction:(id)sender {
+    [self.selectedProjectors removeAllObjects];
+    [self updateNavigationItemStateAnimated:YES];
+    [self updateToolbarHiddenStateAnimated:YES];
+    [self.tableView reloadData];
+}
+
+- (void)inputBarButtonItemAction:(id)sender {
+    [self.inputNames removeAllObjects];
+    for (PJProjector *selectedProjector in self.selectedProjectors) {
+        for (NSUInteger i = 0; i < [selectedProjector countOfInputs]; i++) {
+            PJInputInfo *ithInput = [selectedProjector objectInInputsAtIndex:i];
+            NSString *inputName = [ithInput description];
+            if (![self.inputNames containsObject:inputName]) {
+                [self.inputNames addObject:inputName];
+            }
+        }
+    }
+    // Create a UIActionSheet with the available inputs for this projector
+    self.inputActionSheet = [[UIActionSheet alloc] initWithTitle:@"Select Input"
+                                                        delegate:self
+                                               cancelButtonTitle:@"Cancel"
+                                          destructiveButtonTitle:nil
+                                               otherButtonTitles:nil];
+    for (NSString* inputName in self.inputNames) {
+        [self.inputActionSheet addButtonWithTitle:inputName];
+    }
+    [self.inputActionSheet showInView:self.view];
+}
+
+- (void)powerStatusBarButtonItemAction:(id)sender {
+    self.powerStatusActionSheet = [[UIActionSheet alloc] initWithTitle:@"Turn Selected Projectors"
+                                                              delegate:self
+                                                     cancelButtonTitle:@"Cancel"
+                                                destructiveButtonTitle:nil
+                                                     otherButtonTitles:@"On", @"Off", nil];
+    [self.powerStatusActionSheet showInView:self.view];
+}
+
+- (void)changeSelectedProjectorsInputTo:(NSString*)inputName {
+    for (PJProjector* selectedProjector in self.selectedProjectors) {
+        NSUInteger inputsCount = [selectedProjector countOfInputs];
+        NSUInteger selectedInputIndex = inputsCount;
+        for (NSUInteger i = 0; i < inputsCount; i++) {
+            PJInputInfo *ithInputInfo = [selectedProjector objectInInputsAtIndex:i];
+            NSString *ithInputName = [ithInputInfo description];
+            if ([inputName isEqualToString:ithInputName]) {
+                selectedInputIndex = i;
+                break;
+            }
+        }
+        if (selectedInputIndex < inputsCount) {
+            if (selectedInputIndex != selectedProjector.activeInputIndex) {
+                [selectedProjector requestInputChangeToInputIndex:selectedInputIndex];
+            }
+        }
+    }
+}
+
+- (void)changeSelectedProjectorsPowerStatusTo:(BOOL)requestOn {
+    for (PJProjector* selectedProjector in self.selectedProjectors) {
+        [selectedProjector requestPowerStateChange:requestOn];
+    }
+}
+
+- (void)updateNavigationItemStateAnimated:(BOOL)animated {
+    PJProjectorManager* mgr = [PJProjectorManager sharedManager];
+    NSUInteger projectorCount = [mgr countOfProjectors];
+    if (self.tableView.isEditing) {
+        [self.navigationItem setLeftBarButtonItem:self.cancelBarButtonItem animated:animated];
+        BOOL allProjectorsSelected = YES;
+        for (NSUInteger i = 0; i < projectorCount; i++) {
+            PJProjector* ithProjector = [mgr objectInProjectorsAtIndex:i];
+            if (![self.selectedProjectors containsObject:ithProjector]) {
+                allProjectorsSelected = NO;
+                break;
+            }
+        }
+        UIBarButtonItem* rightItem = (allProjectorsSelected ? self.clearAllBarButtonItem : self.selectAllBarButtonItem);
+        [self.navigationItem setRightBarButtonItem:rightItem animated:animated];
+    } else {
+        [self.navigationItem setRightBarButtonItem:self.addBarButtonItem animated:animated];
+        UIBarButtonItem* leftItem = (projectorCount > 0 ? self.selectBarButtonItem : nil);
+        [self.navigationItem setLeftBarButtonItem:leftItem animated:animated];
+    }
+}
+
+- (void)updateToolbarHiddenStateAnimated:(BOOL)animated {
+    BOOL isToolbarHidden = self.navigationController.toolbarHidden;
+    BOOL shouldToolbarBeHidden = ([self.selectedProjectors count] > 0 ? NO : YES);
+    if (isToolbarHidden != shouldToolbarBeHidden) {
+        [self.navigationController setToolbarHidden:shouldToolbarBeHidden animated:animated];
+    }
 }
 
 @end
