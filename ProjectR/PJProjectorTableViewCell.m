@@ -12,10 +12,12 @@
 #import "PJProjectorInputPowerStatusView.h"
 #import "PJProjectorTableViewCellDelegate.h"
 #import "PJProjectorConnectionStateView.h"
+#import "PJResponseInfo.h"
+#import "PJInputInfo.h"
 
 static NSString* const kPJProjectorTableViewCellReuseID = @"kPJProjectorTableViewCellReuseID";
 
-CGFloat const kPJProjectorTableViewCellHeight                     = 88.0;
+CGFloat const kPJProjectorTableViewCellHeight                     = 66.0;
 CGFloat const kPJProjectorTableViewCellSelectionButtonWidth       = 47.0;
 CGFloat const kPJProjectorTableViewCellSelectionAnimationDuration =  0.3;
 
@@ -46,6 +48,7 @@ CGFloat const kPJProjectorTableViewCellSelectionAnimationDuration =  0.3;
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.textLabel.numberOfLines = 0;
+        self.detailTextLabel.numberOfLines = 0;
         self.projectorInputPowerStatusView = [[PJProjectorInputPowerStatusView alloc] init];
         [self.projectorInputPowerStatusView.inputButton addTarget:self
                                                            action:@selector(buttonWasTapped:)
@@ -55,6 +58,7 @@ CGFloat const kPJProjectorTableViewCellSelectionAnimationDuration =  0.3;
                                                        forControlEvents:UIControlEventValueChanged];
         self.projectorConnectionStateView = [[PJProjectorConnectionStateView alloc] init];
         [self.projectorConnectionStateView sizeToFit];
+        self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         // Create the selection button
         self.selectionButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [self.selectionButton addTarget:self action:@selector(selectionButtonWasTapped:) forControlEvents:UIControlEventTouchUpInside];
@@ -142,7 +146,8 @@ CGFloat const kPJProjectorTableViewCellSelectionAnimationDuration =  0.3;
 
 - (void)dataDidChange {
     [self updateProjectorDisplayName];
-    [self updateAccessoryView];
+//    [self updateAccessoryView];
+    [self updateDetailTextLabel];
 }
 
 - (void)updateProjectorDisplayName {
@@ -160,6 +165,26 @@ CGFloat const kPJProjectorTableViewCellSelectionAnimationDuration =  0.3;
         viewToUse = self.projectorConnectionStateView;
     }
     self.accessoryView = viewToUse;
+}
+
+- (void)updateDetailTextLabel {
+    if (self.projector.connectionState == PJConnectionStateConnected) {
+        NSString* powerStatusText = [PJResponseInfoPowerStatusQuery stringForPowerStatus:self.projector.powerStatus];
+        NSString* inputText = nil;
+        if (self.projector.activeInputIndex < [self.projector countOfInputs]) {
+            PJInputInfo* inputInfo = [self.projector objectInInputsAtIndex:self.projector.activeInputIndex];
+            inputText = [inputInfo description];
+        }
+        NSString* detailText = nil;
+        if ([inputText length] > 0) {
+            detailText = [NSString stringWithFormat:@"%@\n%@", powerStatusText, inputText];
+        } else {
+            detailText = powerStatusText;
+        }
+        self.detailTextLabel.text = detailText;
+    } else {
+        self.detailTextLabel.text = [PJProjectorManager stringForConnectionState:self.projector.connectionState];
+    }
 }
 
 - (void)switchValueDidChange:(id)sender {

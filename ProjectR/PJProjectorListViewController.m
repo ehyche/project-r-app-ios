@@ -399,6 +399,7 @@
     BOOL newEditingMode = !self.tableView.isEditing;
     [self.tableView setEditing:newEditingMode animated:YES];
     [self updateNavigationItemStateAnimated:YES];
+    [self updateToolbarHiddenStateAnimated:YES];
 }
 
 - (void)selectAllBarButtonItemAction:(id)sender {
@@ -440,7 +441,7 @@
     for (NSString* inputName in self.inputNames) {
         [self.inputActionSheet addButtonWithTitle:inputName];
     }
-    [self.inputActionSheet showInView:self.view];
+    [self.inputActionSheet showFromBarButtonItem:sender animated:YES];
 }
 
 - (void)powerStatusBarButtonItemAction:(id)sender {
@@ -449,7 +450,7 @@
                                                      cancelButtonTitle:@"Cancel"
                                                 destructiveButtonTitle:nil
                                                      otherButtonTitles:@"On", @"Off", nil];
-    [self.powerStatusActionSheet showInView:self.view];
+    [self.powerStatusActionSheet showFromBarButtonItem:sender animated:YES];
 }
 
 - (void)changeSelectedProjectorsInputTo:(NSString*)inputName {
