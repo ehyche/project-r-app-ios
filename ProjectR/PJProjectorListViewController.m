@@ -26,6 +26,8 @@
 @property(nonatomic,strong) UIActionSheet*   addActionSheet;
 @property(nonatomic,strong) UIActionSheet*   inputActionSheet;
 @property(nonatomic,strong) UIActionSheet*   powerStatusActionSheet;
+@property(nonatomic,strong) UIActionSheet*   audioMuteActionSheet;
+@property(nonatomic,strong) UIActionSheet*   videoMuteActionSheet;
 @property(nonatomic,strong) UIBarButtonItem* addBarButtonItem;
 @property(nonatomic,strong) UIBarButtonItem* selectAllBarButtonItem;
 @property(nonatomic,strong) UIBarButtonItem* clearAllBarButtonItem;
@@ -34,6 +36,8 @@
 @property(nonatomic,strong) NSMutableArray*  selectedProjectors;
 @property(nonatomic,strong) UIBarButtonItem* inputBarButtonItem;
 @property(nonatomic,strong) UIBarButtonItem* powerStatusBarButtonItem;
+@property(nonatomic,strong) UIBarButtonItem* audioMuteBarButtonItem;
+@property(nonatomic,strong) UIBarButtonItem* videoMuteBarButtonItem;
 @property(nonatomic,strong) NSMutableArray*  inputNames;
 
 @end
@@ -89,18 +93,30 @@
                                                                  target:self
                                                                  action:@selector(clearAllBarButtonItemAction:)];
     // Set up the toolbar
-    self.inputBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Input"
+    self.inputBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"1078-join-path-toolbar.png"]
                                                                style:UIBarButtonItemStylePlain
                                                               target:self
                                                               action:@selector(inputBarButtonItemAction:)];
-    self.powerStatusBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Power"
+    self.powerStatusBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"935-power-socket-toolbar.png"]
                                                                      style:UIBarButtonItemStylePlain
                                                                     target:self
                                                                     action:@selector(powerStatusBarButtonItemAction:)];
+    self.audioMuteBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"946-microphone-toolbar.png"]
+                                                                   style:UIBarButtonItemStylePlain
+                                                                  target:self
+                                                                  action:@selector(audioMuteBarButtonItemAction:)];
+    self.videoMuteBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"969-television-toolbar.png"]
+                                                                   style:UIBarButtonItemStylePlain
+                                                                  target:self
+                                                                  action:@selector(videoMuteBarButtonItemAction:)];
     self.toolbarItems = @[[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
                           self.inputBarButtonItem,
                           [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
                           self.powerStatusBarButtonItem,
+                          [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
+                          self.audioMuteBarButtonItem,
+                          [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
+                          self.videoMuteBarButtonItem,
                           [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL]];
     [self updateNavigationItemStateAnimated:NO];
 }
@@ -247,6 +263,18 @@
         [self.tableView setEditing:NO animated:YES];
         [self updateNavigationItemStateAnimated:YES];
         [self updateToolbarHiddenStateAnimated:YES];
+    } else if (actionSheet == self.audioMuteActionSheet) {
+        if (buttonIndex != actionSheet.cancelButtonIndex) {
+            NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+            BOOL muteOn = [buttonTitle isEqualToString:@"On"];
+            [self changeSelectedProjectorsAudioMuteTo:muteOn];
+        }
+    } else if (actionSheet == self.videoMuteActionSheet) {
+        if (buttonIndex != actionSheet.cancelButtonIndex) {
+            NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+            BOOL muteOn = [buttonTitle isEqualToString:@"On"];
+            [self changeSelectedProjectorsVideoMuteTo:muteOn];
+        }
     }
 }
 
@@ -459,6 +487,24 @@
     [self.powerStatusActionSheet showFromBarButtonItem:sender animated:YES];
 }
 
+- (void)audioMuteBarButtonItemAction:(id)sender {
+    self.audioMuteActionSheet = [[UIActionSheet alloc] initWithTitle:@"Turn Audio Mute"
+                                                            delegate:self
+                                                   cancelButtonTitle:@"Cancel"
+                                              destructiveButtonTitle:nil
+                                                   otherButtonTitles:@"On", @"Off", nil];
+    [self.audioMuteActionSheet showFromBarButtonItem:sender animated:YES];
+}
+
+- (void)videoMuteBarButtonItemAction:(id)sender {
+    self.videoMuteActionSheet = [[UIActionSheet alloc] initWithTitle:@"Turn Video Mute"
+                                                            delegate:self
+                                                   cancelButtonTitle:@"Cancel"
+                                              destructiveButtonTitle:nil
+                                                   otherButtonTitles:@"On", @"Off", nil];
+    [self.videoMuteActionSheet showFromBarButtonItem:sender animated:YES];
+}
+
 - (void)changeSelectedProjectorsInputTo:(NSString*)inputName {
     for (PJProjector* selectedProjector in self.selectedProjectors) {
         NSUInteger inputsCount = [selectedProjector countOfInputs];
@@ -482,6 +528,18 @@
 - (void)changeSelectedProjectorsPowerStatusTo:(BOOL)requestOn {
     for (PJProjector* selectedProjector in self.selectedProjectors) {
         [selectedProjector requestPowerStateChange:requestOn];
+    }
+}
+
+- (void)changeSelectedProjectorsAudioMuteTo:(BOOL)muteOn {
+    for (PJProjector* selectedProjector in self.selectedProjectors) {
+        [selectedProjector requestMuteStateChange:muteOn forTypes:PJMuteTypeAudio];
+    }
+}
+
+- (void)changeSelectedProjectorsVideoMuteTo:(BOOL)muteOn {
+    for (PJProjector* selectedProjector in self.selectedProjectors) {
+        [selectedProjector requestMuteStateChange:muteOn forTypes:PJMuteTypeVideo];
     }
 }
 
