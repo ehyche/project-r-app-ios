@@ -11,6 +11,14 @@
 		FD071ADE18765FD30020B192 /* PJProjectorDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD071ADD18765FD30020B192 /* PJProjectorDetailViewController.m */; };
 		FD0FED5F191FFC2400373AA6 /* UIImage+SolidColor.m in Sources */ = {isa = PBXBuildFile; fileRef = FD0FED5E191FFC2400373AA6 /* UIImage+SolidColor.m */; };
 		FD11FED41895DFFA00C69F96 /* PJBeaconListenerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD11FED31895DFFA00C69F96 /* PJBeaconListenerViewController.m */; };
+		FD1359B119358093001FF701 /* 935-power-socket-toolbar.png in Resources */ = {isa = PBXBuildFile; fileRef = FD1359AF19358093001FF701 /* 935-power-socket-toolbar.png */; };
+		FD1359B219358093001FF701 /* 935-power-socket-toolbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FD1359B019358093001FF701 /* 935-power-socket-toolbar@2x.png */; };
+		FD1359B519358114001FF701 /* 1078-join-path-toolbar.png in Resources */ = {isa = PBXBuildFile; fileRef = FD1359B319358114001FF701 /* 1078-join-path-toolbar.png */; };
+		FD1359B619358114001FF701 /* 1078-join-path-toolbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FD1359B419358114001FF701 /* 1078-join-path-toolbar@2x.png */; };
+		FD1359B919358164001FF701 /* 946-microphone-toolbar.png in Resources */ = {isa = PBXBuildFile; fileRef = FD1359B719358164001FF701 /* 946-microphone-toolbar.png */; };
+		FD1359BA19358164001FF701 /* 946-microphone-toolbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FD1359B819358164001FF701 /* 946-microphone-toolbar@2x.png */; };
+		FD1359BD193581A0001FF701 /* 969-television-toolbar.png in Resources */ = {isa = PBXBuildFile; fileRef = FD1359BB193581A0001FF701 /* 969-television-toolbar.png */; };
+		FD1359BE193581A0001FF701 /* 969-television-toolbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FD1359BC193581A0001FF701 /* 969-television-toolbar@2x.png */; };
 		FD1C4085192AF4A0005B38B8 /* PJProjectorTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1C4084192AF4A0005B38B8 /* PJProjectorTableViewCell.m */; };
 		FD1C408D192B0639005B38B8 /* projector_connected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FD1C4087192B0639005B38B8 /* projector_connected@2x.png */; };
 		FD1C408E192B0639005B38B8 /* projector_connecting0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FD1C4088192B0639005B38B8 /* projector_connecting0@2x.png */; };
@@ -61,6 +69,14 @@
 		FD0FED5E191FFC2400373AA6 /* UIImage+SolidColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+SolidColor.m"; sourceTree = "<group>"; };
 		FD11FED21895DFFA00C69F96 /* PJBeaconListenerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJBeaconListenerViewController.h; sourceTree = "<group>"; };
 		FD11FED31895DFFA00C69F96 /* PJBeaconListenerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJBeaconListenerViewController.m; sourceTree = "<group>"; };
+		FD1359AF19358093001FF701 /* 935-power-socket-toolbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "935-power-socket-toolbar.png"; sourceTree = "<group>"; };
+		FD1359B019358093001FF701 /* 935-power-socket-toolbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "935-power-socket-toolbar@2x.png"; sourceTree = "<group>"; };
+		FD1359B319358114001FF701 /* 1078-join-path-toolbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "1078-join-path-toolbar.png"; sourceTree = "<group>"; };
+		FD1359B419358114001FF701 /* 1078-join-path-toolbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "1078-join-path-toolbar@2x.png"; sourceTree = "<group>"; };
+		FD1359B719358164001FF701 /* 946-microphone-toolbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "946-microphone-toolbar.png"; sourceTree = "<group>"; };
+		FD1359B819358164001FF701 /* 946-microphone-toolbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "946-microphone-toolbar@2x.png"; sourceTree = "<group>"; };
+		FD1359BB193581A0001FF701 /* 969-television-toolbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "969-television-toolbar.png"; sourceTree = "<group>"; };
+		FD1359BC193581A0001FF701 /* 969-television-toolbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "969-television-toolbar@2x.png"; sourceTree = "<group>"; };
 		FD1C4083192AF4A0005B38B8 /* PJProjectorTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJProjectorTableViewCell.h; sourceTree = "<group>"; };
 		FD1C4084192AF4A0005B38B8 /* PJProjectorTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJProjectorTableViewCell.m; sourceTree = "<group>"; };
 		FD1C4087192B0639005B38B8 /* projector_connected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "projector_connected@2x.png"; sourceTree = "<group>"; };
@@ -141,6 +157,14 @@
 		FD1C4086192B05F4005B38B8 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				FD1359BB193581A0001FF701 /* 969-television-toolbar.png */,
+				FD1359BC193581A0001FF701 /* 969-television-toolbar@2x.png */,
+				FD1359B719358164001FF701 /* 946-microphone-toolbar.png */,
+				FD1359B819358164001FF701 /* 946-microphone-toolbar@2x.png */,
+				FD1359B319358114001FF701 /* 1078-join-path-toolbar.png */,
+				FD1359B419358114001FF701 /* 1078-join-path-toolbar@2x.png */,
+				FD1359AF19358093001FF701 /* 935-power-socket-toolbar.png */,
+				FD1359B019358093001FF701 /* 935-power-socket-toolbar@2x.png */,
 				FD5BDEDB19340D22002B86DF /* blue_circle_selected.png */,
 				FD5BDEDC19340D22002B86DF /* blue_circle_selected@2x.png */,
 				FD5BDEDD19340D22002B86DF /* blue_circle.png */,
@@ -358,8 +382,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FD1359B119358093001FF701 /* 935-power-socket-toolbar.png in Resources */,
 				FD2C35CC178A305A0080B1B7 /* InfoPlist.strings in Resources */,
+				FD1359B219358093001FF701 /* 935-power-socket-toolbar@2x.png in Resources */,
 				FD1C4092192B0639005B38B8 /* projector_disconnected@2x.png in Resources */,
+				FD1359B919358164001FF701 /* 946-microphone-toolbar.png in Resources */,
+				FD1359BA19358164001FF701 /* 946-microphone-toolbar@2x.png in Resources */,
 				FD26B2FE192EE63A0077F336 /* ProjectRAppIcon@2x.png in Resources */,
 				FD1C408F192B0639005B38B8 /* projector_connecting1@2x.png in Resources */,
 				FD1C408D192B0639005B38B8 /* projector_connected@2x.png in Resources */,
@@ -367,14 +395,18 @@
 				FD26B2FB192EDDB80077F336 /* blue_rounded_rect.png in Resources */,
 				FD1C408E192B0639005B38B8 /* projector_connecting0@2x.png in Resources */,
 				FD5BDEE019340D22002B86DF /* blue_circle_selected@2x.png in Resources */,
+				FD1359B619358114001FF701 /* 1078-join-path-toolbar@2x.png in Resources */,
 				FD5BDEE119340D22002B86DF /* blue_circle.png in Resources */,
 				FD26B2FC192EDDB80077F336 /* blue_rounded_rect@2x.png in Resources */,
+				FD1359BE193581A0001FF701 /* 969-television-toolbar@2x.png in Resources */,
 				FD2C35D6178A305A0080B1B7 /* Default@2x.png in Resources */,
 				FD1C4090192B0639005B38B8 /* projector_connecting2@2x.png in Resources */,
 				FD1C4091192B0639005B38B8 /* projector_connecting3@2x.png in Resources */,
 				FD5BDEDF19340D22002B86DF /* blue_circle_selected.png in Resources */,
 				FD5BDEE219340D22002B86DF /* blue_circle@2x.png in Resources */,
 				FD26B300192EE6DD0077F336 /* ProjectRAppIcon.png in Resources */,
+				FD1359BD193581A0001FF701 /* 969-television-toolbar.png in Resources */,
+				FD1359B519358114001FF701 /* 1078-join-path-toolbar.png in Resources */,
 				FD2C35D8178A305A0080B1B7 /* Default-568h@2x.png in Resources */,
 				FD2C35DB178A305A0080B1B7 /* MainStoryboard_iPhone.storyboard in Resources */,
 			);
