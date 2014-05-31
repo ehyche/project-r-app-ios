@@ -56,6 +56,10 @@
 		FDDA6A55192066AA00757F96 /* PJLabeledProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDA6A54192066AA00757F96 /* PJLabeledProgressView.m */; };
 		FDDAEE65188DFDB80015D2E3 /* PJSubnetScannerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDAEE64188DFDB80015D2E3 /* PJSubnetScannerViewController.m */; };
 		FDDEA682187FA1E400C07EB8 /* NSIndexSet+NSIndexPath.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDEA681187FA1E400C07EB8 /* NSIndexSet+NSIndexPath.m */; };
+		FDE0290F193977BA00DFC244 /* blue_checkbox_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = FDE0290B193977BA00DFC244 /* blue_checkbox_selected.png */; };
+		FDE02910193977BA00DFC244 /* blue_checkbox_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FDE0290C193977BA00DFC244 /* blue_checkbox_selected@2x.png */; };
+		FDE02911193977BA00DFC244 /* blue_checkbox.png in Resources */ = {isa = PBXBuildFile; fileRef = FDE0290D193977BA00DFC244 /* blue_checkbox.png */; };
+		FDE02912193977BA00DFC244 /* blue_checkbox@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FDE0290E193977BA00DFC244 /* blue_checkbox@2x.png */; };
 		FDEF71691878F963002FA55F /* PJProjectorListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEF71681878F963002FA55F /* PJProjectorListViewController.m */; };
 		FDEF716C18791349002FA55F /* PJManualAddTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEF716B18791349002FA55F /* PJManualAddTableViewController.m */; };
 /* End PBXBuildFile section */
@@ -132,6 +136,10 @@
 		FDDAEE64188DFDB80015D2E3 /* PJSubnetScannerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJSubnetScannerViewController.m; sourceTree = "<group>"; };
 		FDDEA680187FA1E400C07EB8 /* NSIndexSet+NSIndexPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexSet+NSIndexPath.h"; sourceTree = "<group>"; };
 		FDDEA681187FA1E400C07EB8 /* NSIndexSet+NSIndexPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexSet+NSIndexPath.m"; sourceTree = "<group>"; };
+		FDE0290B193977BA00DFC244 /* blue_checkbox_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blue_checkbox_selected.png; sourceTree = "<group>"; };
+		FDE0290C193977BA00DFC244 /* blue_checkbox_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue_checkbox_selected@2x.png"; sourceTree = "<group>"; };
+		FDE0290D193977BA00DFC244 /* blue_checkbox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blue_checkbox.png; sourceTree = "<group>"; };
+		FDE0290E193977BA00DFC244 /* blue_checkbox@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue_checkbox@2x.png"; sourceTree = "<group>"; };
 		FDEF71671878F963002FA55F /* PJProjectorListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJProjectorListViewController.h; sourceTree = "<group>"; };
 		FDEF71681878F963002FA55F /* PJProjectorListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJProjectorListViewController.m; sourceTree = "<group>"; };
 		FDEF716A18791349002FA55F /* PJManualAddTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJManualAddTableViewController.h; sourceTree = "<group>"; };
@@ -157,6 +165,10 @@
 		FD1C4086192B05F4005B38B8 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				FDE0290B193977BA00DFC244 /* blue_checkbox_selected.png */,
+				FDE0290C193977BA00DFC244 /* blue_checkbox_selected@2x.png */,
+				FDE0290D193977BA00DFC244 /* blue_checkbox.png */,
+				FDE0290E193977BA00DFC244 /* blue_checkbox@2x.png */,
 				FD1359BB193581A0001FF701 /* 969-television-toolbar.png */,
 				FD1359BC193581A0001FF701 /* 969-television-toolbar@2x.png */,
 				FD1359B719358164001FF701 /* 946-microphone-toolbar.png */,
@@ -399,15 +411,19 @@
 				FD5BDEE119340D22002B86DF /* blue_circle.png in Resources */,
 				FD26B2FC192EDDB80077F336 /* blue_rounded_rect@2x.png in Resources */,
 				FD1359BE193581A0001FF701 /* 969-television-toolbar@2x.png in Resources */,
+				FDE0290F193977BA00DFC244 /* blue_checkbox_selected.png in Resources */,
 				FD2C35D6178A305A0080B1B7 /* Default@2x.png in Resources */,
 				FD1C4090192B0639005B38B8 /* projector_connecting2@2x.png in Resources */,
 				FD1C4091192B0639005B38B8 /* projector_connecting3@2x.png in Resources */,
 				FD5BDEDF19340D22002B86DF /* blue_circle_selected.png in Resources */,
+				FDE02910193977BA00DFC244 /* blue_checkbox_selected@2x.png in Resources */,
 				FD5BDEE219340D22002B86DF /* blue_circle@2x.png in Resources */,
 				FD26B300192EE6DD0077F336 /* ProjectRAppIcon.png in Resources */,
 				FD1359BD193581A0001FF701 /* 969-television-toolbar.png in Resources */,
 				FD1359B519358114001FF701 /* 1078-join-path-toolbar.png in Resources */,
 				FD2C35D8178A305A0080B1B7 /* Default-568h@2x.png in Resources */,
+				FDE02912193977BA00DFC244 /* blue_checkbox@2x.png in Resources */,
+				FDE02911193977BA00DFC244 /* blue_checkbox.png in Resources */,
 				FD2C35DB178A305A0080B1B7 /* MainStoryboard_iPhone.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
