@@ -60,6 +60,7 @@
 		FDE02910193977BA00DFC244 /* blue_checkbox_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FDE0290C193977BA00DFC244 /* blue_checkbox_selected@2x.png */; };
 		FDE02911193977BA00DFC244 /* blue_checkbox.png in Resources */ = {isa = PBXBuildFile; fileRef = FDE0290D193977BA00DFC244 /* blue_checkbox.png */; };
 		FDE02912193977BA00DFC244 /* blue_checkbox@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FDE0290E193977BA00DFC244 /* blue_checkbox@2x.png */; };
+		FDE0291419397E7500DFC244 /* ProjectRSplashScreen-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FDE0291319397E7500DFC244 /* ProjectRSplashScreen-568h@2x.png */; };
 		FDEF71691878F963002FA55F /* PJProjectorListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEF71681878F963002FA55F /* PJProjectorListViewController.m */; };
 		FDEF716C18791349002FA55F /* PJManualAddTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEF716B18791349002FA55F /* PJManualAddTableViewController.m */; };
 /* End PBXBuildFile section */
@@ -140,6 +141,7 @@
 		FDE0290C193977BA00DFC244 /* blue_checkbox_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue_checkbox_selected@2x.png"; sourceTree = "<group>"; };
 		FDE0290D193977BA00DFC244 /* blue_checkbox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blue_checkbox.png; sourceTree = "<group>"; };
 		FDE0290E193977BA00DFC244 /* blue_checkbox@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue_checkbox@2x.png"; sourceTree = "<group>"; };
+		FDE0291319397E7500DFC244 /* ProjectRSplashScreen-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ProjectRSplashScreen-568h@2x.png"; sourceTree = "<group>"; };
 		FDEF71671878F963002FA55F /* PJProjectorListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJProjectorListViewController.h; sourceTree = "<group>"; };
 		FDEF71681878F963002FA55F /* PJProjectorListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJProjectorListViewController.m; sourceTree = "<group>"; };
 		FDEF716A18791349002FA55F /* PJManualAddTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJManualAddTableViewController.h; sourceTree = "<group>"; };
@@ -165,6 +167,7 @@
 		FD1C4086192B05F4005B38B8 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				FDE0291319397E7500DFC244 /* ProjectRSplashScreen-568h@2x.png */,
 				FDE0290B193977BA00DFC244 /* blue_checkbox_selected.png */,
 				FDE0290C193977BA00DFC244 /* blue_checkbox_selected@2x.png */,
 				FDE0290D193977BA00DFC244 /* blue_checkbox.png */,
@@ -412,6 +415,7 @@
 				FD26B2FC192EDDB80077F336 /* blue_rounded_rect@2x.png in Resources */,
 				FD1359BE193581A0001FF701 /* 969-television-toolbar@2x.png in Resources */,
 				FDE0290F193977BA00DFC244 /* blue_checkbox_selected.png in Resources */,
+				FDE0291419397E7500DFC244 /* ProjectRSplashScreen-568h@2x.png in Resources */,
 				FD2C35D6178A305A0080B1B7 /* Default@2x.png in Resources */,
 				FD1C4090192B0639005B38B8 /* projector_connecting2@2x.png in Resources */,
 				FD1C4091192B0639005B38B8 /* projector_connecting3@2x.png in Resources */,
