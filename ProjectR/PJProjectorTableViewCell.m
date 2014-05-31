@@ -62,8 +62,8 @@ CGFloat const kPJProjectorTableViewCellSelectionAnimationDuration =  0.3;
         // Create the selection button
         self.selectionButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [self.selectionButton addTarget:self action:@selector(selectionButtonWasTapped:) forControlEvents:UIControlEventTouchUpInside];
-        UIImage* normalImage = [UIImage imageNamed:@"blue_circle.png"];
-        UIImage* selectedImage = [UIImage imageNamed:@"blue_circle_selected.png"];
+        UIImage* normalImage = [UIImage imageNamed:@"blue_checkbox.png"];
+        UIImage* selectedImage = [UIImage imageNamed:@"blue_checkbox_selected.png"];
         [self.selectionButton setImage:normalImage forState:UIControlStateNormal];
         [self.selectionButton setImage:selectedImage forState:UIControlStateSelected];
         self.selectionButton.frame = CGRectMake(-kPJProjectorTableViewCellSelectionButtonWidth,
