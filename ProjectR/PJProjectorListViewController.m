@@ -28,6 +28,7 @@
 @property(nonatomic,strong) UIActionSheet*   powerStatusActionSheet;
 @property(nonatomic,strong) UIActionSheet*   audioMuteActionSheet;
 @property(nonatomic,strong) UIActionSheet*   videoMuteActionSheet;
+@property(nonatomic,strong) UIActionSheet*   deleteActionSheet;
 @property(nonatomic,strong) UIBarButtonItem* addBarButtonItem;
 @property(nonatomic,strong) UIBarButtonItem* selectAllBarButtonItem;
 @property(nonatomic,strong) UIBarButtonItem* clearAllBarButtonItem;
@@ -38,6 +39,7 @@
 @property(nonatomic,strong) UIBarButtonItem* powerStatusBarButtonItem;
 @property(nonatomic,strong) UIBarButtonItem* audioMuteBarButtonItem;
 @property(nonatomic,strong) UIBarButtonItem* videoMuteBarButtonItem;
+@property(nonatomic,strong) UIBarButtonItem* deleteBarButtonItem;
 @property(nonatomic,strong) NSMutableArray*  inputNames;
 
 @end
@@ -109,6 +111,9 @@
                                                                    style:UIBarButtonItemStylePlain
                                                                   target:self
                                                                   action:@selector(videoMuteBarButtonItemAction:)];
+    self.deleteBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
+                                                                             target:self
+                                                                             action:@selector(deleteBarButtonItemAction:)];
     self.toolbarItems = @[[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
                           self.inputBarButtonItem,
                           [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
@@ -117,6 +122,8 @@
                           self.audioMuteBarButtonItem,
                           [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
                           self.videoMuteBarButtonItem,
+                          [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
+                          self.deleteBarButtonItem,
                           [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL]];
     [self updateNavigationItemStateAnimated:NO];
 }
@@ -226,8 +233,8 @@
 #pragma mark - UIActionSheetDelegate methods
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (actionSheet == self.addActionSheet) {
-        if (buttonIndex != actionSheet.cancelButtonIndex) {
+    if (buttonIndex != actionSheet.cancelButtonIndex) {
+        if (actionSheet == self.addActionSheet) {
             UIViewController* controller = nil;
             if (buttonIndex == 0) {
                 // Manually add a projector
@@ -245,35 +252,39 @@
                 // Present this controller
                 [self presentViewController:navController animated:YES completion:nil];
             }
-        }
-    } else if (actionSheet == self.inputActionSheet) {
-        if (buttonIndex != actionSheet.cancelButtonIndex) {
+        } else if (actionSheet == self.inputActionSheet) {
             NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
             [self changeSelectedProjectorsInputTo:buttonTitle];
-        }
-        [self.tableView setEditing:NO animated:YES];
-        [self updateNavigationItemStateAnimated:YES];
-        [self updateToolbarHiddenStateAnimated:YES];
-    } else if (actionSheet == self.powerStatusActionSheet) {
-        if (buttonIndex != actionSheet.cancelButtonIndex) {
+            [self.tableView setEditing:NO animated:YES];
+            [self updateNavigationItemStateAnimated:YES];
+            [self updateToolbarHiddenStateAnimated:YES];
+        } else if (actionSheet == self.powerStatusActionSheet) {
             NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
             BOOL powerOn = [buttonTitle isEqualToString:@"On"];
             [self changeSelectedProjectorsPowerStatusTo:powerOn];
-        }
-        [self.tableView setEditing:NO animated:YES];
-        [self updateNavigationItemStateAnimated:YES];
-        [self updateToolbarHiddenStateAnimated:YES];
-    } else if (actionSheet == self.audioMuteActionSheet) {
-        if (buttonIndex != actionSheet.cancelButtonIndex) {
+            [self.tableView setEditing:NO animated:YES];
+            [self updateNavigationItemStateAnimated:YES];
+            [self updateToolbarHiddenStateAnimated:YES];
+        } else if (actionSheet == self.audioMuteActionSheet) {
             NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
             BOOL muteOn = [buttonTitle isEqualToString:@"On"];
             [self changeSelectedProjectorsAudioMuteTo:muteOn];
-        }
-    } else if (actionSheet == self.videoMuteActionSheet) {
-        if (buttonIndex != actionSheet.cancelButtonIndex) {
+            [self.tableView setEditing:NO animated:YES];
+            [self updateNavigationItemStateAnimated:YES];
+            [self updateToolbarHiddenStateAnimated:YES];
+        } else if (actionSheet == self.videoMuteActionSheet) {
             NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
             BOOL muteOn = [buttonTitle isEqualToString:@"On"];
             [self changeSelectedProjectorsVideoMuteTo:muteOn];
+            [self.tableView setEditing:NO animated:YES];
+            [self updateNavigationItemStateAnimated:YES];
+            [self updateToolbarHiddenStateAnimated:YES];
+        } else if (actionSheet == self.deleteActionSheet) {
+            PJProjectorManager *mgr = [PJProjectorManager sharedManager];
+            [mgr removeProjectorsFromManager:self.selectedProjectors];
+            [self.tableView setEditing:NO animated:YES];
+            [self updateNavigationItemStateAnimated:YES];
+            [self updateToolbarHiddenStateAnimated:YES];
         }
     }
 }
@@ -503,6 +514,15 @@
                                               destructiveButtonTitle:nil
                                                    otherButtonTitles:@"On", @"Off", nil];
     [self.videoMuteActionSheet showFromBarButtonItem:sender animated:YES];
+}
+
+- (void)deleteBarButtonItemAction:(id)sender {
+    self.deleteActionSheet = [[UIActionSheet alloc] initWithTitle:@"Delete Selected Projectors?"
+                                                         delegate:self
+                                                cancelButtonTitle:@"Cancel"
+                                           destructiveButtonTitle:nil
+                                                otherButtonTitles:@"Yes", @"No", nil];
+    [self.deleteActionSheet showFromBarButtonItem:sender animated:YES];
 }
 
 - (void)changeSelectedProjectorsInputTo:(NSString*)inputName {
