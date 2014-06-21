@@ -103,11 +103,11 @@
                                                                      style:UIBarButtonItemStylePlain
                                                                     target:self
                                                                     action:@selector(powerStatusBarButtonItemAction:)];
-    self.audioMuteBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"946-microphone.png"]
+    self.audioMuteBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"771-sound-muted.png"]
                                                                    style:UIBarButtonItemStylePlain
                                                                   target:self
                                                                   action:@selector(audioMuteBarButtonItemAction:)];
-    self.videoMuteBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"969-television.png"]
+    self.videoMuteBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"733-video-camera-mute.png"]
                                                                    style:UIBarButtonItemStylePlain
                                                                   target:self
                                                                   action:@selector(videoMuteBarButtonItemAction:)];
