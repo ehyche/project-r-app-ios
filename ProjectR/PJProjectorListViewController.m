@@ -93,19 +93,19 @@
                                                                  target:self
                                                                  action:@selector(clearAllBarButtonItemAction:)];
     // Set up the toolbar
-    self.inputBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"1078-join-path-toolbar.png"]
+    self.inputBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"1078-join-path.png"]
                                                                style:UIBarButtonItemStylePlain
                                                               target:self
                                                               action:@selector(inputBarButtonItemAction:)];
-    self.powerStatusBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"935-power-socket-toolbar.png"]
+    self.powerStatusBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"935-power-socket.png"]
                                                                      style:UIBarButtonItemStylePlain
                                                                     target:self
                                                                     action:@selector(powerStatusBarButtonItemAction:)];
-    self.audioMuteBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"946-microphone-toolbar.png"]
+    self.audioMuteBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"946-microphone.png"]
                                                                    style:UIBarButtonItemStylePlain
                                                                   target:self
                                                                   action:@selector(audioMuteBarButtonItemAction:)];
-    self.videoMuteBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"969-television-toolbar.png"]
+    self.videoMuteBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"969-television.png"]
                                                                    style:UIBarButtonItemStylePlain
                                                                   target:self
                                                                   action:@selector(videoMuteBarButtonItemAction:)];
