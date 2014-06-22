@@ -54,6 +54,10 @@
 		FD7E9CED195613AD00DABB6B /* 771-sound-muted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FD7E9CE7195613AD00DABB6B /* 771-sound-muted@2x.png */; };
 		FD7E9CF0195615B600DABB6B /* 733-video-camera-mute.png in Resources */ = {isa = PBXBuildFile; fileRef = FD7E9CEE195615B600DABB6B /* 733-video-camera-mute.png */; };
 		FD7E9CF1195615B600DABB6B /* 733-video-camera-mute@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FD7E9CEF195615B600DABB6B /* 733-video-camera-mute@2x.png */; };
+		FD7E9CFC19563FD000DABB6B /* 703-download.png in Resources */ = {isa = PBXBuildFile; fileRef = FD7E9CFA19563FD000DABB6B /* 703-download.png */; };
+		FD7E9CFD19563FD000DABB6B /* 703-download@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FD7E9CFB19563FD000DABB6B /* 703-download@2x.png */; };
+		FD7E9D00195643CC00DABB6B /* mypower.png in Resources */ = {isa = PBXBuildFile; fileRef = FD7E9CFE195643CC00DABB6B /* mypower.png */; };
+		FD7E9D01195643CC00DABB6B /* mypower@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FD7E9CFF195643CC00DABB6B /* mypower@2x.png */; };
 		FD94CFAF192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = FD94CFAE192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.m */; };
 		FDB9161317AC9B850098755A /* PJLinkSubnetScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */; };
 		FDDA57DC1793BA58007B49D0 /* PJProjectorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */; };
@@ -132,6 +136,10 @@
 		FD7E9CE7195613AD00DABB6B /* 771-sound-muted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "771-sound-muted@2x.png"; sourceTree = "<group>"; };
 		FD7E9CEE195615B600DABB6B /* 733-video-camera-mute.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "733-video-camera-mute.png"; sourceTree = "<group>"; };
 		FD7E9CEF195615B600DABB6B /* 733-video-camera-mute@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "733-video-camera-mute@2x.png"; sourceTree = "<group>"; };
+		FD7E9CFA19563FD000DABB6B /* 703-download.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "703-download.png"; sourceTree = "<group>"; };
+		FD7E9CFB19563FD000DABB6B /* 703-download@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "703-download@2x.png"; sourceTree = "<group>"; };
+		FD7E9CFE195643CC00DABB6B /* mypower.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mypower.png; sourceTree = "<group>"; };
+		FD7E9CFF195643CC00DABB6B /* mypower@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mypower@2x.png"; sourceTree = "<group>"; };
 		FD94CFAD192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJProjectorInputPowerStatusView.h; sourceTree = "<group>"; };
 		FD94CFAE192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJProjectorInputPowerStatusView.m; sourceTree = "<group>"; };
 		FD94CFB1192C479200C1DB05 /* PJProjectorTableViewCellDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PJProjectorTableViewCellDelegate.h; sourceTree = "<group>"; };
@@ -175,6 +183,10 @@
 		FD1C4086192B05F4005B38B8 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				FD7E9CFE195643CC00DABB6B /* mypower.png */,
+				FD7E9CFF195643CC00DABB6B /* mypower@2x.png */,
+				FD7E9CFA19563FD000DABB6B /* 703-download.png */,
+				FD7E9CFB19563FD000DABB6B /* 703-download@2x.png */,
 				FD7E9CEE195615B600DABB6B /* 733-video-camera-mute.png */,
 				FD7E9CEF195615B600DABB6B /* 733-video-camera-mute@2x.png */,
 				FD7E9CE6195613AD00DABB6B /* 771-sound-muted.png */,
@@ -414,6 +426,7 @@
 				FD1C4092192B0639005B38B8 /* projector_disconnected@2x.png in Resources */,
 				FD26B2FE192EE63A0077F336 /* ProjectRAppIcon@2x.png in Resources */,
 				FD7E9CDB1955E1B400DABB6B /* 935-power-socket@2x.png in Resources */,
+				FD7E9D00195643CC00DABB6B /* mypower.png in Resources */,
 				FD1C408F192B0639005B38B8 /* projector_connecting1@2x.png in Resources */,
 				FD1C408D192B0639005B38B8 /* projector_connected@2x.png in Resources */,
 				FD7E9CDA1955E1B400DABB6B /* 935-power-socket.png in Resources */,
@@ -421,6 +434,7 @@
 				FD7E9CEC195613AD00DABB6B /* 771-sound-muted.png in Resources */,
 				FD7E9CF1195615B600DABB6B /* 733-video-camera-mute@2x.png in Resources */,
 				FD2C35D4178A305A0080B1B7 /* Default.png in Resources */,
+				FD7E9D01195643CC00DABB6B /* mypower@2x.png in Resources */,
 				FD26B2FB192EDDB80077F336 /* blue_rounded_rect.png in Resources */,
 				FD7E9CDC1955E1B400DABB6B /* 946-microphone.png in Resources */,
 				FD1C408E192B0639005B38B8 /* projector_connecting0@2x.png in Resources */,
@@ -434,10 +448,12 @@
 				FD2C35D6178A305A0080B1B7 /* Default@2x.png in Resources */,
 				FD1C4090192B0639005B38B8 /* projector_connecting2@2x.png in Resources */,
 				FD1C4091192B0639005B38B8 /* projector_connecting3@2x.png in Resources */,
+				FD7E9CFD19563FD000DABB6B /* 703-download@2x.png in Resources */,
 				FD7E9CE01955E1B400DABB6B /* 1078-join-path.png in Resources */,
 				FD5BDEDF19340D22002B86DF /* blue_circle_selected.png in Resources */,
 				FDE02910193977BA00DFC244 /* blue_checkbox_selected@2x.png in Resources */,
 				FD5BDEE219340D22002B86DF /* blue_circle@2x.png in Resources */,
+				FD7E9CFC19563FD000DABB6B /* 703-download.png in Resources */,
 				FD26B300192EE6DD0077F336 /* ProjectRAppIcon.png in Resources */,
 				FD7E9CF0195615B600DABB6B /* 733-video-camera-mute.png in Resources */,
 				FD2C35D8178A305A0080B1B7 /* Default-568h@2x.png in Resources */,

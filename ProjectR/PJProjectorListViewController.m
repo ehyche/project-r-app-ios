@@ -95,14 +95,14 @@
                                                                  target:self
                                                                  action:@selector(clearAllBarButtonItemAction:)];
     // Set up the toolbar
-    self.inputBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"1078-join-path.png"]
-                                                               style:UIBarButtonItemStylePlain
-                                                              target:self
-                                                              action:@selector(inputBarButtonItemAction:)];
-    self.powerStatusBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"935-power-socket.png"]
+    self.powerStatusBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"mypower.png"]
                                                                      style:UIBarButtonItemStylePlain
                                                                     target:self
                                                                     action:@selector(powerStatusBarButtonItemAction:)];
+    self.inputBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"703-download.png"]
+                                                               style:UIBarButtonItemStylePlain
+                                                              target:self
+                                                              action:@selector(inputBarButtonItemAction:)];
     self.audioMuteBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"771-sound-muted.png"]
                                                                    style:UIBarButtonItemStylePlain
                                                                   target:self
@@ -115,9 +115,9 @@
                                                                              target:self
                                                                              action:@selector(deleteBarButtonItemAction:)];
     self.toolbarItems = @[[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
-                          self.inputBarButtonItem,
-                          [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
                           self.powerStatusBarButtonItem,
+                          [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
+                          self.inputBarButtonItem,
                           [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
                           self.audioMuteBarButtonItem,
                           [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
@@ -521,7 +521,7 @@
                                                          delegate:self
                                                 cancelButtonTitle:@"Cancel"
                                            destructiveButtonTitle:nil
-                                                otherButtonTitles:@"Yes", @"No", nil];
+                                                otherButtonTitles:@"Confirm", nil];
     [self.deleteActionSheet showFromBarButtonItem:sender animated:YES];
 }
 
