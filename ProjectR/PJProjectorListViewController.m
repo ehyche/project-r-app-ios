@@ -19,28 +19,31 @@
 #import "PJNoProjectorsTableViewCell.h"
 #import "PJProjectorTableViewCell.h"
 #import "PJProjectorTableViewCellDelegate.h"
+#import "PJInputPickerView.h"
 
 @interface PJProjectorListViewController () <UIActionSheetDelegate,
-                                             PJProjectorTableViewCellDelegate>
+                                             PJProjectorTableViewCellDelegate,
+                                             PJInputPickerViewDelegate>
 
-@property(nonatomic,strong) UIActionSheet*   addActionSheet;
-@property(nonatomic,strong) UIActionSheet*   inputActionSheet;
-@property(nonatomic,strong) UIActionSheet*   powerStatusActionSheet;
-@property(nonatomic,strong) UIActionSheet*   audioMuteActionSheet;
-@property(nonatomic,strong) UIActionSheet*   videoMuteActionSheet;
-@property(nonatomic,strong) UIActionSheet*   deleteActionSheet;
-@property(nonatomic,strong) UIBarButtonItem* addBarButtonItem;
-@property(nonatomic,strong) UIBarButtonItem* selectAllBarButtonItem;
-@property(nonatomic,strong) UIBarButtonItem* clearAllBarButtonItem;
-@property(nonatomic,strong) UIBarButtonItem* selectBarButtonItem;
-@property(nonatomic,strong) UIBarButtonItem* cancelBarButtonItem;
-@property(nonatomic,strong) NSMutableArray*  selectedProjectors;
-@property(nonatomic,strong) UIBarButtonItem* inputBarButtonItem;
-@property(nonatomic,strong) UIBarButtonItem* powerStatusBarButtonItem;
-@property(nonatomic,strong) UIBarButtonItem* audioMuteBarButtonItem;
-@property(nonatomic,strong) UIBarButtonItem* videoMuteBarButtonItem;
-@property(nonatomic,strong) UIBarButtonItem* deleteBarButtonItem;
-@property(nonatomic,strong) NSMutableArray*  inputNames;
+@property(nonatomic,strong) UIActionSheet*     addActionSheet;
+@property(nonatomic,strong) UIActionSheet*     inputActionSheet;
+@property(nonatomic,strong) UIActionSheet*     powerStatusActionSheet;
+@property(nonatomic,strong) UIActionSheet*     audioMuteActionSheet;
+@property(nonatomic,strong) UIActionSheet*     videoMuteActionSheet;
+@property(nonatomic,strong) UIActionSheet*     deleteActionSheet;
+@property(nonatomic,strong) UIBarButtonItem*   addBarButtonItem;
+@property(nonatomic,strong) UIBarButtonItem*   selectAllBarButtonItem;
+@property(nonatomic,strong) UIBarButtonItem*   clearAllBarButtonItem;
+@property(nonatomic,strong) UIBarButtonItem*   selectBarButtonItem;
+@property(nonatomic,strong) UIBarButtonItem*   cancelBarButtonItem;
+@property(nonatomic,strong) NSMutableArray*    selectedProjectors;
+@property(nonatomic,strong) UIBarButtonItem*   inputBarButtonItem;
+@property(nonatomic,strong) UIBarButtonItem*   powerStatusBarButtonItem;
+@property(nonatomic,strong) UIBarButtonItem*   audioMuteBarButtonItem;
+@property(nonatomic,strong) UIBarButtonItem*   videoMuteBarButtonItem;
+@property(nonatomic,strong) UIBarButtonItem*   deleteBarButtonItem;
+@property(nonatomic,strong) NSMutableArray*    inputNames;
+@property(nonatomic,strong) PJInputPickerView* inputPickerView;
 
 @end
 
@@ -126,6 +129,9 @@
                           self.deleteBarButtonItem,
                           [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL]];
     [self updateNavigationItemStateAnimated:NO];
+    // Create the input picker view
+    self.inputPickerView = [[PJInputPickerView alloc] initWithFrame:self.view.bounds];
+    self.inputPickerView.delegate = self;
 }
 
 #pragma mark - UITableViewDataSource methods
@@ -289,6 +295,27 @@
     }
 }
 
+#pragma mark - PJInputPickerViewDelegate methods
+
+- (void)inputPickerViewDidCancel:(PJInputPickerView *)inputPicker {
+    [self.tableView setEditing:NO animated:YES];
+    [self updateNavigationItemStateAnimated:YES];
+    [self updateToolbarHiddenStateAnimated:YES];
+    [self.inputPickerView showHide:NO animated:YES withCompletion:^(BOOL finished) {
+        [self.inputPickerView removeFromSuperview];
+    }];
+}
+
+- (void)inputPickerView:(PJInputPickerView *)inputPicker didSelectInputWithName:(NSString *)inputName {
+    [self changeSelectedProjectorsInputTo:inputName];
+    [self.tableView setEditing:NO animated:YES];
+    [self updateNavigationItemStateAnimated:YES];
+    [self updateToolbarHiddenStateAnimated:YES];
+    [self.inputPickerView showHide:NO animated:YES withCompletion:^(BOOL finished) {
+        [self.inputPickerView removeFromSuperview];
+    }];
+}
+
 #pragma mark - PJProjectorTableViewCellDelegate methods
 
 - (void)projectorCell:(PJProjectorTableViewCell*)cell switchValueChangedTo:(BOOL)isOn {
@@ -386,13 +413,11 @@
 }
 
 - (void)projectorsDidChange {
-    NSLog(@"XXXMEH projectorsDidChange");
     [self updateNavigationItemStateAnimated:YES];
     [self.tableView reloadData];
 }
 
 - (void)projectorsWereInserted:(NSIndexSet*)indexSet {
-    NSLog(@"XXXMEH projectorsWereInserted:%@", indexSet);
     PJProjectorManager* mgr = [PJProjectorManager sharedManager];
     BOOL firstProjectorsAdded = ([indexSet count] == [mgr countOfProjectors]);
     if (firstProjectorsAdded) {
@@ -406,7 +431,6 @@
 }
 
 - (void)projectorsWereRemoved:(NSIndexSet*)indexSet {
-    NSLog(@"XXXMEH projectorsWereRemoved:%@", indexSet);
     PJProjectorManager* mgr = [PJProjectorManager sharedManager];
     if ([mgr countOfProjectors] == 0) {
         // If the last projectors were removed, then we need
@@ -419,7 +443,6 @@
 }
 
 - (void)projectorsWereUpdated:(NSIndexSet*)indexSet {
-    NSLog(@"XXXMEH projectorsWereUpdated:%@", indexSet);
     [self.tableView reloadRowsAtIndexPaths:[indexSet indexPathsForSection:0] withRowAnimation:UITableViewRowAnimationNone];
     [self updateNavigationItemStateAnimated:YES];
 }
@@ -477,16 +500,22 @@
             }
         }
     }
-    // Create a UIActionSheet with the available inputs for this projector
-    self.inputActionSheet = [[UIActionSheet alloc] initWithTitle:@"Select Input"
-                                                        delegate:self
-                                               cancelButtonTitle:@"Cancel"
-                                          destructiveButtonTitle:nil
-                                               otherButtonTitles:nil];
-    for (NSString* inputName in self.inputNames) {
-        [self.inputActionSheet addButtonWithTitle:inputName];
-    }
-    [self.inputActionSheet showFromBarButtonItem:sender animated:YES];
+//    // Create a UIActionSheet with the available inputs for this projector
+//    self.inputActionSheet = [[UIActionSheet alloc] initWithTitle:@"Select Input"
+//                                                        delegate:self
+//                                               cancelButtonTitle:@"Cancel"
+//                                          destructiveButtonTitle:nil
+//                                               otherButtonTitles:nil];
+//    for (NSString* inputName in self.inputNames) {
+//        [self.inputActionSheet addButtonWithTitle:inputName];
+//    }
+//    [self.inputActionSheet showFromBarButtonItem:sender animated:YES];
+    self.inputPickerView.inputNames = self.inputNames;
+    [self.inputPickerView showHide:NO animated:NO withCompletion:nil];
+    self.inputPickerView.frame = self.navigationController.view.bounds;
+    self.inputPickerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self.navigationController.view addSubview:self.inputPickerView];
+    [self.inputPickerView showHide:YES animated:YES withCompletion:nil];
 }
 
 - (void)powerStatusBarButtonItemAction:(id)sender {

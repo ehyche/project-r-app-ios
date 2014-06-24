@@ -37,7 +37,6 @@
 		FD32A59019326A4C00047BA1 /* PJProjectorConnectionStateView.m in Sources */ = {isa = PBXBuildFile; fileRef = FD32A58F19326A4C00047BA1 /* PJProjectorConnectionStateView.m */; };
 		FD41B20517AE136C00502703 /* PJInterfaceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = FD41B20417AE136C00502703 /* PJInterfaceInfo.m */; };
 		FD4EE0161925C18B0061B1C2 /* PJNoProjectorsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FD4EE0151925C18B0061B1C2 /* PJNoProjectorsTableViewCell.m */; };
-		FD5BDEDA19340710002B86DF /* Reveal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD5BDED919340710002B86DF /* Reveal.framework */; };
 		FD5BDEDF19340D22002B86DF /* blue_circle_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = FD5BDEDB19340D22002B86DF /* blue_circle_selected.png */; };
 		FD5BDEE019340D22002B86DF /* blue_circle_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FD5BDEDC19340D22002B86DF /* blue_circle_selected@2x.png */; };
 		FD5BDEE119340D22002B86DF /* blue_circle.png in Resources */ = {isa = PBXBuildFile; fileRef = FD5BDEDD19340D22002B86DF /* blue_circle.png */; };
@@ -60,6 +59,7 @@
 		FD7E9D01195643CC00DABB6B /* mypower@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FD7E9CFF195643CC00DABB6B /* mypower@2x.png */; };
 		FD94CFAF192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = FD94CFAE192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.m */; };
 		FDB9161317AC9B850098755A /* PJLinkSubnetScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */; };
+		FDBE4A8F19568BC700FEB10A /* PJInputPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = FDBE4A8E19568BC700FEB10A /* PJInputPickerView.m */; };
 		FDDA57DC1793BA58007B49D0 /* PJProjectorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */; };
 		FDDA6A55192066AA00757F96 /* PJLabeledProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDA6A54192066AA00757F96 /* PJLabeledProgressView.m */; };
 		FDDAEE65188DFDB80015D2E3 /* PJSubnetScannerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDAEE64188DFDB80015D2E3 /* PJSubnetScannerViewController.m */; };
@@ -118,8 +118,6 @@
 		FD41B20417AE136C00502703 /* PJInterfaceInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJInterfaceInfo.m; sourceTree = "<group>"; };
 		FD4EE0141925C18B0061B1C2 /* PJNoProjectorsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJNoProjectorsTableViewCell.h; sourceTree = "<group>"; };
 		FD4EE0151925C18B0061B1C2 /* PJNoProjectorsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJNoProjectorsTableViewCell.m; sourceTree = "<group>"; };
-		FD5BDED7193406C0002B86DF /* Reveal.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; name = Reveal.app; path = ../../Downloads/Reveal.app; sourceTree = "<group>"; };
-		FD5BDED919340710002B86DF /* Reveal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reveal.framework; path = "../../Downloads/Reveal.app/Contents/SharedSupport/iOS-Libraries/Reveal.framework"; sourceTree = "<group>"; };
 		FD5BDEDB19340D22002B86DF /* blue_circle_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blue_circle_selected.png; sourceTree = "<group>"; };
 		FD5BDEDC19340D22002B86DF /* blue_circle_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue_circle_selected@2x.png"; sourceTree = "<group>"; };
 		FD5BDEDD19340D22002B86DF /* blue_circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blue_circle.png; sourceTree = "<group>"; };
@@ -145,6 +143,8 @@
 		FD94CFB1192C479200C1DB05 /* PJProjectorTableViewCellDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PJProjectorTableViewCellDelegate.h; sourceTree = "<group>"; };
 		FDB9161117AC9B850098755A /* PJLinkSubnetScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJLinkSubnetScanner.h; path = SubnetScanner/PJLinkSubnetScanner.h; sourceTree = "<group>"; };
 		FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PJLinkSubnetScanner.m; path = SubnetScanner/PJLinkSubnetScanner.m; sourceTree = "<group>"; };
+		FDBE4A8D19568BC700FEB10A /* PJInputPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJInputPickerView.h; sourceTree = "<group>"; };
+		FDBE4A8E19568BC700FEB10A /* PJInputPickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJInputPickerView.m; sourceTree = "<group>"; };
 		FDDA57DA1793BA58007B49D0 /* PJProjectorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJProjectorManager.h; path = Model/PJProjectorManager.h; sourceTree = "<group>"; };
 		FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PJProjectorManager.m; path = Model/PJProjectorManager.m; sourceTree = "<group>"; };
 		FDDA6A53192066AA00757F96 /* PJLabeledProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJLabeledProgressView.h; sourceTree = "<group>"; };
@@ -171,7 +171,6 @@
 			files = (
 				FD2C35C2178A305A0080B1B7 /* UIKit.framework in Frameworks */,
 				FD2C35C4178A305A0080B1B7 /* Foundation.framework in Frameworks */,
-				FD5BDEDA19340710002B86DF /* Reveal.framework in Frameworks */,
 				FD2C35C6178A305A0080B1B7 /* CoreGraphics.framework in Frameworks */,
 				2BF8F08CA0A44E92BD0E14AF /* libPods.a in Frameworks */,
 			);
@@ -257,8 +256,6 @@
 		FD2C35C0178A305A0080B1B7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				FD5BDED919340710002B86DF /* Reveal.framework */,
-				FD5BDED7193406C0002B86DF /* Reveal.app */,
 				FD2C35C1178A305A0080B1B7 /* UIKit.framework */,
 				FD2C35C3178A305A0080B1B7 /* Foundation.framework */,
 				FD2C35C5178A305A0080B1B7 /* CoreGraphics.framework */,
@@ -330,6 +327,8 @@
 				FD94CFB1192C479200C1DB05 /* PJProjectorTableViewCellDelegate.h */,
 				FD32A58E19326A4C00047BA1 /* PJProjectorConnectionStateView.h */,
 				FD32A58F19326A4C00047BA1 /* PJProjectorConnectionStateView.m */,
+				FDBE4A8D19568BC700FEB10A /* PJInputPickerView.h */,
+				FDBE4A8E19568BC700FEB10A /* PJInputPickerView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -511,6 +510,7 @@
 				FD275AAF1792388100DA9786 /* PJAMXBeaconListener.m in Sources */,
 				FD275AB4179238C300DA9786 /* PJAMXBeaconHost.m in Sources */,
 				FD1C4085192AF4A0005B38B8 /* PJProjectorTableViewCell.m in Sources */,
+				FDBE4A8F19568BC700FEB10A /* PJInputPickerView.m in Sources */,
 				FDEF716C18791349002FA55F /* PJManualAddTableViewController.m in Sources */,
 				FDDA57DC1793BA58007B49D0 /* PJProjectorManager.m in Sources */,
 				FD94CFAF192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.m in Sources */,
