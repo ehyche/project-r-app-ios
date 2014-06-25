@@ -132,6 +132,9 @@
     // Create the input picker view
     self.inputPickerView = [[PJInputPickerView alloc] initWithFrame:self.view.bounds];
     self.inputPickerView.delegate = self;
+    
+    // Load the table view
+    [self reloadTableViewData];
 }
 
 #pragma mark - UITableViewDataSource methods
@@ -144,8 +147,10 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     PJProjectorManager* mgr = [PJProjectorManager sharedManager];
-    NSInteger ret = [mgr countOfProjectors];
-
+    NSUInteger projectorCount = [mgr countOfProjectors];
+    
+    NSInteger ret = (projectorCount > 0 ? projectorCount : 1);
+    
     return ret;
 }
 
@@ -167,6 +172,12 @@
         projectorCell.projector = projector;
         projectorCell.multiSelect = [self.selectedProjectors containsObject:projector];
         cell = projectorCell;
+    } else {
+        PJNoProjectorsTableViewCell* noProjectorsCell = (PJNoProjectorsTableViewCell*) [tableView dequeueReusableCellWithIdentifier:[PJNoProjectorsTableViewCell reuseID]];
+        if (noProjectorsCell == nil) {
+            noProjectorsCell = [[PJNoProjectorsTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:[PJNoProjectorsTableViewCell reuseID]];
+        }
+        cell = noProjectorsCell;
     }
 
     return cell;
@@ -231,6 +242,8 @@
         // Get the projector for this row
         PJProjector* projector = [mgr objectInProjectorsAtIndex:indexPath.row];
         height = [PJProjectorTableViewCell heightForProjector:projector containerWidth:self.tableView.frame.size.width];
+    } else {
+        height = [PJNoProjectorsTableViewCell preferredHeight];
     }
 
     return height;
@@ -366,6 +379,22 @@
 
 #pragma mark - PJProjectorListViewController private methods
 
+- (void)reloadTableViewData {
+    [self updateTableViewState];
+    [self.tableView reloadData];
+}
+
+- (void)updateTableViewState {
+    PJProjectorManager* mgr = [PJProjectorManager sharedManager];
+    if ([mgr countOfProjectors] > 0) {
+        self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        self.tableView.scrollEnabled = YES;
+    } else {
+        self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        self.tableView.scrollEnabled = NO;
+    }
+}
+
 - (void)subscribeToKVONotifications {
     PJProjectorManager* mgr = [PJProjectorManager sharedManager];
     [mgr addObserver:self
@@ -414,10 +443,11 @@
 
 - (void)projectorsDidChange {
     [self updateNavigationItemStateAnimated:YES];
-    [self.tableView reloadData];
+    [self reloadTableViewData];
 }
 
 - (void)projectorsWereInserted:(NSIndexSet*)indexSet {
+    [self updateTableViewState];
     PJProjectorManager* mgr = [PJProjectorManager sharedManager];
     BOOL firstProjectorsAdded = ([indexSet count] == [mgr countOfProjectors]);
     if (firstProjectorsAdded) {
@@ -431,6 +461,7 @@
 }
 
 - (void)projectorsWereRemoved:(NSIndexSet*)indexSet {
+    [self updateTableViewState];
     PJProjectorManager* mgr = [PJProjectorManager sharedManager];
     if ([mgr countOfProjectors] == 0) {
         // If the last projectors were removed, then we need
@@ -443,6 +474,7 @@
 }
 
 - (void)projectorsWereUpdated:(NSIndexSet*)indexSet {
+    [self updateTableViewState];
     [self.tableView reloadRowsAtIndexPaths:[indexSet indexPathsForSection:0] withRowAnimation:UITableViewRowAnimationNone];
     [self updateNavigationItemStateAnimated:YES];
 }
@@ -479,14 +511,14 @@
     }
     [self updateNavigationItemStateAnimated:YES];
     [self updateToolbarHiddenStateAnimated:YES];
-    [self.tableView reloadData];
+    [self reloadTableViewData];
 }
 
 - (void)clearAllBarButtonItemAction:(id)sender {
     [self.selectedProjectors removeAllObjects];
     [self updateNavigationItemStateAnimated:YES];
     [self updateToolbarHiddenStateAnimated:YES];
-    [self.tableView reloadData];
+    [self reloadTableViewData];
 }
 
 - (void)inputBarButtonItemAction:(id)sender {

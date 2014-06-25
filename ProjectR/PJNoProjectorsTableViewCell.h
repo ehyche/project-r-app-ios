@@ -10,4 +10,8 @@
 
 @interface PJNoProjectorsTableViewCell : UITableViewCell
 
++ (CGFloat)preferredHeight;
+
++ (NSString*)reuseID;
+
 @end
