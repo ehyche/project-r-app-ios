@@ -12,13 +12,14 @@ CGFloat const kPJInputPickerViewToolbarHeight      =  44.0;
 CGFloat const kPJInputPickerViewPickerHeight       = 160.0;
 CGFloat const kPJInputPickerViewDimmedAlpha        =   0.5;
 CGFloat const kPJInputPickerViewTransitionDuration =   0.25;
+CGFloat const kPJInputPickerViewMargin             =   8.0;
 
 @interface PJInputPickerView() <UIPickerViewDataSource, UIPickerViewDelegate>
 
-@property(nonatomic,strong) UIPickerView* pickerView;
-@property(nonatomic,strong) UIToolbar*    toolbarView;
-@property(nonatomic,strong) UIView*       containerView;
-@property(nonatomic,strong) UIView*       dimmingView;
+@property(nonatomic,strong) UIPickerView*    pickerView;
+@property(nonatomic,strong) UINavigationBar* navigationBar;
+@property(nonatomic,strong) UIView*          containerView;
+@property(nonatomic,strong) UIView*          dimmingView;
 
 @end
 
@@ -36,23 +37,28 @@ CGFloat const kPJInputPickerViewTransitionDuration =   0.25;
         _dimmingView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [self addSubview:_dimmingView];
         CGFloat containerHeight = kPJInputPickerViewToolbarHeight + kPJInputPickerViewPickerHeight;
-        CGRect containerFrame = CGRectMake(0.0,
+        CGFloat containerWidth  = frame.size.width - (2.0 * kPJInputPickerViewMargin);
+        CGRect containerFrame = CGRectMake(kPJInputPickerViewMargin,
                                            frame.size.height,
-                                           frame.size.width,
+                                           containerWidth,
                                            containerHeight);
         _containerView = [[UIView alloc] initWithFrame:containerFrame];
+        _containerView.layer.cornerRadius = 5.0;
+        _containerView.clipsToBounds = YES;
+        _containerView.backgroundColor = [UIColor whiteColor];
         [self addSubview:_containerView];
         
-        CGRect toolbarFrame = CGRectMake(0.0, 0.0, frame.size.width, kPJInputPickerViewToolbarHeight);
-        _toolbarView = [[UIToolbar alloc] initWithFrame:toolbarFrame];
-        _toolbarView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
+        CGRect navBarFrame = CGRectMake(0.0, 0.0, containerWidth, kPJInputPickerViewToolbarHeight);
+        _navigationBar = [[UINavigationBar alloc] initWithFrame:navBarFrame];
+        _navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
+
+        UINavigationItem* navItem  = [[UINavigationItem alloc] initWithTitle:@"Change Input"];
+        navItem.leftBarButtonItem  = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonAction:)];
+        navItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Select" style:UIBarButtonItemStylePlain target:self action:@selector(selectButtonAction:)];
+        _navigationBar.items = @[navItem];
+        [_containerView addSubview:_navigationBar];
         
-        _toolbarView.items = @[[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonAction:)],
-                               [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
-                               [[UIBarButtonItem alloc] initWithTitle:@"Select" style:UIBarButtonItemStylePlain target:self action:@selector(selectButtonAction:)]];
-        [_containerView addSubview:_toolbarView];
-        
-        CGRect pickerFrame = CGRectMake(0.0, kPJInputPickerViewToolbarHeight, frame.size.width, kPJInputPickerViewPickerHeight);
+        CGRect pickerFrame = CGRectMake(0.0, kPJInputPickerViewToolbarHeight, containerWidth, kPJInputPickerViewPickerHeight);
         _pickerView = [[UIPickerView alloc] initWithFrame:pickerFrame];
         _pickerView.backgroundColor = [UIColor whiteColor];
         _pickerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
@@ -66,13 +72,14 @@ CGFloat const kPJInputPickerViewTransitionDuration =   0.25;
 
 - (void)showHide:(BOOL)show animated:(BOOL) animated withCompletion:(void (^)(BOOL finished))completion {
     CGFloat containerHeight = kPJInputPickerViewToolbarHeight + kPJInputPickerViewPickerHeight;
-    CGRect containerFrameHidden = CGRectMake(0.0,
+    CGFloat containerWidth  = self.frame.size.width - (2.0 * kPJInputPickerViewMargin);
+    CGRect containerFrameHidden = CGRectMake(kPJInputPickerViewMargin,
                                              self.frame.size.height,
-                                             self.frame.size.width,
+                                             containerWidth,
                                              containerHeight);
-    CGRect containerFrameShown = CGRectMake(0.0,
-                                            self.frame.size.height - containerHeight,
-                                            self.frame.size.width,
+    CGRect containerFrameShown = CGRectMake(kPJInputPickerViewMargin,
+                                            self.frame.size.height - containerHeight - kPJInputPickerViewMargin,
+                                            containerWidth,
                                             containerHeight);
     if (show) {
         if (animated) {
