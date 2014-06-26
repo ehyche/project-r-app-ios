@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>7AC390A7-FBB7-45FB-9748-EBE0783D576F</string>
+	<key>IDESourceControlProjectName</key>
+	<string>ProjectR</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>231CD2FD-3F63-47F2-8473-739FD9E97724</key>
+		<string>ssh://github.com/ehyche/project-r-app-ios.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>ProjectR.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>231CD2FD-3F63-47F2-8473-739FD9E97724</key>
+		<string>..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/ehyche/project-r-app-ios.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>231CD2FD-3F63-47F2-8473-739FD9E97724</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>231CD2FD-3F63-47F2-8473-739FD9E97724</string>
+			<key>IDESourceControlWCCName</key>
+			<string>project-r-app-ios</string>
+		</dict>
+	</array>
+</dict>
+</plist>
