@@ -653,7 +653,7 @@
 			baseConfigurationReference = 6B27D3B044CC4AFEB5884882 /* Pods.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Users/ehyche/Downloads/Reveal.app/Contents/SharedSupport/iOS-Libraries",
