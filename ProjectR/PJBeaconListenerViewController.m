@@ -313,7 +313,7 @@ CGFloat const kPJBeaconListenerViewControllerButtonHeight            = 64.0;
                         success:(void (^)(void)) success
                         failure:(void (^)(NSError* error)) failure {
     // Create a PJLink client
-    NSURL* baseURL = [NSURL URLWithString:[NSString stringWithFormat:@"pjlink://%@:%d/", host, port]];
+    NSURL* baseURL = [NSURL URLWithString:[NSString stringWithFormat:@"pjlink://%@:%@/", host, @(port)]];
     AFPJLinkClient* pjlinkClient = [[AFPJLinkClient alloc] initWithBaseURL:baseURL];
     // Try a PJLink client call just to obtain the projector name
     [pjlinkClient makeRequestWithBody:@"NAME ?\r"

@@ -183,7 +183,7 @@ NSInteger      const kPJLinkScannerProjectorChallengeTag = 10;
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
-    NSLog(@"socket:didReadData:withTag:%ld length=%u", tag, [data length]);
+    NSLog(@"socket:didReadData:withTag:%@ length=%@", @(tag), @([data length]));
     BOOL isProjector = NO;
     if ([data length] > 0) {
         // Convert to a string
@@ -202,14 +202,14 @@ NSInteger      const kPJLinkScannerProjectorChallengeTag = 10;
 shouldTimeoutReadWithTag:(long)tag
                  elapsed:(NSTimeInterval)elapsed
                bytesDone:(NSUInteger)length {
-    NSLog(@"socket:shouldTimeoutReadWithTag:%ld elapsed:%.1f bytesDone:%u", tag, elapsed, length);
+    NSLog(@"socket:shouldTimeoutReadWithTag:%@ elapsed:%.1f bytesDone:%@", @(tag), elapsed, @(length));
     return 0.0;
 }
 
 - (NSTimeInterval)socket:(GCDAsyncSocket *)sock shouldTimeoutWriteWithTag:(long)tag
                  elapsed:(NSTimeInterval)elapsed
                bytesDone:(NSUInteger)length {
-    NSLog(@"socket:shouldTimeoutWriteWithTag:%ld elapsed:%.1f bytesDone:%u", tag, elapsed, length);
+    NSLog(@"socket:shouldTimeoutWriteWithTag:%@ elapsed:%.1f bytesDone:%@", @(tag), elapsed, @(length));
     return 0.0;
 }
 

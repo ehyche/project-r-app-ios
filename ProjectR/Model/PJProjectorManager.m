@@ -419,7 +419,7 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
             // We have an archive, so unarchive the projectors array from that
             NSArray* projectors = [NSKeyedUnarchiver unarchiveObjectWithFile:[archiveURL path]];
             if ([projectors count] > 0) {
-                NSLog(@"Unarchived %u projectors from archive", [projectors count]);
+                NSLog(@"Unarchived %@ projectors from archive", @([projectors count]));
                 // Set these projectors into the mutable array
                 [self.mutableProjectors setArray:projectors];
                 // Set the return value

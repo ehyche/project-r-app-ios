@@ -348,8 +348,8 @@ CGFloat   const kPJManualAddButtonHeight         =  64.0;
                                   }
                                   failure:^(NSError* error) {
                                       // Construct the message
-                                      NSString* message = [NSString stringWithFormat:@"No projector detected at %@:%d. Re-enter the IP address and port.",
-                                                           projectorIPAddress, portFieldInteger];
+                                      NSString* message = [NSString stringWithFormat:@"No projector detected at %@:%@. Re-enter the IP address and port.",
+                                                           projectorIPAddress, @(portFieldInteger)];
                                       // Pop up the alert view saying we detected the projector
                                       UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"No Projector Detected"
                                                                                           message:message
@@ -481,7 +481,7 @@ CGFloat   const kPJManualAddButtonHeight         =  64.0;
     // Show activity indicator
     [self showHideActivityIndicator:YES];
     // Create a PJLink client
-    NSURL* baseURL = [NSURL URLWithString:[NSString stringWithFormat:@"pjlink://%@:%d/", host, port]];
+    NSURL* baseURL = [NSURL URLWithString:[NSString stringWithFormat:@"pjlink://%@:%@/", host, @(port)]];
     self.pjlinkClient = [[AFPJLinkClient alloc] initWithBaseURL:baseURL];
     // Try a PJLink client call just to obtain the projector name
     [self.pjlinkClient makeRequestWithBody:@"NAME ?\r"
