@@ -65,6 +65,8 @@
 		FD855E60195BBA0200099A16 /* ProjectRSplashScreen640x960.png in Resources */ = {isa = PBXBuildFile; fileRef = FD855E5D195BBA0200099A16 /* ProjectRSplashScreen640x960.png */; };
 		FD855E61195BBA0200099A16 /* ProjectRSplashScreen640x1136.png in Resources */ = {isa = PBXBuildFile; fileRef = FD855E5E195BBA0200099A16 /* ProjectRSplashScreen640x1136.png */; };
 		FD94CFAF192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = FD94CFAE192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.m */; };
+		FDA1C994195D19A900D263EF /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDA1C993195D19A900D263EF /* SystemConfiguration.framework */; };
+		FDA1C996195D19CA00D263EF /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDA1C995195D19CA00D263EF /* MobileCoreServices.framework */; };
 		FDB9161317AC9B850098755A /* PJLinkSubnetScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */; };
 		FDBE4A8F19568BC700FEB10A /* PJInputPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = FDBE4A8E19568BC700FEB10A /* PJInputPickerView.m */; };
 		FDDA57DC1793BA58007B49D0 /* PJProjectorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDA57DB1793BA58007B49D0 /* PJProjectorManager.m */; };
@@ -154,6 +156,8 @@
 		FD94CFAD192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJProjectorInputPowerStatusView.h; sourceTree = "<group>"; };
 		FD94CFAE192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJProjectorInputPowerStatusView.m; sourceTree = "<group>"; };
 		FD94CFB1192C479200C1DB05 /* PJProjectorTableViewCellDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PJProjectorTableViewCellDelegate.h; sourceTree = "<group>"; };
+		FDA1C993195D19A900D263EF /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		FDA1C995195D19CA00D263EF /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		FDB9161117AC9B850098755A /* PJLinkSubnetScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJLinkSubnetScanner.h; path = SubnetScanner/PJLinkSubnetScanner.h; sourceTree = "<group>"; };
 		FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PJLinkSubnetScanner.m; path = SubnetScanner/PJLinkSubnetScanner.m; sourceTree = "<group>"; };
 		FDBE4A8D19568BC700FEB10A /* PJInputPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJInputPickerView.h; sourceTree = "<group>"; };
@@ -181,6 +185,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FDA1C996195D19CA00D263EF /* MobileCoreServices.framework in Frameworks */,
+				FDA1C994195D19A900D263EF /* SystemConfiguration.framework in Frameworks */,
 				FD2C35C2178A305A0080B1B7 /* UIKit.framework in Frameworks */,
 				FD2C35C4178A305A0080B1B7 /* Foundation.framework in Frameworks */,
 				FD2C35C6178A305A0080B1B7 /* CoreGraphics.framework in Frameworks */,
@@ -274,6 +280,8 @@
 		FD2C35C0178A305A0080B1B7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FDA1C995195D19CA00D263EF /* MobileCoreServices.framework */,
+				FDA1C993195D19A900D263EF /* SystemConfiguration.framework */,
 				FD2C35C1178A305A0080B1B7 /* UIKit.framework */,
 				FD2C35C3178A305A0080B1B7 /* Foundation.framework */,
 				FD2C35C5178A305A0080B1B7 /* CoreGraphics.framework */,
