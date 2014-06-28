@@ -11,7 +11,6 @@
 #import "PJResponseInfo.h"
 #import "PJInputInfo.h"
 #import "PJLampStatus.h"
-#import "TestFlight.h"
 
 /*
  * Table view layout
@@ -173,7 +172,6 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
     self.refreshControl = [[UIRefreshControl alloc] init];
 //    self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull To Refresh Projector"];
     [self.refreshControl addTarget:self action:@selector(refreshControlValueDidChange:) forControlEvents:UIControlEventValueChanged];
-    [TestFlight passCheckpoint:@"PageView:ProjectorDetail"];
 }
 
 - (void)didReceiveMemoryWarning
@@ -441,7 +439,6 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
             // Reload the row at this index path
             [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
 //            [tableView reloadSections:[NSIndexSet indexSetWithIndex:kPJProjectorDetailSectionInputs] withRowAnimation:UITableViewRowAnimationNone];
-            [TestFlight passCheckpoint:@"Action:ChangeInputFromDetail"];
             // A change in the input is requested
             [self.projector requestInputChangeToInputIndex:indexPath.row];
         }
@@ -477,15 +474,12 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
             self.projector.password = nil;
         }
     } else if (sender == self.powerSwitch) {
-        [TestFlight passCheckpoint:@"Action:ChangePowerStatusFromDetail"];
         // Request a power change
         [self.projector requestPowerStateChange:self.powerSwitch.isOn];
     } else if (sender == self.audioMuteSwitch) {
-        [TestFlight passCheckpoint:@"Action:ChangeAudioMuteFromDetail"];
         // Request a change to the audio mute state
         [self.projector requestMuteStateChange:self.audioMuteSwitch.isOn forTypes:PJMuteTypeAudio];
     } else if (sender == self.videoMuteSwitch) {
-        [TestFlight passCheckpoint:@"Action:ChangeVideoMuteFromDetail"];
         // Request a change to the video mute state
         [self.projector requestMuteStateChange:self.videoMuteSwitch.isOn forTypes:PJMuteTypeVideo];
     }

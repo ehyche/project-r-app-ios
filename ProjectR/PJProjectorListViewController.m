@@ -20,7 +20,6 @@
 #import "PJProjectorTableViewCell.h"
 #import "PJProjectorTableViewCellDelegate.h"
 #import "PJInputPickerView.h"
-#import "TestFlight.h"
 
 @interface PJProjectorListViewController () <UIActionSheetDelegate,
                                              PJProjectorTableViewCellDelegate,
@@ -273,14 +272,12 @@
                 [self presentViewController:navController animated:YES completion:nil];
             }
         } else if (actionSheet == self.inputActionSheet) {
-            [TestFlight passCheckpoint:@"Action:ChangeInputFromList"];
             NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
             [self changeSelectedProjectorsInputTo:buttonTitle];
             [self.tableView setEditing:NO animated:YES];
             [self updateNavigationItemStateAnimated:YES];
             [self updateToolbarHiddenStateAnimated:YES];
         } else if (actionSheet == self.powerStatusActionSheet) {
-            [TestFlight passCheckpoint:@"Action:ChangePowerStatusFromList"];
             NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
             BOOL powerOn = [buttonTitle isEqualToString:@"On"];
             [self changeSelectedProjectorsPowerStatusTo:powerOn];
@@ -288,7 +285,6 @@
             [self updateNavigationItemStateAnimated:YES];
             [self updateToolbarHiddenStateAnimated:YES];
         } else if (actionSheet == self.audioMuteActionSheet) {
-            [TestFlight passCheckpoint:@"Action:ChangeAudioMuteFromList"];
             NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
             BOOL muteOn = [buttonTitle isEqualToString:@"On"];
             [self changeSelectedProjectorsAudioMuteTo:muteOn];
@@ -296,7 +292,6 @@
             [self updateNavigationItemStateAnimated:YES];
             [self updateToolbarHiddenStateAnimated:YES];
         } else if (actionSheet == self.videoMuteActionSheet) {
-            [TestFlight passCheckpoint:@"Action:ChangeVideoMuteFromList"];
             NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
             BOOL muteOn = [buttonTitle isEqualToString:@"On"];
             [self changeSelectedProjectorsVideoMuteTo:muteOn];
@@ -304,7 +299,6 @@
             [self updateNavigationItemStateAnimated:YES];
             [self updateToolbarHiddenStateAnimated:YES];
         } else if (actionSheet == self.deleteActionSheet) {
-            [TestFlight passCheckpoint:@"Action:RemoveProjectorFromList"];
             PJProjectorManager *mgr = [PJProjectorManager sharedManager];
             [mgr removeProjectorsFromManager:self.selectedProjectors];
             [self.tableView setEditing:NO animated:YES];

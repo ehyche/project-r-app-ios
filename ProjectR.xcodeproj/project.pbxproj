@@ -11,10 +11,6 @@
 		FD071ADE18765FD30020B192 /* PJProjectorDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD071ADD18765FD30020B192 /* PJProjectorDetailViewController.m */; };
 		FD0FED5F191FFC2400373AA6 /* UIImage+SolidColor.m in Sources */ = {isa = PBXBuildFile; fileRef = FD0FED5E191FFC2400373AA6 /* UIImage+SolidColor.m */; };
 		FD11FED41895DFFA00C69F96 /* PJBeaconListenerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD11FED31895DFFA00C69F96 /* PJBeaconListenerViewController.m */; };
-		FD16CBE2195F020200A44C23 /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FD16CBDC195F020200A44C23 /* libTestFlight.a */; };
-		FD16CBE3195F020200A44C23 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = FD16CBDD195F020200A44C23 /* README.md */; };
-		FD16CBE4195F020200A44C23 /* release_notes.md in Resources */ = {isa = PBXBuildFile; fileRef = FD16CBDE195F020200A44C23 /* release_notes.md */; };
-		FD16CBE6195F028500A44C23 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FD16CBE5195F028500A44C23 /* libz.dylib */; };
 		FD1C4085192AF4A0005B38B8 /* PJProjectorTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1C4084192AF4A0005B38B8 /* PJProjectorTableViewCell.m */; };
 		FD1C408D192B0639005B38B8 /* projector_connected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FD1C4087192B0639005B38B8 /* projector_connected@2x.png */; };
 		FD1C408E192B0639005B38B8 /* projector_connecting0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FD1C4088192B0639005B38B8 /* projector_connecting0@2x.png */; };
@@ -94,12 +90,6 @@
 		FD0FED5E191FFC2400373AA6 /* UIImage+SolidColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+SolidColor.m"; sourceTree = "<group>"; };
 		FD11FED21895DFFA00C69F96 /* PJBeaconListenerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJBeaconListenerViewController.h; sourceTree = "<group>"; };
 		FD11FED31895DFFA00C69F96 /* PJBeaconListenerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJBeaconListenerViewController.m; sourceTree = "<group>"; };
-		FD16CBDC195F020200A44C23 /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
-		FD16CBDD195F020200A44C23 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
-		FD16CBDE195F020200A44C23 /* release_notes.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = release_notes.md; sourceTree = "<group>"; };
-		FD16CBDF195F020200A44C23 /* TestFlight+AsyncLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TestFlight+AsyncLogging.h"; sourceTree = "<group>"; };
-		FD16CBE0195F020200A44C23 /* TestFlight+ManualSessions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TestFlight+ManualSessions.h"; sourceTree = "<group>"; };
-		FD16CBE1195F020200A44C23 /* TestFlight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
 		FD16CBE5195F028500A44C23 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		FD1C4083192AF4A0005B38B8 /* PJProjectorTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJProjectorTableViewCell.h; sourceTree = "<group>"; };
 		FD1C4084192AF4A0005B38B8 /* PJProjectorTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJProjectorTableViewCell.m; sourceTree = "<group>"; };
@@ -196,9 +186,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FD16CBE6195F028500A44C23 /* libz.dylib in Frameworks */,
 				FDA1C996195D19CA00D263EF /* MobileCoreServices.framework in Frameworks */,
-				FD16CBE2195F020200A44C23 /* libTestFlight.a in Frameworks */,
 				FDA1C994195D19A900D263EF /* SystemConfiguration.framework in Frameworks */,
 				FD2C35C2178A305A0080B1B7 /* UIKit.framework in Frameworks */,
 				FD2C35C4178A305A0080B1B7 /* Foundation.framework in Frameworks */,
@@ -213,22 +201,8 @@
 		FD16CBDA195F01CF00A44C23 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
-				FD16CBDB195F020200A44C23 /* TestFlightSDK3 */,
 			);
 			name = ThirdParty;
-			sourceTree = "<group>";
-		};
-		FD16CBDB195F020200A44C23 /* TestFlightSDK3 */ = {
-			isa = PBXGroup;
-			children = (
-				FD16CBDC195F020200A44C23 /* libTestFlight.a */,
-				FD16CBDD195F020200A44C23 /* README.md */,
-				FD16CBDE195F020200A44C23 /* release_notes.md */,
-				FD16CBDF195F020200A44C23 /* TestFlight+AsyncLogging.h */,
-				FD16CBE0195F020200A44C23 /* TestFlight+ManualSessions.h */,
-				FD16CBE1195F020200A44C23 /* TestFlight.h */,
-			);
-			path = TestFlightSDK3;
 			sourceTree = "<group>";
 		};
 		FD16CBE7195F02C400A44C23 /* Application */ = {
@@ -501,7 +475,6 @@
 				FD1C408D192B0639005B38B8 /* projector_connected@2x.png in Resources */,
 				FD855E5B195BB83700099A16 /* ProjectRAppIcon120.png in Resources */,
 				FD7E9CDA1955E1B400DABB6B /* 935-power-socket.png in Resources */,
-				FD16CBE3195F020200A44C23 /* README.md in Resources */,
 				FD855E5A195BB83700099A16 /* ProjectRAppIcon114.png in Resources */,
 				FD7E9CDF1955E1B400DABB6B /* 969-television@2x.png in Resources */,
 				FD7E9CEC195613AD00DABB6B /* 771-sound-muted.png in Resources */,
@@ -514,7 +487,6 @@
 				FD7E9CDC1955E1B400DABB6B /* 946-microphone.png in Resources */,
 				FD1C408E192B0639005B38B8 /* projector_connecting0@2x.png in Resources */,
 				FD5BDEE019340D22002B86DF /* blue_circle_selected@2x.png in Resources */,
-				FD16CBE4195F020200A44C23 /* release_notes.md in Resources */,
 				FD855E58195BB83700099A16 /* ProjectRAppIcon58.png in Resources */,
 				FD855E57195BB83700099A16 /* ProjectRAppIcon57.png in Resources */,
 				FD5BDEE119340D22002B86DF /* blue_circle.png in Resources */,
@@ -660,10 +632,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ProjectR/ProjectR-Prefix.pch";
 				INFOPLIST_FILE = "ProjectR/ProjectR-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/ProjectR/TestFlightSDK3",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "650663A5-CCD4-456D-A24D-90B807201B5F";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -739,10 +708,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ProjectR/ProjectR-Prefix.pch";
 				INFOPLIST_FILE = "ProjectR/ProjectR-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/ProjectR/TestFlightSDK3",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -760,10 +726,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ProjectR/ProjectR-Prefix.pch";
 				INFOPLIST_FILE = "ProjectR/ProjectR-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/ProjectR/TestFlightSDK3",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "650663A5-CCD4-456D-A24D-90B807201B5F";
 				TARGETED_DEVICE_FAMILY = 1;

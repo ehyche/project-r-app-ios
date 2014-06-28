@@ -9,13 +9,11 @@
 #import "PJAppDelegate.h"
 #import "PJAMXBeaconListener.h"
 #import <PJLinkCocoa/PJURLProtocolRunLoop.h>
-#import "TestFlight.h"
 
 @implementation PJAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [TestFlight takeOff:@"678103f9-f9c7-4857-8c65-97a10cc1f980"];
     // Override point for customization after application launch.
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;

@@ -17,7 +17,6 @@
 #import "PJInterfaceInfo.h"
 #import "UIImage+SolidColor.h"
 #import "PJLabeledProgressView.h"
-#import "TestFlight.h"
 
 typedef NS_ENUM(NSInteger, PJProjectorDetectionStatus) {
     PJProjectorDetectionStatusUnknown,
@@ -120,7 +119,6 @@ CGFloat const kPJBeaconListenerViewControllerButtonHeight            = 64.0;
 
     // Update the UI state
     [self updateUIState];
-    [TestFlight passCheckpoint:@"PageView:AMXBeaconScan"];
 }
 
 - (void)didReceiveMemoryWarning
@@ -240,7 +238,6 @@ CGFloat const kPJBeaconListenerViewControllerButtonHeight            = 64.0;
     } else {
         // We are not scanning. Do we have any discovered projectors?
         if ([self.projectorHosts count] > 0) {
-            [TestFlight passCheckpoint:@"Action:AddProjectorWithAMXBeacon"];
             // Add the array of PJProjectors to the projector manager
             [[PJProjectorManager sharedManager] addProjectorsToManager:self.projectorHosts];
             // Dismiss ourself
