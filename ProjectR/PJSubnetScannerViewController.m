@@ -13,6 +13,7 @@
 #import "PJInterfaceInfo.h"
 #import "UIImage+SolidColor.h"
 #import "PJLabeledProgressView.h"
+#import "TestFlight.h"
 
 CGFloat const kPJSubnetScannerButtonHeight = 64.0;
 
@@ -80,6 +81,7 @@ CGFloat const kPJSubnetScannerButtonHeight = 64.0;
     
     self.button.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, kPJSubnetScannerButtonHeight);
     self.tableView.tableFooterView = self.button;
+    [TestFlight passCheckpoint:@"PageView:SubnetScanning"];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -235,6 +237,7 @@ CGFloat const kPJSubnetScannerButtonHeight = 64.0;
                 // Add the projector
                 [tmpProjectors addObject:ithProjector];
             }
+            [TestFlight passCheckpoint:@"Action:AddProjectorFromSubnetScan"];
             // Add projectors to the projector manager
             [[PJProjectorManager sharedManager] addProjectorsToManager:tmpProjectors];
             // Now dismiss ourself

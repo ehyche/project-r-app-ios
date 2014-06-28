@@ -14,6 +14,7 @@
 #import "PJURLProtocolRunLoop.h"
 #import "PJProjectorManager.h"
 #import "UIImage+SolidColor.h"
+#import "TestFlight.h"
 
 NSInteger const kPJManualAddIPPickerFontSize     =  17.0;
 CGFloat   const kPJManualAddPickerComponentWidth =  50.0;
@@ -110,6 +111,7 @@ CGFloat   const kPJManualAddButtonHeight         =  64.0;
 
     self.addButton.frame = CGRectMake(0.0, 0.0, self.tableView.frame.size.width, kPJManualAddButtonHeight);
     self.tableView.tableFooterView = self.addButton;
+    [TestFlight passCheckpoint:@"PageView:ManualAdd"];
 }
 
 #pragma mark - UITableViewDataSource methods
@@ -532,6 +534,7 @@ CGFloat   const kPJManualAddButtonHeight         =  64.0;
     NSInteger portInteger = [self.portTextField.text integerValue];
     // Create a projector
     PJProjector* projector = [[PJProjector alloc] initWithHost:self.projectorHost port:portInteger];
+    [TestFlight passCheckpoint:@"Action:AddProjectorManually"];
     // Add the projector to the projector manager
     BOOL added = [[PJProjectorManager sharedManager] addProjectorsToManager:@[projector]];
     
