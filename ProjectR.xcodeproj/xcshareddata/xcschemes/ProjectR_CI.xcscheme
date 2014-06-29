@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "0460"
-   version = "1.3">
+   version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
@@ -82,5 +82,24 @@
    <ArchiveAction
       buildConfiguration = "TestFlight"
       revealArchiveInOrganizer = "YES">
+      <PostActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "# Originally obtained from:&#10;# http://matt.vlasach.com/xcode-bots-hosted-git-repositories-and-automated-testflight-builds/&#10;# Valid and working as of 10/29/2013&#10;# Xcode 5.0.1, XCode Server&#10;#&#10;API_TOKEN=&quot;2bc454687677ee6fb3fbc055a9a00530_OTE4NDQ0MjAxMy0wMy0wNyAxMDowNzo1My4yNjc0ODQ&quot;&#10;TEAM_TOKEN=&quot;52b40c061493c18b6ce3fc4d7dc1baf7_Mzk5NzA4MjAxNC0wNi0yOCAxMjowMTo1MS42NDkwNTE&quot;&#10;DISTRIBUTION_LISTS=&quot;ProjectR Beta Testers&quot;&#10;PROVISIONING_PROFILE=&quot;/Library/Server/Xcode/Data/ProvisioningProfiles/ProjectR_AdHoc_Distribution.mobileprovision&quot;&#10;&#10;SIGNING_IDENTITY=&quot;iPhone Distribution: Martin Hyche (82A2S5FGTA)&quot;&#10;&#10;# DO NOT EDIT BELOW HERE!&#10;########################################&#10;DSYM=&quot;/tmp/Archive.xcarchive/dSYMs/${PRODUCT_NAME}.app.dSYM&quot;&#10;&#10;IPA=&quot;/tmp/${PRODUCT_NAME}.ipa&quot;&#10;&#10;APP=&quot;/tmp/Archive.xcarchive/Products/Applications/${PRODUCT_NAME}.app&quot;&#10;&#10;# Clear out any old copies of the Archive&#10;echo &quot;Removing old Archive files from /tmp...&quot;;&#10;/bin/rm -rf /tmp/Archive.xcarchive*&#10;&#10;#Copy over the latest build the bot just created&#10;echo &quot;Copying latest Archive to /tmp/...&quot;;&#10;LATESTBUILD=$(ls -1rt /Library/Server/Xcode/Data/BotRuns | tail -1)&#10;/bin/cp -Rp &quot;/Library/Server/Xcode/Data/BotRuns/${LATESTBUILD}/output/Archive.xcarchive&quot; &quot;/tmp/&quot;&#10;&#10;echo &quot;Creating .ipa for ${PRODUCT_NAME}&quot;&#10;/bin/rm &quot;${IPA}&quot;&#10;/usr/bin/xcrun -sdk iphoneos PackageApplication -v &quot;${APP}&quot; -o &quot;${IPA}&quot; --sign &quot;${SIGNING_IDENTITY}&quot; --embed &quot;${PROVISIONING_PROFILE}&quot;&#10;&#10;echo &quot;Done with IPA creation.&quot;&#10;&#10;echo &quot;Zipping .dSYM for ${PRODUCT_NAME}&quot;&#10;/bin/rm &quot;${DSYM}.zip&quot;&#10;/usr/bin/zip -r &quot;${DSYM}.zip&quot; &quot;${DSYM}&quot;&#10;&#10;echo &quot;Created .dSYM for ${PRODUCT_NAME}&quot;&#10;&#10;echo &quot;*** Uploading ${PRODUCT_NAME} to TestFlight ***&quot;&#10;/usr/bin/curl &quot;http://testflightapp.com/api/builds.json&quot; \&#10;-F file=@&quot;${IPA}&quot; \&#10;-F dsym=@&quot;${DSYM}.zip&quot; \&#10;-F api_token=&quot;${API_TOKEN}&quot; \&#10;-F team_token=&quot;${TEAM_TOKEN}&quot; \&#10;-F distribution_lists=&quot;${DISTRIBUTION_LISTS}&quot; \&#10;-F notes=&quot;Build uploaded automatically from Xcode Server Bot.&quot;&#10;&#10;echo &quot;TestFlight upload finished!&quot;"
+               shellToInvoke = "/bin/bash">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "FD2C35BD178A305A0080B1B7"
+                     BuildableName = "ProjectR.app"
+                     BlueprintName = "ProjectR"
+                     ReferencedContainer = "container:ProjectR.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PostActions>
    </ArchiveAction>
 </Scheme>
