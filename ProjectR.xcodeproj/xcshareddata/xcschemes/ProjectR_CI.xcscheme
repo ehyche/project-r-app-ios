@@ -87,7 +87,7 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "# Print out the environment so we can figure out if bot integration number is available.&#10;echo &quot;Pre-action script: Printing out the environment &quot;;&#10;printenv&#10;"
+               scriptText = "# Update build number with number of git commits if in release mode&#10;if [ ${CONFIGURATION} == &quot;TestFlight&quot; ]; then&#10;buildNumber=$(git rev-list HEAD | wc -l | tr -d &apos; &apos;)&#10;bundleVersion=0.9.$buildNumber&#10;/usr/libexec/PlistBuddy -c &quot;Set :CFBundleVersion $bundleVersion&quot; &quot;${PROJECT_DIR}/${INFOPLIST_FILE}&quot;&#10;/usr/libexec/PlistBuddy -c &quot;Set :CFBundleShortVersionString $bundleVersion&quot; &quot;${PROJECT_DIR}/${INFOPLIST_FILE}&quot;&#10;fi;"
                shellToInvoke = "/bin/bash">
                <EnvironmentBuildable>
                   <BuildableReference
