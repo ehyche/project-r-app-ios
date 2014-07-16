@@ -82,6 +82,25 @@
    <ArchiveAction
       buildConfiguration = "TestFlight"
       revealArchiveInOrganizer = "YES">
+      <PreActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "# Print out the environment so we can figure out if bot integration number is available.&#10;echo &quot;Pre-action script: Printing out the environment &quot;;&#10;printenv&#10;"
+               shellToInvoke = "/bin/bash">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "FD2C35BD178A305A0080B1B7"
+                     BuildableName = "ProjectR.app"
+                     BlueprintName = "ProjectR"
+                     ReferencedContainer = "container:ProjectR.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PreActions>
       <PostActions>
          <ExecutionAction
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
