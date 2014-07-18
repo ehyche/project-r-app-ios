@@ -65,6 +65,7 @@
 		FD855E60195BBA0200099A16 /* ProjectRSplashScreen640x960.png in Resources */ = {isa = PBXBuildFile; fileRef = FD855E5D195BBA0200099A16 /* ProjectRSplashScreen640x960.png */; };
 		FD855E61195BBA0200099A16 /* ProjectRSplashScreen640x1136.png in Resources */ = {isa = PBXBuildFile; fileRef = FD855E5E195BBA0200099A16 /* ProjectRSplashScreen640x1136.png */; };
 		FD94CFAF192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = FD94CFAE192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.m */; };
+		FD9850BC1978AEFC00EAC017 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD9850BB1978AEFC00EAC017 /* Crashlytics.framework */; };
 		FDA1C994195D19A900D263EF /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDA1C993195D19A900D263EF /* SystemConfiguration.framework */; };
 		FDA1C996195D19CA00D263EF /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDA1C995195D19CA00D263EF /* MobileCoreServices.framework */; };
 		FDB9161317AC9B850098755A /* PJLinkSubnetScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */; };
@@ -157,6 +158,7 @@
 		FD94CFAD192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJProjectorInputPowerStatusView.h; sourceTree = "<group>"; };
 		FD94CFAE192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJProjectorInputPowerStatusView.m; sourceTree = "<group>"; };
 		FD94CFB1192C479200C1DB05 /* PJProjectorTableViewCellDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PJProjectorTableViewCellDelegate.h; sourceTree = "<group>"; };
+		FD9850BB1978AEFC00EAC017 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		FDA1C993195D19A900D263EF /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		FDA1C995195D19CA00D263EF /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		FDB9161117AC9B850098755A /* PJLinkSubnetScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJLinkSubnetScanner.h; path = SubnetScanner/PJLinkSubnetScanner.h; sourceTree = "<group>"; };
@@ -192,6 +194,7 @@
 				FD2C35C4178A305A0080B1B7 /* Foundation.framework in Frameworks */,
 				FD2C35C6178A305A0080B1B7 /* CoreGraphics.framework in Frameworks */,
 				2BF8F08CA0A44E92BD0E14AF /* libPods.a in Frameworks */,
+				FD9850BC1978AEFC00EAC017 /* Crashlytics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,6 +301,7 @@
 		FD2C35C0178A305A0080B1B7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FD9850BB1978AEFC00EAC017 /* Crashlytics.framework */,
 				FD16CBE5195F028500A44C23 /* libz.dylib */,
 				FDA1C995195D19CA00D263EF /* MobileCoreServices.framework */,
 				FDA1C993195D19A900D263EF /* SystemConfiguration.framework */,
@@ -417,6 +421,7 @@
 				FD2C35BB178A305A0080B1B7 /* Frameworks */,
 				FD2C35BC178A305A0080B1B7 /* Resources */,
 				F18F3EB96D7B41EE88A27D4C /* Copy Pods Resources */,
+				FD9850BA1978AD8D00EAC017 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -544,6 +549,19 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
 		};
+		FD9850BA1978AD8D00EAC017 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Crashlytics.framework/run da56e789619936f4d224a53eb711595aac6573fb f5137ae9cd6ad3f2392b5a796fd8654290b67cbae211937eafe443cd28fdcd2c";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -628,7 +646,10 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ProjectR/ProjectR-Prefix.pch";
 				INFOPLIST_FILE = "ProjectR/ProjectR-Info.plist";
@@ -704,7 +725,10 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ProjectR/ProjectR-Prefix.pch";
 				INFOPLIST_FILE = "ProjectR/ProjectR-Info.plist";
@@ -722,7 +746,10 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ProjectR/ProjectR-Prefix.pch";
 				INFOPLIST_FILE = "ProjectR/ProjectR-Info.plist";
