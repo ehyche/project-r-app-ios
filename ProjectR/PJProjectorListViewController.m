@@ -491,7 +491,7 @@
                                                       delegate:self
                                              cancelButtonTitle:@"Cancel"
                                         destructiveButtonTitle:nil
-                                             otherButtonTitles:@"Add Manually", @"Scan WiFi Network", @"Listen for AMX Beacons", nil];
+                                             otherButtonTitles:@"Add Manually", @"Scan WiFi Network", nil];
     [self.addActionSheet showFromBarButtonItem:sender animated:YES];
 }
 
