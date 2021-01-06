@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2BF8F08CA0A44E92BD0E14AF /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E3AB62D7AE546C993AC6D44 /* libPods.a */; };
+		8C45151B969A1F4F2246BEFB /* Pods_ProjectR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84D7A66AB9486EE8239D4E22 /* Pods_ProjectR.framework */; };
 		FD071ADE18765FD30020B192 /* PJProjectorDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD071ADD18765FD30020B192 /* PJProjectorDetailViewController.m */; };
 		FD0FED5F191FFC2400373AA6 /* UIImage+SolidColor.m in Sources */ = {isa = PBXBuildFile; fileRef = FD0FED5E191FFC2400373AA6 /* UIImage+SolidColor.m */; };
 		FD11FED41895DFFA00C69F96 /* PJBeaconListenerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD11FED31895DFFA00C69F96 /* PJBeaconListenerViewController.m */; };
@@ -64,8 +64,9 @@
 		FD855E5F195BBA0200099A16 /* ProjectRSplashScreen320x480.png in Resources */ = {isa = PBXBuildFile; fileRef = FD855E5C195BBA0200099A16 /* ProjectRSplashScreen320x480.png */; };
 		FD855E60195BBA0200099A16 /* ProjectRSplashScreen640x960.png in Resources */ = {isa = PBXBuildFile; fileRef = FD855E5D195BBA0200099A16 /* ProjectRSplashScreen640x960.png */; };
 		FD855E61195BBA0200099A16 /* ProjectRSplashScreen640x1136.png in Resources */ = {isa = PBXBuildFile; fileRef = FD855E5E195BBA0200099A16 /* ProjectRSplashScreen640x1136.png */; };
+		FD90F5DC259B9215009C6FF3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FD90F5DB259B9215009C6FF3 /* Main.storyboard */; };
 		FD94CFAF192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = FD94CFAE192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.m */; };
-		FD9850BC1978AEFC00EAC017 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD9850BB1978AEFC00EAC017 /* Crashlytics.framework */; };
+		FD992D3025A5472500FD2D7F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FD992D2F25A5472500FD2D7F /* GoogleService-Info.plist */; };
 		FDA1C994195D19A900D263EF /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDA1C993195D19A900D263EF /* SystemConfiguration.framework */; };
 		FDA1C996195D19CA00D263EF /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDA1C995195D19CA00D263EF /* MobileCoreServices.framework */; };
 		FDB9161317AC9B850098755A /* PJLinkSubnetScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB9161217AC9B850098755A /* PJLinkSubnetScanner.m */; };
@@ -83,8 +84,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		3E3AB62D7AE546C993AC6D44 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		6B27D3B044CC4AFEB5884882 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
+		289C9500A435385DBE52F7D1 /* Pods-ProjectR.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProjectR.debug.xcconfig"; path = "Target Support Files/Pods-ProjectR/Pods-ProjectR.debug.xcconfig"; sourceTree = "<group>"; };
+		84D7A66AB9486EE8239D4E22 /* Pods_ProjectR.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ProjectR.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		85E3424E4C1C2C32FC8AE918 /* Pods-ProjectR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProjectR.release.xcconfig"; path = "Target Support Files/Pods-ProjectR/Pods-ProjectR.release.xcconfig"; sourceTree = "<group>"; };
+		A8C0358E64E0694CD668CF2B /* Pods-ProjectR.testflight.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProjectR.testflight.xcconfig"; path = "Target Support Files/Pods-ProjectR/Pods-ProjectR.testflight.xcconfig"; sourceTree = "<group>"; };
 		FD071ADC18765FD30020B192 /* PJProjectorDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJProjectorDetailViewController.h; sourceTree = "<group>"; };
 		FD071ADD18765FD30020B192 /* PJProjectorDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJProjectorDetailViewController.m; sourceTree = "<group>"; };
 		FD0FED5D191FFC2400373AA6 /* UIImage+SolidColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+SolidColor.h"; sourceTree = "<group>"; };
@@ -155,10 +158,11 @@
 		FD855E5C195BBA0200099A16 /* ProjectRSplashScreen320x480.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ProjectRSplashScreen320x480.png; sourceTree = "<group>"; };
 		FD855E5D195BBA0200099A16 /* ProjectRSplashScreen640x960.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ProjectRSplashScreen640x960.png; sourceTree = "<group>"; };
 		FD855E5E195BBA0200099A16 /* ProjectRSplashScreen640x1136.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ProjectRSplashScreen640x1136.png; sourceTree = "<group>"; };
+		FD90F5DB259B9215009C6FF3 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		FD94CFAD192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJProjectorInputPowerStatusView.h; sourceTree = "<group>"; };
 		FD94CFAE192C1E7100C1DB05 /* PJProjectorInputPowerStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJProjectorInputPowerStatusView.m; sourceTree = "<group>"; };
 		FD94CFB1192C479200C1DB05 /* PJProjectorTableViewCellDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PJProjectorTableViewCellDelegate.h; sourceTree = "<group>"; };
-		FD9850BB1978AEFC00EAC017 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		FD992D2F25A5472500FD2D7F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FDA1C993195D19A900D263EF /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		FDA1C995195D19CA00D263EF /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		FDB9161117AC9B850098755A /* PJLinkSubnetScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PJLinkSubnetScanner.h; path = SubnetScanner/PJLinkSubnetScanner.h; sourceTree = "<group>"; };
@@ -193,14 +197,23 @@
 				FD2C35C2178A305A0080B1B7 /* UIKit.framework in Frameworks */,
 				FD2C35C4178A305A0080B1B7 /* Foundation.framework in Frameworks */,
 				FD2C35C6178A305A0080B1B7 /* CoreGraphics.framework in Frameworks */,
-				2BF8F08CA0A44E92BD0E14AF /* libPods.a in Frameworks */,
-				FD9850BC1978AEFC00EAC017 /* Crashlytics.framework in Frameworks */,
+				8C45151B969A1F4F2246BEFB /* Pods_ProjectR.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		563AAA897204AB5427541F59 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				289C9500A435385DBE52F7D1 /* Pods-ProjectR.debug.xcconfig */,
+				85E3424E4C1C2C32FC8AE918 /* Pods-ProjectR.release.xcconfig */,
+				A8C0358E64E0694CD668CF2B /* Pods-ProjectR.testflight.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		FD16CBDA195F01CF00A44C23 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
@@ -221,6 +234,7 @@
 			isa = PBXGroup;
 			children = (
 				FD2C35D9178A305A0080B1B7 /* MainStoryboard_iPhone.storyboard */,
+				FD90F5DB259B9215009C6FF3 /* Main.storyboard */,
 				FD855E5C195BBA0200099A16 /* ProjectRSplashScreen320x480.png */,
 				FD855E5D195BBA0200099A16 /* ProjectRSplashScreen640x960.png */,
 				FD855E5E195BBA0200099A16 /* ProjectRSplashScreen640x1136.png */,
@@ -286,7 +300,7 @@
 				FD2C35C7178A305A0080B1B7 /* ProjectR */,
 				FD2C35C0178A305A0080B1B7 /* Frameworks */,
 				FD2C35BF178A305A0080B1B7 /* Products */,
-				6B27D3B044CC4AFEB5884882 /* Pods.xcconfig */,
+				563AAA897204AB5427541F59 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -301,14 +315,13 @@
 		FD2C35C0178A305A0080B1B7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				FD9850BB1978AEFC00EAC017 /* Crashlytics.framework */,
 				FD16CBE5195F028500A44C23 /* libz.dylib */,
 				FDA1C995195D19CA00D263EF /* MobileCoreServices.framework */,
 				FDA1C993195D19A900D263EF /* SystemConfiguration.framework */,
 				FD2C35C1178A305A0080B1B7 /* UIKit.framework */,
 				FD2C35C3178A305A0080B1B7 /* Foundation.framework */,
 				FD2C35C5178A305A0080B1B7 /* CoreGraphics.framework */,
-				3E3AB62D7AE546C993AC6D44 /* libPods.a */,
+				84D7A66AB9486EE8239D4E22 /* Pods_ProjectR.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -316,6 +329,7 @@
 		FD2C35C7178A305A0080B1B7 /* ProjectR */ = {
 			isa = PBXGroup;
 			children = (
+				FD992D2E25A5470D00FD2D7F /* Resources */,
 				FD16CBE7195F02C400A44C23 /* Application */,
 				FDDA6A521920667300757F96 /* Views */,
 				FDDEA67C187FA19300C07EB8 /* Categories */,
@@ -359,6 +373,14 @@
 				FD41B20417AE136C00502703 /* PJInterfaceInfo.m */,
 			);
 			name = "Subnet Scanner";
+			sourceTree = "<group>";
+		};
+		FD992D2E25A5470D00FD2D7F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				FD992D2F25A5472500FD2D7F /* GoogleService-Info.plist */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		FDDA6A521920667300757F96 /* Views */ = {
@@ -416,12 +438,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FD2C35E7178A305A0080B1B7 /* Build configuration list for PBXNativeTarget "ProjectR" */;
 			buildPhases = (
-				437C09CA474A497993E19FC5 /* Check Pods Manifest.lock */,
+				125BF248C86A256CD5185A45 /* [CP] Check Pods Manifest.lock */,
 				FD2C35BA178A305A0080B1B7 /* Sources */,
 				FD2C35BB178A305A0080B1B7 /* Frameworks */,
 				FD2C35BC178A305A0080B1B7 /* Resources */,
-				F18F3EB96D7B41EE88A27D4C /* Copy Pods Resources */,
 				FD9850BA1978AD8D00EAC017 /* ShellScript */,
+				C0E0E53A3F854EA53C929016 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -452,6 +474,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = FD2C35B5178A305A0080B1B7;
@@ -484,6 +507,7 @@
 				FD7E9CDF1955E1B400DABB6B /* 969-television@2x.png in Resources */,
 				FD7E9CEC195613AD00DABB6B /* 771-sound-muted.png in Resources */,
 				FD7E9CF1195615B600DABB6B /* 733-video-camera-mute@2x.png in Resources */,
+				FD90F5DC259B9215009C6FF3 /* Main.storyboard in Resources */,
 				FD2C35D4178A305A0080B1B7 /* Default.png in Resources */,
 				FD855E56195BB83700099A16 /* ProjectRAppIcon29.png in Resources */,
 				FD855E60195BBA0200099A16 /* ProjectRSplashScreen640x960.png in Resources */,
@@ -509,6 +533,7 @@
 				FD5BDEE219340D22002B86DF /* blue_circle@2x.png in Resources */,
 				FD7E9CFC19563FD000DABB6B /* 703-download.png in Resources */,
 				FD7E9CF0195615B600DABB6B /* 733-video-camera-mute.png in Resources */,
+				FD992D3025A5472500FD2D7F /* GoogleService-Info.plist in Resources */,
 				FD2C35D8178A305A0080B1B7 /* Default-568h@2x.png in Resources */,
 				FDE02912193977BA00DFC244 /* blue_checkbox@2x.png in Resources */,
 				FDE02911193977BA00DFC244 /* blue_checkbox.png in Resources */,
@@ -521,33 +546,69 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		437C09CA474A497993E19FC5 /* Check Pods Manifest.lock */ = {
+		125BF248C86A256CD5185A45 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
+			inputFileListPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ProjectR-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
-		F18F3EB96D7B41EE88A27D4C /* Copy Pods Resources */ = {
+		C0E0E53A3F854EA53C929016 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ProjectR/Pods-ProjectR-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
+				"${BUILT_PRODUCTS_DIR}/CocoaAsyncSocket/CocoaAsyncSocket.framework",
+				"${BUILT_PRODUCTS_DIR}/FirebaseABTesting/FirebaseABTesting.framework",
+				"${BUILT_PRODUCTS_DIR}/FirebaseCore/FirebaseCore.framework",
+				"${BUILT_PRODUCTS_DIR}/FirebaseCoreDiagnostics/FirebaseCoreDiagnostics.framework",
+				"${BUILT_PRODUCTS_DIR}/FirebaseCrashlytics/FirebaseCrashlytics.framework",
+				"${BUILT_PRODUCTS_DIR}/FirebaseInstallations/FirebaseInstallations.framework",
+				"${BUILT_PRODUCTS_DIR}/FirebaseRemoteConfig/FirebaseRemoteConfig.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleDataTransport/GoogleDataTransport.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
+				"${BUILT_PRODUCTS_DIR}/PJLinkCocoa/PJLinkCocoa.framework",
+				"${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaAsyncSocket.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseABTesting.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseCore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseCoreDiagnostics.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseCrashlytics.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseInstallations.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseRemoteConfig.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleDataTransport.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PJLinkCocoa.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBLPromises.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ProjectR/Pods-ProjectR-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 		FD9850BA1978AD8D00EAC017 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -555,12 +616,14 @@
 			files = (
 			);
 			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "./Crashlytics.framework/run da56e789619936f4d224a53eb711595aac6573fb f5137ae9cd6ad3f2392b5a796fd8654290b67cbae211937eafe443cd28fdcd2c";
+			shellScript = "\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -632,7 +695,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -642,7 +705,7 @@
 		};
 		FD16CBF2195F24AD00A44C23 /* TestFlight */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6B27D3B044CC4AFEB5884882 /* Pods.xcconfig */;
+			baseConfigurationReference = A8C0358E64E0694CD668CF2B /* Pods-ProjectR.testflight.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
@@ -686,7 +749,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -711,7 +774,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -721,7 +784,7 @@
 		};
 		FD2C35E8178A305A0080B1B7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6B27D3B044CC4AFEB5884882 /* Pods.xcconfig */;
+			baseConfigurationReference = 289C9500A435385DBE52F7D1 /* Pods-ProjectR.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -742,7 +805,7 @@
 		};
 		FD2C35E9178A305A0080B1B7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6B27D3B044CC4AFEB5884882 /* Pods.xcconfig */;
+			baseConfigurationReference = 85E3424E4C1C2C32FC8AE918 /* Pods-ProjectR.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";

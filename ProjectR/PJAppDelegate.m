@@ -9,14 +9,13 @@
 #import "PJAppDelegate.h"
 #import "PJAMXBeaconListener.h"
 #import <PJLinkCocoa/PJURLProtocolRunLoop.h>
-#import <Crashlytics/Crashlytics.h>
+#import <Firebase/Firebase.h>
 
 @implementation PJAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Start up Crashlytics
-    [Crashlytics startWithAPIKey:@"da56e789619936f4d224a53eb711595aac6573fb"];
+    [FIRApp configure];
 
     // Override point for customization after application launch.
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {

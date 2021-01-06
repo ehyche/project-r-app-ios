@@ -7,7 +7,7 @@
 //
 
 #import "PJURLProtocolRunLoop.h"
-#import "AsyncSocket.h"
+#import <CocoaAsyncSocket/GCDAsyncSocket.h>
 #import <CommonCrypto/CommonDigest.h>
 
 NSString* const kPJLinkScheme      = @"pjlink";
@@ -43,24 +43,29 @@ const NSInteger kPJLinkTagWriteRequest           = 10;
 const NSInteger kPJLinkTagReadProjectorChallenge = 20;
 const NSInteger kPJLinkTagReadCommandResponse    = 21;
 
-@interface PJURLProtocolRunLoop() <AsyncSocketDelegate, NSURLAuthenticationChallengeSender>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
+@interface PJURLProtocolRunLoop() <GCDAsyncSocketDelegate, NSURLAuthenticationChallengeSender>
 {
-    AsyncSocket*    _socket;
-    NSError*        _error;
-    NSMutableArray* _requests;
-    NSTimeInterval  _timeout;
-    BOOL            _usesAuthentication;
-    NSString*       _randomSequence;
-    NSString*       _password;
-    NSInteger       _failureCount;
-    NSString*       _hashedPassword;
-    NSUInteger      _bytesSent;
-    BOOL            _stopLoadingCalled;
+    GCDAsyncSocket*  _socket;
+    dispatch_queue_t _delegateQueue;
+    NSError*         _error;
+    NSMutableArray*  _requests;
+    NSTimeInterval   _timeout;
+    BOOL             _usesAuthentication;
+    NSString*        _randomSequence;
+    NSString*        _password;
+    NSInteger        _failureCount;
+    NSString*        _hashedPassword;
+    NSUInteger       _bytesSent;
+    BOOL             _stopLoadingCalled;
 }
 
 + (NSArray*)validPJLinkCommandsFromRequest:(NSURLRequest*)request;
 + (BOOL)isValidPJLinkRequest:(NSString*) reqStr;
 + (NSMutableArray*)pjlinkRequestsFromRequest:(NSURLRequest*)request;
+- (void)callClientDidFailOnDelegateQueueWithError:(NSError *)error;
 - (void)callClientDidFailWithError:(NSError*) error;
 - (void)callClientDidReceiveResponse;
 - (void)callClientDidLoadData:(NSData*) data;
@@ -72,6 +77,7 @@ const NSInteger kPJLinkTagReadCommandResponse    = 21;
 - (void)finishDueToNoPassword;
 + (NSString*)hashedPasswordFromRandomSequence:(NSString*) sequence password:(NSString*) password;
 - (void)closeSocket;
+- (void)closeSocketSyncOnDelegateQueue;
 
 @end
 
@@ -90,6 +96,7 @@ const NSInteger kPJLinkTagReadCommandResponse    = 21;
     self = [super initWithRequest:request cachedResponse:cachedResponse client:client];
     if (self) {
         _timeout = [request timeoutInterval];
+        _delegateQueue = dispatch_queue_create("PJLinkDelegateQueue", NULL);
     }
 
     NSLog(@"PJURLProtocolRunLoop[%p] initWithRequest:%@ cachedResponse:%@ client:%@", self, request, cachedResponse, client);
@@ -120,7 +127,13 @@ const NSInteger kPJLinkTagReadCommandResponse    = 21;
 
 + (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request {
     NSString* host       = [[request URL] host];
-    NSString* newURLStr  = [NSString stringWithFormat:@"%@://%@", kPJLinkScheme, host];
+    NSNumber* port       = [[request URL] port];
+    NSString* newURLStr  = @"";
+    if (port != nil) {
+        newURLStr  = [NSString stringWithFormat:@"%@://%@:%@", kPJLinkScheme, host, port];
+    } else {
+        newURLStr  = [NSString stringWithFormat:@"%@://%@", kPJLinkScheme, host];
+    }
     NSURL*    newURL     = [NSURL URLWithString:newURLStr];
     NSArray*  commands   = [PJURLProtocolRunLoop validPJLinkCommandsFromRequest:request];
     NSString* commandStr = [commands componentsJoinedByString:kPJLinkCR];
@@ -172,7 +185,7 @@ const NSInteger kPJLinkTagReadCommandResponse    = 21;
         // Get the port number
         uint16_t port16 = [portNum unsignedShortValue];
         // Create the socket
-        _socket = [[AsyncSocket alloc] initWithDelegate:self];
+        _socket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_delegateQueue];
         // Connect to the host
         NSLog(@"PJURLProtocolRunLoop[%p] calling socket connectToHost:%@ onPort:%u withTimeout:%.1f error:",
               self, host, port16, _timeout);
@@ -184,21 +197,21 @@ const NSInteger kPJLinkTagReadCommandResponse    = 21;
         if (!connectRet)
         {
             // Call back to the client
-            [self callClientDidFailWithError:connectError];
+            [self callClientDidFailOnDelegateQueueWithError:connectError];
         }
     } else {
         // We had no valid requests, so create a "bad request" error
         NSError* error = [NSError errorWithDomain:PJLinkErrorDomain
                                              code:PJLinkErrorNoValidCommandsInRequest
                                          userInfo:@{NSLocalizedDescriptionKey: @"No valid PJlink requests found."}];
-        [self callClientDidFailWithError:error];
+        [self callClientDidFailOnDelegateQueueWithError:error];
     }
 }
 
 - (void)stopLoading {
     NSLog(@"PJURLProtocolRunLoop[%p]: stopLoading", self);
     // Close the socket
-    [self closeSocket];
+    [self closeSocketSyncOnDelegateQueue];
     // We do not call back to the client after this, as the
     // documentation says that after we receive a stopLoading,
     // we should make no further calls to the NSURLProtocolClient.
@@ -220,31 +233,21 @@ const NSInteger kPJLinkTagReadCommandResponse    = 21;
 }
 
 #pragma mark -
-#pragma mark AsyncSocketDelegate methods
+#pragma mark GCDAsyncSocketDelegate methods
 
-- (void)onSocket:(AsyncSocket *)sock willDisconnectWithError:(NSError *)err {
-    NSLog(@"PJURLProtocolRunLoop[%p]: onSocket:%@ willDisconnectWithError:%@", self, sock, err);
-    _error = err;
-}
-
-- (void)onSocketDidDisconnect:(AsyncSocket *)sock {
-    NSLog(@"PJURLProtocolRunLoop[%p]: onSocketDidDisconnect:%@", self, sock);
-    [[self client] URLProtocol:self didFailWithError:_error];
-}
-
-- (void)onSocket:(AsyncSocket *)sock didConnectToHost:(NSString *)host port:(UInt16)port {
-    NSLog(@"PJURLProtocolRunLoop[%p]: onSocket:%@ didConnectToHost:%@ port:%@", self, sock, host, @(port));
+- (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port {
+    NSLog(@"PJURLProtocolRunLoop[%p]: socket:%@ didConnectToHost:%@ port:%@", self, sock, host, @(port));
     // Read the initial challenge from the projector
     NSLog(@"PJURLProtocolRunLoop[%p] calling readDataToData:withTimeout:%@ tag:%@",
           self, @(_timeout), @(kPJLinkTagReadProjectorChallenge));
-    [_socket readDataToData:[AsyncSocket CRData]
+    [_socket readDataToData:[GCDAsyncSocket CRData]
                 withTimeout:_timeout
                         tag:kPJLinkTagReadProjectorChallenge];
 }
 
-- (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
+- (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
     NSString* dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSLog(@"PJURLProtocolRunLoop[%p]: onSocket:%@ didReadData:\"%@\" withTag:%ld", self, sock, dataStr, tag);
+    NSLog(@"PJURLProtocolRunLoop[%p]: socket:%@ didReadData:\"%@\" withTag:%ld", self, sock, dataStr, tag);
     // Switch on tag
     BOOL     handled = YES;
     NSError* error   = nil;
@@ -270,41 +273,66 @@ const NSInteger kPJLinkTagReadCommandResponse    = 21;
     }
 }
 
-- (void)onSocket:(AsyncSocket *)sock didWriteDataWithTag:(long)tag {
-    NSLog(@"PJURLProtocolRunLoop[%p]: onSocket:%@ didWriteDataWithTag:%@", self, sock, @(tag));
+- (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag {
+    NSLog(@"PJURLProtocolRunLoop[%p]: socket:%@ didWriteDataWithTag:%@", self, sock, @(tag));
     if (tag == kPJLinkTagWriteRequest) {
         // Read data up to and including the carriage return
         NSLog(@"PJURLProtocolRunLoop[%p] calling readDataToData:withTimeout:%@ tag:%@",
               self, @(_timeout), @(kPJLinkTagReadCommandResponse));
-        [_socket readDataToData:[AsyncSocket CRData]
+        [_socket readDataToData:[GCDAsyncSocket CRData]
                     withTimeout:_timeout
                             tag:kPJLinkTagReadCommandResponse];
     }
 }
 
-- (NSTimeInterval)onSocket:(AsyncSocket *)sock
-  shouldTimeoutReadWithTag:(long)tag
-                   elapsed:(NSTimeInterval)elapsed
-                 bytesDone:(NSUInteger)length {
-    NSLog(@"PJURLProtocolRunLoop[%p]: onSocket:%@ shouldTimeoutReadWithTag:%@ elapsed:%@ bytesDone:%@",
+- (NSTimeInterval)    socket:(GCDAsyncSocket *)sock
+    shouldTimeoutReadWithTag:(long)tag
+                     elapsed:(NSTimeInterval)elapsed
+                   bytesDone:(NSUInteger)length {
+    NSLog(@"PJURLProtocolRunLoop[%p]: socket:%@ shouldTimeoutReadWithTag:%@ elapsed:%@ bytesDone:%@",
           self, sock, @(tag), @(elapsed), @(length));
     return 0.0;
 }
 
-- (NSTimeInterval)onSocket:(AsyncSocket *)sock
- shouldTimeoutWriteWithTag:(long)tag
-                   elapsed:(NSTimeInterval)elapsed
-                 bytesDone:(NSUInteger)length {
-    
+- (NSTimeInterval)     socket:(GCDAsyncSocket *)sock
+    shouldTimeoutWriteWithTag:(long)tag
+                      elapsed:(NSTimeInterval)elapsed
+                    bytesDone:(NSUInteger)length {
     NSLog(@"PJURLProtocolRunLoop[%p]: onSocket:%@ shouldTimeoutWriteWithTag:%@ elapsed:%@ bytesDone:%@",
           self, sock, @(tag), @(elapsed), @(length));
     return 0.0;
+}
+
+- (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(nullable NSError *)err {
+    NSLog(@"PJURLProtocolRunLoop[%p]: socketDidDisconnect:%@ withError:%@", self, sock, err);
+    [self callClientDidFailWithError:err];
 }
 
 #pragma mark -
 #pragma mark NSURLAuthenticationChallengeSender methods
 
 - (void)useCredential:(NSURLCredential *)credential forAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+    __weak PJURLProtocolRunLoop* weakSelf = self;
+    dispatch_async(_delegateQueue, ^{
+        [weakSelf handleAuthCredential:credential];
+    });
+}
+
+- (void)continueWithoutCredentialForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+    __weak PJURLProtocolRunLoop* weakSelf = self;
+    dispatch_async(_delegateQueue, ^{
+        [weakSelf finishDueToNoPassword];
+    });
+}
+
+- (void)cancelAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+    __weak PJURLProtocolRunLoop* weakSelf = self;
+    dispatch_async(_delegateQueue, ^{
+        [weakSelf finishDueToNoPassword];
+    });
+}
+
+- (void)handleAuthCredential:(NSURLCredential *)credential {
     // We better have a password
     if ([credential hasPassword]) {
         // Get the password
@@ -316,14 +344,6 @@ const NSInteger kPJLinkTagReadCommandResponse    = 21;
     } else {
         [self finishDueToNoPassword];
     }
-}
-
-- (void)continueWithoutCredentialForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
-    [self finishDueToNoPassword];
-}
-
-- (void)cancelAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
-    [self finishDueToNoPassword];
 }
 
 #pragma mark -
@@ -444,6 +464,13 @@ const NSInteger kPJLinkTagReadCommandResponse    = 21;
     return tmp;
 }
 
+- (void)callClientDidFailOnDelegateQueueWithError:(NSError *)error {
+    __weak PJURLProtocolRunLoop* weakSelf = self;
+    dispatch_async(_delegateQueue, ^{
+        [weakSelf callClientDidFailWithError:error];
+    });
+}
+
 - (void)callClientDidFailWithError:(NSError*) error {
     NSLog(@"PJURLProtocolRunLoop[%p]: calling URLProtocol:didFailWithError:%@", self, error);
     [[self client] URLProtocol:self didFailWithError:error];
@@ -455,8 +482,8 @@ const NSInteger kPJLinkTagReadCommandResponse    = 21;
                                                         MIMEType:@"text/plain"
                                            expectedContentLength:0
                                                 textEncodingName:nil];
-    NSLog(@"PJURLProtocolRunLoop[%p]: calling URLProtocol:didReceiveResponse:%@ cacheStoragePolicy:%u",
-          self, response, NSURLCacheStorageNotAllowed);
+    NSLog(@"PJURLProtocolRunLoop[%p]: calling URLProtocol:didReceiveResponse:%@ cacheStoragePolicy:%lu",
+          self, response, (unsigned long)NSURLCacheStorageNotAllowed);
     [[self client] URLProtocol:self didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageNotAllowed];
 }
 
@@ -483,7 +510,7 @@ const NSInteger kPJLinkTagReadCommandResponse    = 21;
     NSURLCredential* proposedCredential = nil;
     // Do we have a previously-supplied failed password?
     if ([_password length] > 0) {
-        proposedCredential = [NSURLCredential credentialWithUser:nil
+        proposedCredential = [NSURLCredential credentialWithUser:@""
                                                         password:_password
                                                      persistence:NSURLCredentialPersistencePermanent];
     }
@@ -697,4 +724,14 @@ const NSInteger kPJLinkTagReadCommandResponse    = 21;
 //    _socket = nil;
 }
 
+- (void)closeSocketSyncOnDelegateQueue {
+    __weak PJURLProtocolRunLoop* weakSelf = self;
+    dispatch_sync(_delegateQueue, ^{
+        [weakSelf closeSocket];
+    });
+}
+
 @end
+
+#pragma GCC diagnostic pop
+
