@@ -8,15 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
-NSString* const PJLinkSubnetScannerScanningDidBeginNotification;
-NSString* const PJLinkSubnetScannerScanningDidEndNotification;
-NSString* const PJLinkSubnetScannerScanningDidProgressNotification;
-NSString* const PJLinkSubnetScannerScannedHostDidChangeNotification;
-NSString* const PJLinkSubnetScannerDiscoveredProjectorHostsDidChangeNotification;
+extern NSString* const PJLinkSubnetScannerScanningDidBeginNotification;
+extern NSString* const PJLinkSubnetScannerScanningDidEndNotification;
+extern NSString* const PJLinkSubnetScannerScanningDidProgressNotification;
+extern NSString* const PJLinkSubnetScannerScannedHostDidChangeNotification;
+extern NSString* const PJLinkSubnetScannerDiscoveredProjectorHostsDidChangeNotification;
 
-NSString* const PJLinkSubnetScannerProgressKey;
-NSString* const PJLinkSubnetScannerNormalFinishKey;
-NSString* const PJLinkSubnetScannerScannedHostKey;
+extern NSString* const PJLinkSubnetScannerProgressKey;
+extern NSString* const PJLinkSubnetScannerNormalFinishKey;
+extern NSString* const PJLinkSubnetScannerScannedHostKey;
 
 @interface PJLinkSubnetScanner : NSObject
 

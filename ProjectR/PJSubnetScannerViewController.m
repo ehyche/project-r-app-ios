@@ -8,11 +8,11 @@
 
 #import "PJSubnetScannerViewController.h"
 #import "PJLinkSubnetScanner.h"
-#import "PJProjector.h"
 #import "PJProjectorManager.h"
 #import "PJInterfaceInfo.h"
 #import "UIImage+SolidColor.h"
 #import "PJLabeledProgressView.h"
+@import PJLinkCocoa;
 
 CGFloat const kPJSubnetScannerButtonHeight = 64.0;
 

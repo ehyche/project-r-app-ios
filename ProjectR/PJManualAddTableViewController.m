@@ -8,12 +8,9 @@
 
 #import "PJManualAddTableViewController.h"
 #import "PJInterfaceInfo.h"
-#import "PJDefinitions.h"
-#import "PJProjector.h"
-#import "AFPJLinkClient.h"
-#import "PJURLProtocolRunLoop.h"
 #import "PJProjectorManager.h"
 #import "UIImage+SolidColor.h"
+@import PJLinkCocoa;
 
 NSInteger const kPJManualAddIPPickerFontSize     =  17.0;
 CGFloat   const kPJManualAddPickerComponentWidth =  50.0;
@@ -29,8 +26,7 @@ CGFloat   const kPJManualAddButtonHeight         =  64.0;
 
 @interface PJManualAddTableViewController () <UIPickerViewDataSource,
                                               UIPickerViewDelegate,
-                                              UITextFieldDelegate,
-                                              UIAlertViewDelegate>
+                                              UITextFieldDelegate>
 
 @property(nonatomic,strong) UIPickerView*            ipAddressPickerView;
 @property(nonatomic,strong) UITextField*             portTextField;
@@ -82,7 +78,7 @@ CGFloat   const kPJManualAddButtonHeight         =  64.0;
         // Now set it to be the default PJLink port
         self.portTextField.text = [[NSNumber numberWithInteger:kDefaultPJLinkPort] stringValue];
         // Create the spinner
-        self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
         [self.spinner sizeToFit];
         // Create the bar button item out of the spinner
         self.spinnerBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.spinner];
@@ -299,17 +295,6 @@ CGFloat   const kPJManualAddButtonHeight         =  64.0;
     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
 }
 
-#pragma mark - UIAlertViewDelegate methods
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex != alertView.cancelButtonIndex) {
-        if (alertView.tag == kPJManualAddAlertTagSubnet) {
-            [self addProjectorToManager];
-            [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-        }
-    }
-}
-
 #pragma mark - PJManualAddTableViewController private methods
 
 - (NSString*)initialProjectorPortForDeviceHostAddress:(NSString*)deviceHost {
@@ -351,33 +336,45 @@ CGFloat   const kPJManualAddButtonHeight         =  64.0;
                                       NSString* message = [NSString stringWithFormat:@"No projector detected at %@:%@. Re-enter the IP address and port.",
                                                            projectorIPAddress, @(portFieldInteger)];
                                       // Pop up the alert view saying we detected the projector
-                                      UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"No Projector Detected"
-                                                                                          message:message
-                                                                                         delegate:nil
-                                                                                cancelButtonTitle:@"Dismiss"
-                                                                                otherButtonTitles:nil];
-                                      alertView.tag = kPJManualAddAlertTagNoDetect;
-                                      [alertView show];
+                                      UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"No Projector Detected"
+                                                                                                     message:message
+                                                                                              preferredStyle:UIAlertControllerStyleAlert];
+                                      UIAlertAction* action = [UIAlertAction actionWithTitle:@"Dismiss"
+                                                                                       style:UIAlertActionStyleCancel
+                                                                                     handler:nil];
+                                      [alert addAction:action];
+                                      [self presentViewController:alert animated:YES completion:nil];
                                   }];
         } else {
             // Host is not on the same subnet, so ask the user if they really want to add this address
-            UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Projector Address"
-                                                                message:@"Projector address is not on the subnet as the device, so it cannot be detected. Add anyway?"
-                                                               delegate:self
-                                                      cancelButtonTitle:@"Cancel"
-                                                      otherButtonTitles:@"Add", nil];
-            alertView.tag = kPJManualAddAlertTagSubnet;
-            [alertView show];
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Projector Address"
+                                                                           message:@"Projector address is not on the subnet as the device, so it cannot be detected. Add anyway?"
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction* addAction = [UIAlertAction actionWithTitle:@"Add"
+                                                                style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction* action) {
+                [self addProjectorToManager];
+                [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+            }];
+            UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel"
+                                                                   style:UIAlertActionStyleCancel
+                                                                 handler:^(UIAlertAction* action) {
+                [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+            }];
+            [alert addAction:addAction];
+            [alert addAction:cancelAction];
+            [self presentViewController:alert animated:YES completion:nil];
         }
     } else {
         // Show an alert and ask the user to correct the port
-        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Port Error"
-                                                            message:@"Port must be between 1025 and 32767 inclusive. Please re-enter."
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"Dismiss"
-                                                  otherButtonTitles:nil];
-        alertView.tag = kPJManualAddAlertTagPort;
-        [alertView show];
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Port Error"
+                                                                       message:@"Port must be between 1025 and 32767 inclusive. Please re-enter."
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* action = [UIAlertAction actionWithTitle:@"Dismiss"
+                                                         style:UIAlertActionStyleCancel
+                                                       handler:nil];
+        [alert addAction:action];
+        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 

@@ -8,5 +8,6 @@ target 'ProjectR' do
   pod 'Firebase/Analytics', '7.3.0'
   pod 'Firebase/RemoteConfig', '7.3.0'
   pod 'Firebase/Crashlytics', '7.3.0'
+  pod 'extobjc'
 
 end

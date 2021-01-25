@@ -7,13 +7,11 @@
 //
 
 #import "PJProjectorTableViewCell.h"
-#import "PJProjector.h"
 #import "PJProjectorManager.h"
 #import "PJProjectorInputPowerStatusView.h"
 #import "PJProjectorTableViewCellDelegate.h"
 #import "PJProjectorConnectionStateView.h"
-#import "PJResponseInfo.h"
-#import "PJInputInfo.h"
+@import PJLinkCocoa;
 
 static NSString* const kPJProjectorTableViewCellReuseID = @"kPJProjectorTableViewCellReuseID";
 

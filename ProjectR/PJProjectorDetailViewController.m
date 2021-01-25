@@ -151,7 +151,7 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
         // Init the pending active input index
         self.pendingActiveInputIndex = -1;
         // Create the spinner for changing the input
-        self.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        self.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
         [self.activityIndicatorView sizeToFit];
         // Configure the colors
         self.detailTextColorErrorCellOK      = [UIColor colorWithRed:0.0 green:0.7 blue:0.0 alpha:1.0];
@@ -365,11 +365,11 @@ NSInteger const kPJProjectorDetailClass2CompatibleRow       = 4;
         NSString* lampDetail = @"";
         if (indexPath.row < [self.projector countOfLampStatus]) {
             // Get the lamp name, which is just Lamp 0, Lamp 1, etc.
-            lampName = [NSString stringWithFormat:@"Lamp %d", indexPath.row];
+            lampName = [NSString stringWithFormat:@"Lamp %ld", (long)indexPath.row];
             // Get the lamp detail, which is something like "Off (20 hours)"
             PJLampStatus* lampStatus = (PJLampStatus*) [self.projector objectInLampStatusAtIndex:indexPath.row];
             NSString* onOff = (lampStatus.lampOn ? @"On" : @"Off");
-            lampDetail = [NSString stringWithFormat:@"%@ (%u hours)", onOff, lampStatus.cumulativeLightingTime];
+            lampDetail = [NSString stringWithFormat:@"%@ (%lu hours)", onOff, (unsigned long)lampStatus.cumulativeLightingTime];
         }
         cell.textLabel.text       = lampName;
         cell.detailTextLabel.text = lampDetail;

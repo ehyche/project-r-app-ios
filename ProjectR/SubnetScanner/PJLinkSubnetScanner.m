@@ -37,7 +37,7 @@ NSString* const PJLinkSubnetScannerScannedHostKey  = @"PJLinkSubnetScannerScanne
 NSTimeInterval const kDefaultPJLinkScanningTimeout       = 1.0;
 NSInteger      const kPJLinkScannerProjectorChallengeTag = 10;
 
-@interface PJLinkSubnetScanner()
+@interface PJLinkSubnetScanner() <GCDAsyncSocketDelegate>
 {
     BOOL             _scanning;
     BOOL             _abort;
@@ -109,7 +109,7 @@ NSInteger      const kPJLinkScannerProjectorChallengeTag = 10;
 
 - (void)start {
     dispatch_async(_queue, ^{
-        if (!_scanning) {
+        if (!self->_scanning) {
             // Get the array of host addresses on our subnet
             // For example, if we are on WiFi address 192.168.100.43 and
             // our netmask is 255.255.255.0 then our list of addresses
@@ -117,14 +117,14 @@ NSInteger      const kPJLinkScannerProjectorChallengeTag = 10;
             // We exclude our own address from the list.
             NSArray* subnetHosts = [self hostsInSubnet];
             // Get the number of subnet hosts to scan
-            _originalSubnetHostsCount = [subnetHosts count];
+            self->_originalSubnetHostsCount = [subnetHosts count];
             // We have to have non-zero hosts to scan before we start
-            if (_originalSubnetHostsCount > 0) {
+            if (self->_originalSubnetHostsCount > 0) {
                 // Set the flag saying we are scanning
-                _scanning = YES;
-                _abort    = NO;
+                self->_scanning = YES;
+                self->_abort    = NO;
                 // Save the hosts into the mutable array
-                [_mutableSubnetHosts setArray:subnetHosts];
+                [self->_mutableSubnetHosts setArray:subnetHosts];
                 // Send the notification saying we are beginning scanning
                 [self postScanningDidBeginNotification];
                 // Begin by scanning the next host in the queue
@@ -136,8 +136,8 @@ NSInteger      const kPJLinkScannerProjectorChallengeTag = 10;
 
 - (void)stop {
     dispatch_async(_queue, ^{
-        if (_scanning) {
-            _abort = YES;
+        if (self->_scanning) {
+            self->_abort = YES;
         }
     });
 }

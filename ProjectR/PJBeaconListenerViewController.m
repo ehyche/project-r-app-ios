@@ -8,15 +8,12 @@
 
 #import "PJBeaconListenerViewController.h"
 #import "PJAMXBeaconListener.h"
-#import "AFPJLinkClient.h"
-#import "PJURLProtocolRunLoop.h"
 #import "PJAMXBeaconHost.h"
-#import "PJDefinitions.h"
-#import "PJProjector.h"
 #import "PJProjectorManager.h"
 #import "PJInterfaceInfo.h"
 #import "UIImage+SolidColor.h"
 #import "PJLabeledProgressView.h"
+@import PJLinkCocoa;
 
 typedef NS_ENUM(NSInteger, PJProjectorDetectionStatus) {
     PJProjectorDetectionStatusUnknown,

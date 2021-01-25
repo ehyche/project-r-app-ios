@@ -41,10 +41,14 @@ CGFloat kNoProjectorsCellVerticalPadding =  20.0;
     self.contentView.frame = self.bounds;
     CGSize contentViewSize = self.contentView.frame.size;
     
-    CGSize textLabelSize = [self.textLabel.text sizeWithFont:self.textLabel.font];
-    CGSize detailTextLabelSize = [self.detailTextLabel.text sizeWithFont:self.detailTextLabel.font
-                                                       constrainedToSize:CGSizeMake(contentViewSize.width - 20.0, 2009.0)
-                                                           lineBreakMode:NSLineBreakByWordWrapping];
+    CGSize textLabelSize = [self.textLabel.text sizeWithAttributes:@{NSFontAttributeName: self.textLabel.font}];
+    NSStringDrawingContext* context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
+    CGRect detailTextRect = [self.detailTextLabel.text boundingRectWithSize:CGSizeMake(contentViewSize.width - 20.0, 2009.0)
+                                                                         options:0
+                                                                      attributes:@{NSFontAttributeName: self.detailTextLabel.font}
+                                                                         context:context];
+    CGSize detailTextLabelSize = detailTextRect.size;
     CGFloat totalHeight = textLabelSize.height + kNoProjectorsCellVerticalPadding + detailTextLabelSize.height;
     
     CGRect textLabelFrame = CGRectMake(floorf((contentViewSize.width - textLabelSize.width) / 2.0),

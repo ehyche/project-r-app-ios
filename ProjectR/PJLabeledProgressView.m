@@ -63,7 +63,7 @@ CGFloat const kPJSubnetScannerProgressViewBetweenLabelAndProgress =  5.0;
     if ([text length] == 0) {
         text = @"Scanning";
     }
-    CGSize textSize = [text sizeWithFont:self.label.font];
+    CGSize textSize = [text sizeWithAttributes:@{NSFontAttributeName: self.label.font}];
     
     // Compute the overall height of the view
     CGFloat viewHeight = kPJSubnetScannerProgressViewMarginTop +
@@ -80,7 +80,7 @@ CGFloat const kPJSubnetScannerProgressViewBetweenLabelAndProgress =  5.0;
     CGSize selfFrameSize = self.frame.size;
 
     CGFloat labelProgressWidth = selfFrameSize.width - (2.0 * kPJSubnetScannerProgressViewMarginLeftRight);
-    CGSize textSize = [self.label.text sizeWithFont:self.label.font];
+    CGSize textSize = [self.label.text sizeWithAttributes:@{NSFontAttributeName: self.label.font}];
     CGRect labelFrame = CGRectMake(kPJSubnetScannerProgressViewMarginLeftRight,
                                    kPJSubnetScannerProgressViewMarginTop,
                                    labelProgressWidth,

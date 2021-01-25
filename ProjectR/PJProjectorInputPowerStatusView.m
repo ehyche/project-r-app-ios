@@ -138,7 +138,7 @@ CGFloat const kPJProjectorAccessoryViewButtonPaddingTopBottom =  5.0;
     for (NSUInteger i = 0; i < [projector countOfInputs]; i++) {
         PJInputInfo* inputInfo = [projector objectInInputsAtIndex:i];
         NSString* inputName = [inputInfo description];
-        CGSize inputNameSize = [inputName sizeWithFont:font];
+        CGSize inputNameSize = [inputName sizeWithAttributes:@{NSFontAttributeName: font}];
         maxSize = CGSizeMake(MAX(inputNameSize.width, maxSize.width),
                              MAX(inputNameSize.height, maxSize.height));
     }

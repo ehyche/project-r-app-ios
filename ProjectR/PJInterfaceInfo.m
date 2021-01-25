@@ -70,7 +70,7 @@
         if (hostComponentsCount == 4) {
             for (NSUInteger i = 0; i < hostComponentsCount; i++) {
                 NSString* ithComponent = [hostComponents objectAtIndex:i];
-                uint32_t ithComponentInt = [ithComponent integerValue];
+                uint32_t ithComponentInt = (uint32_t) [ithComponent integerValue];
                 // Shift this value up by the appropriate number of bits
                 uint32_t ithComponentIntShifted = ithComponentInt << ((3-i)*8);
                 ret |= ithComponentIntShifted;

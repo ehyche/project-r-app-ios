@@ -17,13 +17,6 @@
 {
     [FIRApp configure];
 
-    // Override point for customization after application launch.
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
-        UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
-        splitViewController.delegate = (id)navigationController.topViewController;
-    }
-
     // Register the protocol class
     [NSURLProtocol registerClass:[PJURLProtocolRunLoop class]];
 //    // Start the AMX beacon listener

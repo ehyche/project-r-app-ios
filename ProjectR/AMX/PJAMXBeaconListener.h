@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-NSString* const PJAMXBeaconHostsDidChangeNotification;
+extern NSString* const PJAMXBeaconHostsDidChangeNotification;
 
 @interface PJAMXBeaconListener : NSObject
 

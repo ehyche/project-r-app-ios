@@ -14,17 +14,7 @@
 NSString* const kPJProjectorManagerKeyProjectors   = @"projectors";
 NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive";
 
-@interface PJProjectorAlertView : UIAlertView
-
-@property(nonatomic,copy) NSString* host;
-
-@end
-
-@implementation PJProjectorAlertView
-
-@end
-
-@interface PJProjectorManager() <UIAlertViewDelegate>
+@interface PJProjectorManager()
 
 @property(nonatomic,strong) NSMutableArray*      mutableProjectors;
 @property(nonatomic,strong) NSMutableDictionary* hostToProjectorMap;
@@ -230,41 +220,6 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
     return ret;
 }
 
-#pragma mark - UIAlertViewDelegate methods
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex != alertView.cancelButtonIndex) {
-        if ([alertView isKindOfClass:[PJProjectorAlertView class]]) {
-            PJProjectorAlertView* projectorAlertView = (PJProjectorAlertView*)alertView;
-            // Get the projector associated with this host
-            PJProjector* projector = [self projectorForHost:projectorAlertView.host];
-            // Switch depending upon the connection state
-            if (projector.connectionState == PJConnectionStatePasswordError) {
-                // Get the password
-                NSString* password = [[alertView textFieldAtIndex:0] text];
-                if ([password length] > 0) {
-                    // A non-zero length password was supplied. So set this password into the
-                    // PJProjector and have it try again.
-                    projector.password = password;
-                    // Try again to refresh
-                    [projector refreshAllQueriesForReason:PJRefreshReasonUserInteraction];
-                }
-            } else if (projector.connectionState == PJConnectionStateConnectionError) {
-                // The user could have chosen to retry or delete the projector.
-                // Get the index of first "other" button.
-                NSInteger firstOtherButtonIndex = alertView.firstOtherButtonIndex;
-                if (buttonIndex == firstOtherButtonIndex) {
-                    // The user chose to retry, so refresh the projector
-                    [projector refreshAllQueriesForReason:PJRefreshReasonUserInteraction];
-                } else {
-                    // The user chose to delete the projector, so remove it
-                    [self removeProjectorsFromManager:@[projector]];
-                }
-            }
-        }
-    }
-}
-
 #pragma mark - PJProjectorManager private methods
 
 - (void)subscribeToNotificationsForProjector:(PJProjector*)projector {
@@ -319,38 +274,46 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
     // We only want to present an alert view to the user
     // if the refresh was due to user interaction
     if (projector.lastRefreshReason == PJRefreshReasonUserInteraction) {
-        // If we encountered a no password error, then we need to pop up
-        // a UIAlertView to ask the user for a password. If this is a general
-        // connection error, then we just pop up a UIAlertView to inform
+        // If this is a general connection error, then we just pop up a UIAlertController to inform
         // the user that there was a connection problem.
-        if (projector.connectionState == PJConnectionStatePasswordError) {
-            // We changed the UI so that the user types in a password
-            // via the detail screen rather than typing it in via a UIAlertView.
-//            // Construct the message
-//            NSString* message = [NSString stringWithFormat:@"The projector at %@ requires a password. Please enter it below", projector.host];
-//            PJProjectorAlertView* alertView = [[PJProjectorAlertView alloc] initWithTitle:@"Password Needed"
-//                                                                                  message:message
-//                                                                                 delegate:self
-//                                                                        cancelButtonTitle:@"Cancel"
-//                                                                        otherButtonTitles:@"Submit", nil];
-//            // Save the host with the alert view
-//            alertView.host = projector.host;
-//            // Set the style so that the UIAlertView provides a field for the password
-//            alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
-//            // Show the alert view
-//            [alertView show];
-        } else if (projector.connectionState == PJConnectionStateConnectionError) {
+        if (projector.connectionState == PJConnectionStateConnectionError) {
             // Construct the message
             NSString* message = [NSString stringWithFormat:@"A network error encountered while trying to reach projector at %@.", projector.host];
-            PJProjectorAlertView* alertView = [[PJProjectorAlertView alloc] initWithTitle:@"Error"
-                                                                                  message:message
-                                                                                 delegate:self
-                                                                        cancelButtonTitle:@"Dimiss"
-                                                                        otherButtonTitles:@"Retry", @"Delete", nil];
-            // Save the host with the alert view
-            alertView.host = projector.host;
-            // Show the alert view
-            [alertView show];
+            UIViewController* rootViewController = nil;
+            for (UIWindow* window in [UIApplication sharedApplication].windows) {
+                if (window.isKeyWindow) {
+                    rootViewController = window.rootViewController;
+                    break;
+                }
+            }
+            if (rootViewController != nil) {
+                UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Error"
+                                                                               message:message
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction* retryAction = [UIAlertAction actionWithTitle:@"Retry"
+                                                                      style:UIAlertActionStyleDefault
+                                                                    handler:^(UIAlertAction* action) {
+                    // The user chose to retry, so refresh the projector
+                    [projector refreshAllQueriesForReason:PJRefreshReasonUserInteraction];
+                    [rootViewController dismissViewControllerAnimated:YES completion:nil];
+                }];
+                UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete"
+                                                                       style:UIAlertActionStyleDestructive
+                                                                     handler:^(UIAlertAction* action) {
+                    // The user chose to delete the projector, so remove it
+                    [self removeProjectorsFromManager:@[projector]];
+                    [rootViewController dismissViewControllerAnimated:YES completion:nil];
+                }];
+                UIAlertAction* dismissAction = [UIAlertAction actionWithTitle:@"Dismiss"
+                                                                       style:UIAlertActionStyleCancel
+                                                                     handler:^(UIAlertAction* action) {
+                    [rootViewController dismissViewControllerAnimated:YES completion:nil];
+                }];
+                [alert addAction:retryAction];
+                [alert addAction:deleteAction];
+                [alert addAction:dismissAction];
+                [rootViewController presentViewController:alert animated:YES completion:nil];
+            }
         }
     }
 }

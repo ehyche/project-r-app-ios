@@ -171,11 +171,11 @@ NSString* const PJAMXBeaconHostsDidChangeNotification = @"PJAMXBeaconHostsDidCha
         // Create data for the "AMX\r" string
         NSData* pingData = [AMX_PING dataUsingEncoding:NSUTF8StringEncoding];
         // Send an "AMX\r" on the multicast address
-        [_socket sendData:pingData
-                   toHost:AMX_MULTICAST_GROUP
-                     port:AMX_BEACON_PORT
-              withTimeout:-1
-                      tag:AMX_TAG_PING];
+        [self->_socket sendData:pingData
+                         toHost:AMX_MULTICAST_GROUP
+                           port:AMX_BEACON_PORT
+                    withTimeout:-1
+                            tag:AMX_TAG_PING];
     });
 }
 
