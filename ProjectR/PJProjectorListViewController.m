@@ -20,17 +20,11 @@
 #import "PJProjectorTableViewCell.h"
 #import "PJProjectorTableViewCellDelegate.h"
 #import "PJInputPickerView.h"
+@import extobjc;
 
-@interface PJProjectorListViewController () <UIActionSheetDelegate,
-                                             PJProjectorTableViewCellDelegate,
+@interface PJProjectorListViewController () <PJProjectorTableViewCellDelegate,
                                              PJInputPickerViewDelegate>
 
-@property(nonatomic,strong) UIActionSheet*     addActionSheet;
-@property(nonatomic,strong) UIActionSheet*     inputActionSheet;
-@property(nonatomic,strong) UIActionSheet*     powerStatusActionSheet;
-@property(nonatomic,strong) UIActionSheet*     audioMuteActionSheet;
-@property(nonatomic,strong) UIActionSheet*     videoMuteActionSheet;
-@property(nonatomic,strong) UIActionSheet*     deleteActionSheet;
 @property(nonatomic,strong) UIBarButtonItem*   addBarButtonItem;
 @property(nonatomic,strong) UIBarButtonItem*   selectAllBarButtonItem;
 @property(nonatomic,strong) UIBarButtonItem*   clearAllBarButtonItem;
@@ -65,10 +59,6 @@
     }
 
     return self;
-}
-
-- (void)awakeFromNib {
-    [self commonInit];
 }
 
 - (void)viewDidLoad
@@ -249,65 +239,6 @@
     return height;
 }
 
-#pragma mark - UIActionSheetDelegate methods
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex != actionSheet.cancelButtonIndex) {
-        if (actionSheet == self.addActionSheet) {
-            UIViewController* controller = nil;
-            if (buttonIndex == 0) {
-                // Manually add a projector
-                controller = [[PJManualAddTableViewController alloc] init];
-            } else if (buttonIndex == 1) {
-                // Create a subnet scanner controller
-                controller = [[PJSubnetScannerViewController alloc] init];
-            } else if (buttonIndex == 2) {
-                // Create an AMX Beacon listener view controller
-                controller = [[PJBeaconListenerViewController alloc] init];
-            }
-            if (controller != nil) {
-                // Wrap this in a UINavigationController
-                UINavigationController* navController = [[UINavigationController alloc] initWithRootViewController:controller];
-                // Present this controller
-                [self presentViewController:navController animated:YES completion:nil];
-            }
-        } else if (actionSheet == self.inputActionSheet) {
-            NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-            [self changeSelectedProjectorsInputTo:buttonTitle];
-            [self.tableView setEditing:NO animated:YES];
-            [self updateNavigationItemStateAnimated:YES];
-            [self updateToolbarHiddenStateAnimated:YES];
-        } else if (actionSheet == self.powerStatusActionSheet) {
-            NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-            BOOL powerOn = [buttonTitle isEqualToString:@"On"];
-            [self changeSelectedProjectorsPowerStatusTo:powerOn];
-            [self.tableView setEditing:NO animated:YES];
-            [self updateNavigationItemStateAnimated:YES];
-            [self updateToolbarHiddenStateAnimated:YES];
-        } else if (actionSheet == self.audioMuteActionSheet) {
-            NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-            BOOL muteOn = [buttonTitle isEqualToString:@"On"];
-            [self changeSelectedProjectorsAudioMuteTo:muteOn];
-            [self.tableView setEditing:NO animated:YES];
-            [self updateNavigationItemStateAnimated:YES];
-            [self updateToolbarHiddenStateAnimated:YES];
-        } else if (actionSheet == self.videoMuteActionSheet) {
-            NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-            BOOL muteOn = [buttonTitle isEqualToString:@"On"];
-            [self changeSelectedProjectorsVideoMuteTo:muteOn];
-            [self.tableView setEditing:NO animated:YES];
-            [self updateNavigationItemStateAnimated:YES];
-            [self updateToolbarHiddenStateAnimated:YES];
-        } else if (actionSheet == self.deleteActionSheet) {
-            PJProjectorManager *mgr = [PJProjectorManager sharedManager];
-            [mgr removeProjectorsFromManager:self.selectedProjectors];
-            [self.tableView setEditing:NO animated:YES];
-            [self updateNavigationItemStateAnimated:YES];
-            [self updateToolbarHiddenStateAnimated:YES];
-        }
-    }
-}
-
 #pragma mark - PJInputPickerViewDelegate methods
 
 - (void)inputPickerViewDidCancel:(PJInputPickerView *)inputPicker {
@@ -350,20 +281,33 @@
         }
     }
     if (projectorIndex < projectorsCount) {
-        // Create a UIActionSheet with the available inputs for this projector
-        self.inputActionSheet = [[UIActionSheet alloc] initWithTitle:@"Select Input"
-                                                            delegate:self
-                                                   cancelButtonTitle:@"Cancel"
-                                              destructiveButtonTitle:nil
-                                                   otherButtonTitles:nil];
-        self.inputActionSheet.tag = projectorIndex;
+        // Create a UIAlertController with the available inputs for this projector
+        UIAlertController* controller = [UIAlertController alertControllerWithTitle:@"Select Input"
+                                                                            message:nil
+                                                                     preferredStyle:UIAlertControllerStyleActionSheet];
+        @weakify(self);
         // Add titles for each input
         for (NSUInteger i = 0; i < [cell.projector countOfInputs]; i++) {
             PJInputInfo *ithInput = [cell.projector objectInInputsAtIndex:i];
-            NSString *inputName = [ithInput description];
-            [self.inputActionSheet addButtonWithTitle:inputName];
+            NSString* inputName = [ithInput description];
+            UIAlertAction* ithInputAction = [UIAlertAction actionWithTitle:inputName
+                                                                     style:UIAlertActionStyleDefault
+                                                                   handler:^(UIAlertAction * _Nonnull action) {
+                @strongify(self);
+                [self changeSelectedProjectorsInputTo:inputName];
+                [self.tableView setEditing:NO animated:YES];
+                [self updateNavigationItemStateAnimated:YES];
+                [self updateToolbarHiddenStateAnimated:YES];
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }];
+            [controller addAction:ithInputAction];
         }
-        [self.inputActionSheet showInView:self.view];
+        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel"
+                                                               style:UIAlertActionStyleCancel
+                                                             handler:nil];
+        [controller addAction:cancelAction];
+
+        [self presentViewController:controller animated:YES completion:nil];
     }
 }
 
@@ -487,12 +431,40 @@
 }
 
 - (void)addButtonAction:(id)sender {
-    self.addActionSheet = [[UIActionSheet alloc] initWithTitle:@"Add A Projector"
-                                                      delegate:self
-                                             cancelButtonTitle:@"Cancel"
-                                        destructiveButtonTitle:nil
-                                             otherButtonTitles:@"Add Manually", @"Scan WiFi Network", nil];
-    [self.addActionSheet showFromBarButtonItem:sender animated:YES];
+    UIAlertController* controller = [UIAlertController alertControllerWithTitle:@"Add A Projector"
+                                                                        message:@"Choose an option"
+                                                                 preferredStyle:UIAlertControllerStyleActionSheet];
+    @weakify(self);
+    UIAlertAction* addAction = [UIAlertAction actionWithTitle:@"Add Manually"
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction * _Nonnull action) {
+        @strongify(self);
+        // Manually add a projector
+        PJManualAddTableViewController* addController = [[PJManualAddTableViewController alloc] init];
+        // Wrap this in a UINavigationController
+        UINavigationController* navController = [[UINavigationController alloc] initWithRootViewController:addController];
+        // Present this controller
+        [self presentViewController:navController animated:YES completion:nil];
+    }];
+    UIAlertAction* scanAction = [UIAlertAction actionWithTitle:@"Scan WiFi Network"
+                                                         style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * _Nonnull action) {
+        @strongify(self);
+        // Create a subnet scanner controller
+        PJSubnetScannerViewController* scanController = [[PJSubnetScannerViewController alloc] init];
+        // Wrap this in a UINavigationController
+        UINavigationController* navController = [[UINavigationController alloc] initWithRootViewController:scanController];
+        // Present this controller
+        [self presentViewController:navController animated:YES completion:nil];
+    }];
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel"
+                                                           style:UIAlertActionStyleCancel
+                                                         handler:nil];
+    [controller addAction:addAction];
+    [controller addAction:scanAction];
+    [controller addAction:cancelAction];
+
+    [self presentViewController:controller animated:YES completion:nil];
 }
 
 - (void)selectButtonAction:(id)sender {
@@ -532,16 +504,6 @@
             }
         }
     }
-//    // Create a UIActionSheet with the available inputs for this projector
-//    self.inputActionSheet = [[UIActionSheet alloc] initWithTitle:@"Select Input"
-//                                                        delegate:self
-//                                               cancelButtonTitle:@"Cancel"
-//                                          destructiveButtonTitle:nil
-//                                               otherButtonTitles:nil];
-//    for (NSString* inputName in self.inputNames) {
-//        [self.inputActionSheet addButtonWithTitle:inputName];
-//    }
-//    [self.inputActionSheet showFromBarButtonItem:sender animated:YES];
     self.inputPickerView.inputNames = self.inputNames;
     [self.inputPickerView showHide:NO animated:NO withCompletion:nil];
     self.inputPickerView.frame = self.navigationController.view.bounds;
@@ -551,39 +513,133 @@
 }
 
 - (void)powerStatusBarButtonItemAction:(id)sender {
-    self.powerStatusActionSheet = [[UIActionSheet alloc] initWithTitle:@"Turn Selected Projectors"
-                                                              delegate:self
-                                                     cancelButtonTitle:@"Cancel"
-                                                destructiveButtonTitle:nil
-                                                     otherButtonTitles:@"On", @"Off", nil];
-    [self.powerStatusActionSheet showFromBarButtonItem:sender animated:YES];
+    UIAlertController* controller = [UIAlertController alertControllerWithTitle:@"Turn Selected Projectors"
+                                                                        message:nil
+                                                                 preferredStyle:UIAlertControllerStyleActionSheet];
+    @weakify(self);
+    UIAlertAction* onAction = [UIAlertAction actionWithTitle:@"On"
+                                                       style:UIAlertActionStyleDefault
+                                                     handler:^(UIAlertAction * _Nonnull action) {
+        @strongify(self);
+        [self changeSelectedProjectorsPowerStatusTo:YES];
+        [self.tableView setEditing:NO animated:YES];
+        [self updateNavigationItemStateAnimated:YES];
+        [self updateToolbarHiddenStateAnimated:YES];
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }];
+    UIAlertAction* offAction = [UIAlertAction actionWithTitle:@"Off"
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction * _Nonnull action) {
+        @strongify(self);
+        [self changeSelectedProjectorsPowerStatusTo:NO];
+        [self.tableView setEditing:NO animated:YES];
+        [self updateNavigationItemStateAnimated:YES];
+        [self updateToolbarHiddenStateAnimated:YES];
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }];
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel"
+                                                           style:UIAlertActionStyleCancel
+                                                         handler:nil];
+    [controller addAction:onAction];
+    [controller addAction:offAction];
+    [controller addAction:cancelAction];
+
+    [self presentViewController:controller animated:YES completion:nil];
 }
 
 - (void)audioMuteBarButtonItemAction:(id)sender {
-    self.audioMuteActionSheet = [[UIActionSheet alloc] initWithTitle:@"Turn Audio Mute"
-                                                            delegate:self
-                                                   cancelButtonTitle:@"Cancel"
-                                              destructiveButtonTitle:nil
-                                                   otherButtonTitles:@"On", @"Off", nil];
-    [self.audioMuteActionSheet showFromBarButtonItem:sender animated:YES];
+    UIAlertController* controller = [UIAlertController alertControllerWithTitle:@"Turn Audio Mute"
+                                                                        message:nil
+                                                                 preferredStyle:UIAlertControllerStyleActionSheet];
+    @weakify(self);
+    UIAlertAction* onAction = [UIAlertAction actionWithTitle:@"On"
+                                                       style:UIAlertActionStyleDefault
+                                                     handler:^(UIAlertAction * _Nonnull action) {
+        @strongify(self);
+        [self changeSelectedProjectorsAudioMuteTo:YES];
+        [self.tableView setEditing:NO animated:YES];
+        [self updateNavigationItemStateAnimated:YES];
+        [self updateToolbarHiddenStateAnimated:YES];
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }];
+    UIAlertAction* offAction = [UIAlertAction actionWithTitle:@"Off"
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction * _Nonnull action) {
+        @strongify(self);
+        [self changeSelectedProjectorsAudioMuteTo:NO];
+        [self.tableView setEditing:NO animated:YES];
+        [self updateNavigationItemStateAnimated:YES];
+        [self updateToolbarHiddenStateAnimated:YES];
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }];
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel"
+                                                           style:UIAlertActionStyleCancel
+                                                         handler:nil];
+    [controller addAction:onAction];
+    [controller addAction:offAction];
+    [controller addAction:cancelAction];
+
+    [self presentViewController:controller animated:YES completion:nil];
 }
 
 - (void)videoMuteBarButtonItemAction:(id)sender {
-    self.videoMuteActionSheet = [[UIActionSheet alloc] initWithTitle:@"Turn Video Mute"
-                                                            delegate:self
-                                                   cancelButtonTitle:@"Cancel"
-                                              destructiveButtonTitle:nil
-                                                   otherButtonTitles:@"On", @"Off", nil];
-    [self.videoMuteActionSheet showFromBarButtonItem:sender animated:YES];
+    UIAlertController* controller = [UIAlertController alertControllerWithTitle:@"Turn Video Mute"
+                                                                        message:nil
+                                                                 preferredStyle:UIAlertControllerStyleActionSheet];
+    @weakify(self);
+    UIAlertAction* onAction = [UIAlertAction actionWithTitle:@"On"
+                                                       style:UIAlertActionStyleDefault
+                                                     handler:^(UIAlertAction * _Nonnull action) {
+        @strongify(self);
+        [self changeSelectedProjectorsVideoMuteTo:YES];
+        [self.tableView setEditing:NO animated:YES];
+        [self updateNavigationItemStateAnimated:YES];
+        [self updateToolbarHiddenStateAnimated:YES];
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }];
+    UIAlertAction* offAction = [UIAlertAction actionWithTitle:@"Off"
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction * _Nonnull action) {
+        @strongify(self);
+        [self changeSelectedProjectorsVideoMuteTo:NO];
+        [self.tableView setEditing:NO animated:YES];
+        [self updateNavigationItemStateAnimated:YES];
+        [self updateToolbarHiddenStateAnimated:YES];
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }];
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel"
+                                                           style:UIAlertActionStyleCancel
+                                                         handler:nil];
+    [controller addAction:onAction];
+    [controller addAction:offAction];
+    [controller addAction:cancelAction];
+
+    [self presentViewController:controller animated:YES completion:nil];
 }
 
 - (void)deleteBarButtonItemAction:(id)sender {
-    self.deleteActionSheet = [[UIActionSheet alloc] initWithTitle:@"Delete Selected Projectors?"
-                                                         delegate:self
-                                                cancelButtonTitle:@"Cancel"
-                                           destructiveButtonTitle:nil
-                                                otherButtonTitles:@"Confirm", nil];
-    [self.deleteActionSheet showFromBarButtonItem:sender animated:YES];
+    UIAlertController* controller = [UIAlertController alertControllerWithTitle:@"Delete Selected Projectors?"
+                                                                        message:nil
+                                                                 preferredStyle:UIAlertControllerStyleActionSheet];
+    @weakify(self);
+    UIAlertAction* confirmAction = [UIAlertAction actionWithTitle:@"Confirm"
+                                                            style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * _Nonnull action) {
+        @strongify(self);
+        PJProjectorManager *mgr = [PJProjectorManager sharedManager];
+        [mgr removeProjectorsFromManager:self.selectedProjectors];
+        [self.tableView setEditing:NO animated:YES];
+        [self updateNavigationItemStateAnimated:YES];
+        [self updateToolbarHiddenStateAnimated:YES];
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }];
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel"
+                                                           style:UIAlertActionStyleCancel
+                                                         handler:nil];
+    [controller addAction:confirmAction];
+    [controller addAction:cancelAction];
+
+    [self presentViewController:controller animated:YES completion:nil];
 }
 
 - (void)changeSelectedProjectorsInputTo:(NSString*)inputName {

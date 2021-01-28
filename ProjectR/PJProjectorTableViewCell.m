@@ -143,9 +143,13 @@ CGFloat const kPJProjectorTableViewCellSelectionAnimationDuration =  0.3;
 - (void)layoutSubviews {
     [super layoutSubviews];
     CGRect textLabelFrame = self.textLabel.frame;
-    CGSize textSize = [self.textLabel.text sizeWithFont:self.textLabel.font
-                                      constrainedToSize:CGSizeMake(textLabelFrame.size.width, self.frame.size.height)
-                                          lineBreakMode:self.textLabel.lineBreakMode];
+    NSStringDrawingContext* context = [[NSStringDrawingContext alloc] init];
+    context.minimumScaleFactor = 1.0;
+    CGRect textRect = [self.textLabel.text boundingRectWithSize:CGSizeMake(textLabelFrame.size.width, self.frame.size.height)
+                                                        options:0
+                                                     attributes:@{NSFontAttributeName: self.textLabel.font}
+                                                        context:context];
+    CGSize textSize = textRect.size;
     textLabelFrame = CGRectMake(textLabelFrame.origin.x,
                                 floorf((self.frame.size.height - textSize.height) / 2.0),
                                 textLabelFrame.size.width,

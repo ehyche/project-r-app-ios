@@ -358,11 +358,22 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
     // Do we have any projectors?
     if ([self.mutableProjectors count] > 0) {
         // Now archive the projectors
-        BOOL success = [NSKeyedArchiver archiveRootObject:self.mutableProjectors toFile:[archiveURL path]];
-        if (success) {
-            NSLog(@"Projectors archive created successfully at %@", archiveURL);
+        NSError* archiveError = nil;
+        NSData* data = [NSKeyedArchiver archivedDataWithRootObject:self.mutableProjectors
+                                             requiringSecureCoding:NO
+                                                             error:&archiveError];
+        if (archiveError == nil) {
+            NSError* writeError = nil;
+            [data writeToURL:archiveURL
+                     options:0
+                       error:&writeError];
+            if (writeError == nil) {
+                NSLog(@"Projectors archive created successfully at %@", archiveURL);
+            } else {
+                NSLog(@"FAILED to write archive data: %@", writeError.localizedDescription);
+            }
         } else {
-            NSLog(@"FAILED to create projectors archive at %@", archiveURL);
+            NSLog(@"FAILED to archive data: %@", archiveError.localizedDescription);
         }
     }
 }
@@ -380,24 +391,38 @@ NSString* const kPJProjectorManagerArchiveFileName = @"ProjectorManager.archive"
         if ([fileMgr fileExistsAtPath:[archiveURL path]]) {
             NSLog(@"Projectors archive exists at %@", archiveURL);
             // We have an archive, so unarchive the projectors array from that
-            NSArray* projectors = [NSKeyedUnarchiver unarchiveObjectWithFile:[archiveURL path]];
-            if ([projectors count] > 0) {
-                NSLog(@"Unarchived %@ projectors from archive", @([projectors count]));
-                // Set these projectors into the mutable array
-                [self.mutableProjectors setArray:projectors];
-                // Set the return value
-                ret = YES;
-                // XXXMEH - workaround for PJProjector bug. When unarchiving, then
-                // if the projector has a password, then the default credential
-                // needs to be set into the PJLink client. Manually setting the
-                // password accomplishes the same thing.
-                for (PJProjector* projector in projectors) {
-                    if ([projector.password length] > 0) {
-                        NSString* password = projector.password;
-                        projector.password = nil;
-                        projector.password = password;
+            NSError* readError = nil;
+            NSData* fileData = [NSData dataWithContentsOfURL:archiveURL
+                                                     options:0
+                                                       error:&readError];
+            if (readError == nil) {
+                NSArray* projectors = [NSKeyedUnarchiver unarchivedArrayOfObjectsOfClass:[PJProjector class]
+                                                                                fromData:fileData
+                                                                                   error:&readError];
+                if (readError == nil) {
+                    if ([projectors count] > 0) {
+                        NSLog(@"Unarchived %@ projectors from archive", @([projectors count]));
+                        // Set these projectors into the mutable array
+                        [self.mutableProjectors setArray:projectors];
+                        // Set the return value
+                        ret = YES;
+                        // XXXMEH - workaround for PJProjector bug. When unarchiving, then
+                        // if the projector has a password, then the default credential
+                        // needs to be set into the PJLink client. Manually setting the
+                        // password accomplishes the same thing.
+                        for (PJProjector* projector in projectors) {
+                            if ([projector.password length] > 0) {
+                                NSString* password = projector.password;
+                                projector.password = nil;
+                                projector.password = password;
+                            }
+                        }
                     }
+                } else {
+                    NSLog(@"Could not unarchive projectors from data: %@", readError.localizedDescription);
                 }
+            } else {
+                NSLog(@"Could not read archive file data from %@", archiveURL);
             }
         } else {
             // No archive exists
