@@ -39,7 +39,7 @@ CGFloat const kPJProjectorAccessoryViewButtonPaddingTopBottom =  5.0;
         self.normalOnTintColor = self.powerStatusSwitch.onTintColor;
         [self addSubview:self.powerStatusSwitch];
         self.inputButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        UIImage *bgImage = [UIImage imageNamed:@"blue_rounded_rect.png"];
+        UIImage *bgImage = [UIImage imageNamed:@"blue_rounded_rect"];
         UIImage *bgImageResizable = [bgImage resizableImageWithCapInsets:UIEdgeInsetsMake(12.0, 12.0, 12.0, 12.0)];
         [self.inputButton setBackgroundImage:bgImageResizable forState:UIControlStateNormal];
         self.inputButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:kPJProjectorAccessoryViewFontSize];
